@@ -1,7 +1,7 @@
-import Index from "./pages/index";
+import Root from "./pages/root";
 
 const App = () => {
-    return <Index />;
+    return <Root />;
 };
 
 export default App;

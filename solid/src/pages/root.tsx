@@ -10,7 +10,9 @@ export default () => {
             <Container>
                 <main class="flex flex-col gap-3">
                     <div class="flex flex-col gap-1">
-                        <For each={newses}>{(news: TNews) => <News title={news.title} />}</For>
+                        <For each={newses}>
+                            {(news: TNews) => <News title={news.title} no={1} />}
+                        </For>
                     </div>
                     <div class="flex justify-end">
                         <a href="/?p=2" class="px-1">

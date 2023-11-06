@@ -5,7 +5,9 @@ export default () => {
         <Container>
             <nav class="flex items-center justify-between bg-[#ff6600] px-1 py-0.5 text-white">
                 <div class="flex items-center gap-2">
-                    <a href="/">Hacker News</a>
+                    <a href="/" class="font-bold">
+                        Hacker News
+                    </a>
                     <span>|</span>
                     <a href="/newswelcome">welcome</a>
                     <span>|</span>
