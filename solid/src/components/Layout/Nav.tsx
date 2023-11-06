@@ -1,24 +1,9 @@
-import { For, Show } from "solid-js";
-import { TLink } from "@/config/links";
-import { links } from "@/states/layout";
-import { A, useLocation } from "@solidjs/router";
+import { For } from "solid-js";
+import { navLinks } from "@/states/layout";
+import { A } from "@solidjs/router";
 
 import Container from "@/components/ui/Container";
-
-const NavLink = (p: TLink & { hideBar?: boolean }) => {
-    const location = useLocation();
-
-    return (
-        <div class="flex justify-between gap-2">
-            <Show when={!p.hideBar}>
-                <span>|</span>
-            </Show>
-            <span class={location.pathname === p.href ? "text-primary" : "text-white"}>
-                {p.not_href ? <span>{p.title}</span> : <A href={p.href}>{p.title}</A>}
-            </span>
-        </div>
-    );
-};
+import NavLink from "./NavLink";
 
 export default () => {
     return (
@@ -28,9 +13,9 @@ export default () => {
                     <A href="/" class="font-bold">
                         Hacker News
                     </A>
-                    <For each={links}>
+                    <For each={navLinks}>
                         {link => (
-                            <NavLink title={link.title} href={link.href} not_href={link.not_href} />
+                            <NavLink title={link.title} href={link.href} notHref={link.not_href} />
                         )}
                     </For>
                 </div>

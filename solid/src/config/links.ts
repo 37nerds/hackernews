@@ -2,9 +2,10 @@ export type TLink = {
     title: string;
     href: string;
     not_href?: boolean;
+    not_dynamic?: boolean;
 };
 
-const links = [
+export const nav_links = [
     {
         title: "welcome",
         href: "/welcome",
@@ -43,4 +44,38 @@ const links = [
     },
 ];
 
-export default links;
+export const footer_links = [
+    {
+        title: "Guidelines",
+        href: "/guidelines",
+    },
+    {
+        title: "FAQ",
+        href: "/faq",
+    },
+    {
+        title: "Lists",
+        href: "/lists",
+    },
+    {
+        title: "API",
+        href: "https://github.com/p-nerd/hackernews",
+    },
+    {
+        title: "Security",
+        href: "/security",
+    },
+    {
+        title: "Legal",
+        href: "/legal",
+    },
+    {
+        title: "Apply",
+        href: "/apply",
+    },
+    {
+        title: "Contact",
+        href: "mailto:someone@example.com",
+        not_dynamic: true,
+    },
+];
