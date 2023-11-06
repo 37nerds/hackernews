@@ -1,4 +1,6 @@
-import Triangle from "../icons/Triangle";
+import { A } from "@solidjs/router";
+
+import Triangle from "@/components/icons/Triangle";
 
 export type TNews = {
     id: number;
@@ -29,31 +31,32 @@ export default (p: TNews & { no: number }) => {
             </div>
             <div class="flex flex-col">
                 <div class="flex items-center gap-1">
-                    <a href={p.url} target="_blank" class="text-primay text-sm">
+                    <A href={p.url} target="_blank" class="text-primay text-sm">
                         {p.title}
-                    </a>
-                    <a
+                    </A>
+                    <A
                         href={`/from?site=${p.domain}`}
                         class="text-[11px] text-secondary hover:underline"
                     >
                         ({p.domain})
-                    </a>
+                    </A>
                 </div>
                 <div class="text-[11px] text-secondary">
                     {p.points} points by{" "}
-                    <a href={`/user?id=${p.user}`} class="hover:underline">
+                    <A href={`/user?id=${p.user}`} class="hover:underline">
                         {p.user}
-                    </a>
-                    <span title={new Date().toUTCString()}>
-                        <a href={`/item?id=${p.id}`} class="hover:underline">
-                            {" "}
-                            {p.time_ago}
-                        </a>
-                    </span>{" "}
+                    </A>{" "}
+                    <A
+                        title={new Date().toUTCString()}
+                        href={`/item?id=${p.id}`}
+                        class="hover:underline"
+                    >
+                        {p.time_ago}
+                    </A>{" "}
                     | <button class="hover:underline">hide</button> |{" "}
-                    <a href={`/item?id=${p.id}`} class="hover:underline">
+                    <A href={`/item?id=${p.id}`} class="hover:underline">
                         {p.comments_count} comments
-                    </a>
+                    </A>
                 </div>
             </div>
         </div>

@@ -1,38 +1,43 @@
-import Container from "../ui/Container";
+import { For, Show } from "solid-js";
+import { TLink } from "@/config/links";
+import { links } from "@/states/layout";
+import { A, useLocation } from "@solidjs/router";
+
+import Container from "@/components/ui/Container";
+
+const NavLink = (p: TLink & { hideBar?: boolean }) => {
+    const location = useLocation();
+
+    return (
+        <div class="flex justify-between gap-2">
+            <Show when={!p.hideBar}>
+                <span>|</span>
+            </Show>
+            <span class={location.pathname === p.href ? "text-primary" : "text-white"}>
+                {p.not_href ? <span>{p.title}</span> : <A href={p.href}>{p.title}</A>}
+            </span>
+        </div>
+    );
+};
 
 export default () => {
     return (
         <Container>
             <nav class="flex items-center justify-between bg-secondary-bg px-1 py-0.5 text-white">
                 <div class="flex items-center gap-2">
-                    <a href="/" class="font-bold">
+                    <A href="/" class="font-bold">
                         Hacker News
-                    </a>
-                    <span>|</span>
-                    <a href="/newswelcome">welcome</a>
-                    <span>|</span>
-                    <a href="/newest">new</a>
-                    <span>|</span>
-                    <a href="/threads?id=p-nerd">threads</a>
-                    <span>|</span>
-                    <a href="/front">past</a>
-                    <span>|</span>
-                    <a href="/front">past</a>
-                    <span>|</span>
-                    <a href="/newscomments">comments</a>
-                    <span>|</span>
-                    <a href="/ask">ask</a>
-                    <span>|</span>
-                    <a href="/show">show</a>
-                    <span>|</span>
-                    <a href="/jobs">jobs</a>
-                    <span>|</span>
-                    <a href="/submit">submit</a>
+                    </A>
+                    <For each={links}>
+                        {link => (
+                            <NavLink title={link.title} href={link.href} not_href={link.not_href} />
+                        )}
+                    </For>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="/user?id=p-nerd">p-nerd(1)</a>
+                    <NavLink title={"p-nerd (1)"} href="/user" hideBar={true} />
                     <span>|</span>
-                    <a href="/logout">logout</a>
+                    <button>logout</button>
                 </div>
             </nav>
         </Container>
