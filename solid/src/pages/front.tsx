@@ -1,3 +1,3 @@
 export default () => {
-    return <>Newest</>;
+    return <>front</>;
 };

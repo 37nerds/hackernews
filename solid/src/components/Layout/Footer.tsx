@@ -1,7 +1,7 @@
 import { For } from "solid-js";
 import { TLink, footer_links } from "@/config/links";
 
-import Container from "../ui/Container";
+import Container from "@/components/ui/Container";
 import FooterLink from "./FooterLink";
 
 export default () => {
