@@ -3,7 +3,7 @@ import Container from "../ui/Container";
 export default () => {
     return (
         <Container>
-            <nav class="flex items-center justify-between bg-[#ff6600] px-1 py-0.5 text-white">
+            <nav class="flex items-center justify-between bg-secondary-bg px-1 py-0.5 text-white">
                 <div class="flex items-center gap-2">
                     <a href="/" class="font-bold">
                         Hacker News
