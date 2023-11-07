@@ -1,6 +1,7 @@
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import { nav_links } from "@/config/links";
+import useHideFooter from "@/hooks/useHideFooter";
 import { setHideFooter, setNavLinks } from "@/states/layout";
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { JSX } from "solid-js";
@@ -51,12 +52,12 @@ export default () => {
     const [url, setUrl] = createSignal("");
     const [text, setText] = createSignal("");
 
+    useHideFooter();
+
     onMount(() => {
-        setHideFooter(true);
         setNavLinks(links => links.filter(link => link.title === "submit"));
     });
     onCleanup(() => {
-        setHideFooter(false);
         setNavLinks(() => nav_links);
     });
 
@@ -67,10 +68,7 @@ export default () => {
                 <LabelInput id="url" value={url()} setValue={setUrl} />
                 <LabelTextarea id="text" value={text()} setValue={setText} />
                 <div>
-                    <button
-                        type="submit"
-                        class="ml-[38px] rounded bg-secondary-bg px-2 py-1 text-white"
-                    >
+                    <button type="submit" class="ml-[38px] bg-secondary-bg px-2 py-1 text-white">
                         Submit
                     </button>
                 </div>

@@ -8,12 +8,14 @@ const Input = (p: {
 }) => {
     return (
         <input
-            class={`w-full rounded border p-1 ${p.class || ""}`}
+            class={`w-full border p-1 ${p.class || ""}`}
             type={p.type || "text"}
             id={p.id}
             name={p.name || p.id}
             value={p.value}
-            onChange={e => p.setValue(e.target.value)}
+            onInput={e => {
+                p.setValue(e.currentTarget.value);
+            }}
         />
     );
 };

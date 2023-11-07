@@ -24,7 +24,7 @@ export default () => {
                     </div>
                     <div class="flex gap-1 py-1.5 text-base">
                         <span class="text-secondary">Search:</span>
-                        <input class="rounded border" />
+                        <input class="border" />
                     </div>
                 </footer>
             </Container>
