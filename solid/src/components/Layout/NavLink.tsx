@@ -1,7 +1,7 @@
 import { Show } from "solid-js";
 import { A, useLocation } from "@solidjs/router";
 
-export default (p: { title: string; href: string; hideBar?: boolean; notHref?: boolean }) => {
+const NavLink = (p: { title: string; href: string; hideBar?: boolean; notHref?: boolean }) => {
     const location = useLocation();
 
     return (
@@ -15,3 +15,5 @@ export default (p: { title: string; href: string; hideBar?: boolean; notHref?: b
         </div>
     );
 };
+
+export default NavLink;

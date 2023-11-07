@@ -5,7 +5,7 @@ import { hideFooter } from "@/states/layout";
 import Container from "@/components/ui/Container";
 import FooterLink from "./FooterLink";
 
-export default () => {
+const Footer = () => {
     return (
         <Show when={!hideFooter()} fallback={<></>}>
             <Container>
@@ -31,3 +31,5 @@ export default () => {
         </Show>
     );
 };
+
+export default Footer;

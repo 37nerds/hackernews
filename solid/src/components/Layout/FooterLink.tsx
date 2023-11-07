@@ -1,7 +1,12 @@
 import { Show } from "solid-js";
 import { A } from "@solidjs/router";
 
-export default (p: { title: string; href: string; hideBar?: boolean; notDynamic?: boolean }) => {
+const FooterLink = (p: {
+    title: string;
+    href: string;
+    hideBar?: boolean;
+    notDynamic?: boolean;
+}) => {
     return (
         <div class="flex justify-between gap-1 text-[12px]">
             <Show when={!p.hideBar}>
@@ -19,3 +24,5 @@ export default (p: { title: string; href: string; hideBar?: boolean; notDynamic?
         </div>
     );
 };
+
+export default FooterLink;

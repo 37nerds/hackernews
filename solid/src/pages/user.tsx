@@ -1,18 +1,9 @@
-import { JSX } from "solid-js";
-
 import useHideFooter from "@/hooks/useHideFooter";
 
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
-
-const Item = (p: { label: string; value: string | JSX.Element }) => {
-    return (
-        <div class="flex">
-            <span class="w-28 text-secondary">{p.label}: </span>
-            <span class="w-full">{p.value}</span>
-        </div>
-    );
-};
+import Select from "@/components/ui/Select";
+import Item from "@/screens/user/Item";
 
 export default () => {
     useHideFooter();
@@ -48,8 +39,38 @@ export default () => {
                         />
                     }
                 />
-                <Item label="showdead" value={"no"} />
-                <Item label="noprocrast" value={"no"} />
+                <Item
+                    label="showdead"
+                    value={
+                        <Select
+                            id="showdead"
+                            value={"no"}
+                            setValue={value => {
+                                console.log(value);
+                            }}
+                            options={[
+                                { label: "no", value: "no" },
+                                { label: "yes", value: "yes" },
+                            ]}
+                        />
+                    }
+                />
+                <Item
+                    label="noprocrast"
+                    value={
+                        <Select
+                            id="noprocrast"
+                            value={"yes"}
+                            setValue={value => {
+                                console.log(value);
+                            }}
+                            options={[
+                                { label: "no", value: "no" },
+                                { label: "yes", value: "yes" },
+                            ]}
+                        />
+                    }
+                />
                 <Item
                     label="maxvisit"
                     value={

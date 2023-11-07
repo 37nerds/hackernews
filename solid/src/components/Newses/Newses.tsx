@@ -3,7 +3,7 @@ import { TNews } from "@/components/Newses/News";
 
 import News from "./News";
 
-export default (p: { newses: TNews[]; page?: number; total?: number }) => {
+const Newses = (p: { newses: TNews[]; page?: number; total?: number }) => {
     return (
         <div class="flex flex-col gap-1">
             <For each={p.newses}>
@@ -26,3 +26,5 @@ export default (p: { newses: TNews[]; page?: number; total?: number }) => {
         </div>
     );
 };
+
+export default Newses;

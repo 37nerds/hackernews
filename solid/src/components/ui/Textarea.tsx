@@ -1,6 +1,8 @@
+import { TSetValue } from "@/types";
+
 const Textarea = (p: {
     value: string;
-    setValue: (value: string) => void;
+    setValue: TSetValue;
     id: string;
     name?: string;
     class?: string;

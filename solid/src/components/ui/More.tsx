@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router";
 
-export default (p: { href: string }) => {
+const More = (p: { href: string }) => {
     return (
         <div class="flex justify-end">
             <A href={p.href} class="px-1 underline">
@@ -9,3 +9,5 @@ export default (p: { href: string }) => {
         </div>
     );
 };
+
+export default More;

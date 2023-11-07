@@ -4,7 +4,7 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 import Container from "@/components/ui/Container";
 
-export default () => {
+const Layout = () => {
     return (
         <div class="flex flex-col gap-2 py-3">
             <Nav />
@@ -15,3 +15,5 @@ export default () => {
         </div>
     );
 };
+
+export default Layout;

@@ -1,6 +1,8 @@
+import { TSetValue } from "@/types";
+
 const Input = (p: {
     value: string;
-    setValue: (value: string) => void;
+    setValue: TSetValue;
     id: string;
     type?: string;
     name?: string;

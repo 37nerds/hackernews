@@ -15,7 +15,7 @@ export type TNews = {
     domain?: string;
 };
 
-export default (p: TNews & { no: number }) => {
+const News = (p: TNews & { no: number }) => {
     return (
         <div class="flex gap-1 bg-primary-bg px-1 py-0.5">
             <div class="items-top flex gap-1">
@@ -62,3 +62,5 @@ export default (p: TNews & { no: number }) => {
         </div>
     );
 };
+
+export default News;

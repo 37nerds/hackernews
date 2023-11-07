@@ -5,7 +5,7 @@ import { A } from "@solidjs/router";
 import Container from "@/components/ui/Container";
 import NavLink from "./NavLink";
 
-export default () => {
+const Nav = () => {
     return (
         <Container>
             <nav class="flex items-center justify-between bg-secondary-bg px-1 py-0.5 text-white">
@@ -28,3 +28,5 @@ export default () => {
         </Container>
     );
 };
+
+export default Nav;

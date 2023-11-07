@@ -1,51 +1,11 @@
-import Input from "@/components/ui/Input";
-import Textarea from "@/components/ui/Textarea";
 import { nav_links } from "@/config/links";
-import useHideFooter from "@/hooks/useHideFooter";
-import { setHideFooter, setNavLinks } from "@/states/layout";
+import { setNavLinks } from "@/states/layout";
 import { createSignal, onCleanup, onMount } from "solid-js";
-import { JSX } from "solid-js";
 
-const Label = (p: { label?: string; id: string }) => {
-    return (
-        <label for={p.id} class="w-8 text-[13px] text-secondary">
-            {p.label || p.id}
-        </label>
-    );
-};
+import useHideFooter from "@/hooks/useHideFooter";
 
-const Wrapper = (p: { children: JSX.Element; itemsPosition?: string }) => {
-    return <div class={`flex gap-2 ${p.itemsPosition || "items-center"}`}>{p.children}</div>;
-};
-
-const LabelInput = (p: {
-    value: string;
-    setValue: (value: string) => void;
-    id: string;
-    label?: string;
-    type?: string;
-}) => {
-    return (
-        <Wrapper>
-            <Label label={p.label} id={p.id} />
-            <Input type={p.type} id={p.id} value={p.value} setValue={p.setValue} />
-        </Wrapper>
-    );
-};
-
-const LabelTextarea = (p: {
-    value: string;
-    setValue: (value: string) => void;
-    id: string;
-    label?: string;
-}) => {
-    return (
-        <Wrapper itemsPosition="items-start">
-            <Label label={p.label} id={p.id} />
-            <Textarea id={p.id} value={p.value} setValue={p.setValue} />
-        </Wrapper>
-    );
-};
+import LabelInput from "@/screens/submit/LabelInput";
+import LabelTextarea from "@/screens/submit/LabelTextarea";
 
 export default () => {
     const [title, setTitle] = createSignal("");
