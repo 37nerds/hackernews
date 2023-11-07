@@ -17,7 +17,7 @@ export type TNews = {
 
 const News = (p: TNews & { no: number }) => {
     return (
-        <div class="flex gap-1 bg-primary-bg px-1 py-0.5">
+        <div class="flex gap-1 rounded bg-primary-bg px-1 py-0.5">
             <div class="items-top flex gap-1">
                 <div class="w-5 text-end text-secondary">{p.no}.</div>
                 <button

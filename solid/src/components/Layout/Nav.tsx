@@ -8,7 +8,7 @@ import NavLink from "./NavLink";
 const Nav = () => {
     return (
         <Container>
-            <nav class="flex items-center justify-between bg-secondary-bg px-1 py-0.5 text-white">
+            <nav class="flex items-center justify-between rounded bg-secondary-bg px-2 py-1 text-white">
                 <div class="flex items-center gap-2">
                     <A href="/" class="font-bold">
                         Hacker News
