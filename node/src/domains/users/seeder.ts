@@ -1,7 +1,5 @@
-import type { TInsertUserBody } from "./schemas";
-import type { Faker } from "@faker-js/faker";
-import type { TUser } from "./repository";
-
+import { TInsertUser, TUser } from "./repository";
+import { Faker } from "@faker-js/faker";
 import { USERS } from "./repository";
 import { db } from "@/base/cache";
 
@@ -19,19 +17,15 @@ export default async (f: Faker, count: number, deleteBefore: boolean = false) =>
 
     log.info("seeding the users with fake data...");
     if (deleteBefore) {
-        await repository.insert<TInsertUserBody, TUser>(USERS, {
+        await repository.insert<TInsertUser, TUser>(USERS, {
             username: "shihab",
-            email: "shihab@gmail.com",
             password: await crypto.hash("password"),
-            name: "Shihab Mahamud",
         });
     }
     for (let i = 0; i < count - 1; i++) {
-        await repository.insert<TInsertUserBody, TUser>(USERS, {
+        await repository.insert<TInsertUser, TUser>(USERS, {
             username: f.internet.userName(),
-            email: f.internet.email(),
             password: await crypto.hash("password"),
-            name: f.person.fullName(),
         });
     }
     log.info("done");

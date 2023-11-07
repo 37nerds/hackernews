@@ -44,7 +44,7 @@ const log = {
     },
     boot: (...x: any) => log.log("[boot]", ...x),
     info: (...x: any) => log.log("[info]", ...x),
-    time: async (message: string, func: Function) => {
+    time: async (message: string, func: () => Promise<void>) => {
         const startTime = new Date().getTime();
         log.log(`${colors.gray("-->")} '${colors.cyan(message)}'`);
         await func();

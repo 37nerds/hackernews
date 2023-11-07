@@ -1,35 +1,28 @@
-import type { Context } from "koa";
-import type { TUser } from "./repository";
-
+import  { Context } from "koa";
+import  { TUser } from "./repository";
 import { USERS_LOGIN, USERS_LOGOUT } from "./events";
 import { BadRequestError, ServerSideError } from "@/helpers/errors";
 import { emitter } from "@/base/cache";
 
 import jwt from "@/helpers/jwt";
-import usersRepo from "./repository";
+import repository from "./repository";
 import env from "@/configs/env";
 import log from "@/helpers/log";
 
-const AUTH_TOKEN = "auth_token";
+const TOKEN_KEY = "ds_token";
 
 export type TAuthTokenPayload = {
     username: string;
-    email: string;
-    name?: string;
 };
 
 export const loginUser = async (ctx: Context, user: TUser) => {
     try {
         const expireInHours = 24 * 30;
-        const payload: TAuthTokenPayload = {
-            username: user.username,
-            email: user.email,
-            name: user.name,
-        };
+        const payload: TAuthTokenPayload = { username: user.username };
         const token = await jwt.generate(payload, expireInHours);
-        ctx.cookies.set(AUTH_TOKEN, token, {
+        ctx.cookies.set(TOKEN_KEY, token, {
             httpOnly: true,
-            secure: env.NODE_ENV === "dev" ? false : true,
+            secure: env.NODE_ENV !== "dev",
             sameSite: "none",
             secureProxy: true,
         });
@@ -41,18 +34,23 @@ export const loginUser = async (ctx: Context, user: TUser) => {
 };
 
 export const logoutUser = (ctx: Context) => {
-    ctx.cookies.set(AUTH_TOKEN, "", { httpOnly: true, maxAge: 0 });
-    emitter().emit(USERS_LOGOUT);
+    try {
+        ctx.cookies.set(TOKEN_KEY, "", { httpOnly: true, maxAge: 0 });
+        emitter().emit(USERS_LOGOUT);
+    } catch (e: any) {
+        log.debug(e);
+        throw new ServerSideError("unable to set the jwt token cookie empty");
+    }
 };
 
 export const verifyAuthToken = async (ctx: Context): Promise<TUser> => {
     let decoded: TAuthTokenPayload;
     try {
-        log.debug(ctx.cookies.get(AUTH_TOKEN));
-        const authToken = ctx.cookies.get(AUTH_TOKEN);
+        log.debug(ctx.cookies.get(TOKEN_KEY));
+        const authToken = ctx.cookies.get(TOKEN_KEY);
         decoded = (await jwt.verify(authToken || "")) as TAuthTokenPayload;
     } catch (e: any) {
         throw new BadRequestError(e?.message || "auth token is invalid");
     }
-    return await usersRepo.find({ email: decoded?.email || "" });
+    return await repository.find({ username: decoded.username });
 };

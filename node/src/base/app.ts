@@ -1,5 +1,4 @@
-import type { TUser } from "@/domains/users/repository";
-
+import  { TUser } from "@/domains/users/repository";
 import { loadDynamically } from "@/helpers/units";
 import { db } from "@/base/cache";
 

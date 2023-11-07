@@ -1,5 +1,4 @@
-import type { Db } from "mongodb";
-
+import { Db } from "mongodb";
 import { EventEmitter } from "node:events";
 import { loadTemplates } from "@/helpers/units";
 import { connectMongodb } from "@/helpers/units";
