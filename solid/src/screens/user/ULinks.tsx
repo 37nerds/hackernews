@@ -8,7 +8,7 @@ const ULinks = () => {
             <ULink label="comments" href="/comments" />
             <ULink label="hidden" href="/hidden" />
             <ULink label="favorite submissions" href="/favorite-submissions" />
-            <ULink label="public comments" href="/public-comments" />
+            <ULink label="favorite comments" href="/favorite-comments" />
         </div>
     );
 };

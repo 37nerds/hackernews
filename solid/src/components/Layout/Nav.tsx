@@ -1,5 +1,5 @@
-import { For } from "solid-js";
-import { navLinks } from "@/states/layout";
+import { For, Show } from "solid-js";
+import { hideRightNavLinks, navLinks } from "@/states/layout";
 import { A } from "@solidjs/router";
 
 import Container from "@/components/ui/Container";
@@ -19,11 +19,14 @@ const Nav = () => {
                         )}
                     </For>
                 </div>
-                <div class="flex items-center gap-2">
-                    <NavLink title={"p-nerd (1)"} href="/user" hideBar={true} />
-                    <span>|</span>
-                    <button>logout</button>
-                </div>
+                <Show when={!hideRightNavLinks()}>
+                    <div class="flex items-center gap-2">
+                        <NavLink title={"p-nerd (1)"} href="/user" hideBar={true} />
+                        <span>|</span>
+                        <button>logout</button>
+                        <NavLink title="login" href="/login" />
+                    </div>
+                </Show>
             </nav>
         </Container>
     );

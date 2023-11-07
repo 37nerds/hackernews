@@ -5,7 +5,18 @@ export type TRoute = {
     component: Component;
 };
 
-const routes: TRoute[] = [
+export const public_routes: TRoute[] = [
+    {
+        path: "/login",
+        component: lazy(() => import("@/pages/login")),
+    },
+    {
+        path: "/forgot-password",
+        component: lazy(() => import("@/pages/forgot-password")),
+    },
+];
+
+export const layout_routes: TRoute[] = [
     {
         path: "/",
         component: lazy(() => import("@/pages/root")),
@@ -54,6 +65,12 @@ const routes: TRoute[] = [
         path: "/user",
         component: lazy(() => import("@/pages/user")),
     },
+    {
+        path: "/reset-password",
+        component: lazy(() => import("@/pages/reset-password")),
+    },
+    {
+        path: "/change-password",
+        component: lazy(() => import("@/pages/change-password")),
+    },
 ];
-
-export default routes;

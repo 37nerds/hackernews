@@ -107,7 +107,7 @@ const UForm = () => {
                 }
             />
             <div class="flex justify-end">
-                <Submit />
+                <Submit label="Update" />
             </div>
         </form>
     );

@@ -18,7 +18,7 @@ const Select = (p: {
     return (
         <select
             value={p.value}
-            class={`w-full border py-1 ${p.class || ""}`}
+            class={`w-full rounded border py-1 ${p.class || ""}`}
             id={p.id}
             name={p.name || p.id}
             onInput={e => {

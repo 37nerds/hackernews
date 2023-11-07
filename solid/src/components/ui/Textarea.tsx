@@ -9,7 +9,7 @@ const Textarea = (p: {
 }) => {
     return (
         <textarea
-            class={`w-full border p-1 ${p.class || ""}`}
+            class={`w-full rounded border p-1 ${p.class || ""}`}
             rows={3}
             id={p.id}
             name={p.name || p.id}
