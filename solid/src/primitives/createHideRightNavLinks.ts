@@ -1,7 +1,7 @@
 import { setHideRightNavLinks } from "@/states/layout";
 import { onCleanup, onMount } from "solid-js";
 
-const useHideRightNavLinks = () => {
+const createHideRightNavLinks = () => {
     onMount(() => {
         setHideRightNavLinks(true);
     });
@@ -10,4 +10,4 @@ const useHideRightNavLinks = () => {
     });
 };
 
-export default useHideRightNavLinks;
+export default createHideRightNavLinks;

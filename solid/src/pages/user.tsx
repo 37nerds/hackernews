@@ -1,11 +1,11 @@
-import useHideFooter from "@/hooks/useHideFooter";
+import createHideFooter from "@/primitives/createHideFooter.ts";
 
 import UForm from "@/screens/user/UForm";
 import PWrapper from "@/components/ui/PWrapper";
 import ULinks from "@/screens/user/ULinks";
 
 export default () => {
-    useHideFooter();
+    createHideFooter();
 
     return (
         <PWrapper>

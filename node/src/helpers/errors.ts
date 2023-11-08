@@ -1,4 +1,4 @@
-import type { TStatus } from "@/base/types";
+import type { TErrorRecord, TStatus } from "@/base/types";
 
 export class HttpError extends Error {
     status: TStatus;
@@ -45,19 +45,19 @@ export class UnknownError extends HttpError {
 }
 
 export class BadRequestError extends HttpError {
-    errors?: string;
-    constructor(message: string, errors?: string) {
+    errors?: TErrorRecord;
+    constructor(message: string, errors?: Record<string, string[]>) {
         super(message, 400);
         this.name = "Bad Request Error";
-        this.errors = errors || "";
+        this.errors = errors || {};
     }
 }
 
 export class ValidationError extends HttpError {
-    errors?: string;
-    constructor(message: string, errors?: string) {
+    errors?: TErrorRecord;
+    constructor(message: string, errors?: TErrorRecord) {
         super(message, 400);
         this.name = "Validation Error";
-        this.errors = errors || "";
+        this.errors = errors || {};
     }
 }

@@ -1,5 +1,5 @@
-import { registerUserBodySchema } from "./schemas";
-import { register } from "./handlers";
+import { registerOrLoginUserBodySchema } from "./schemas";
+import { login, register } from "./handlers";
 
 import Router from "@koa/router";
 import Koa from "koa";
@@ -9,8 +9,8 @@ import validate from "@/middlewares/validate";
 export default (app: Koa) => {
     const r = new Router({ prefix: "/v1/users" });
 
-    r.post("/register", validate(null, registerUserBodySchema), eh(register));
-    // r.post("/login", validate(null, loginUserBodySchema), eh(login));
+    r.post("/register", validate(null, registerOrLoginUserBodySchema), eh(register));
+    r.post("/login", validate(null, registerOrLoginUserBodySchema), eh(login));
 
     // r.get("/profile", protect(), eh(profile));
     // r.delete("/logout", protect(), eh(logout));

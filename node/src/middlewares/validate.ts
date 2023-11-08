@@ -4,6 +4,7 @@ import { Schema, z } from "zod";
 import { UnknownError, ValidationError } from "@/helpers/errors";
 
 import eh from "@/base/eh";
+import { TErrorRecord } from "@/base/types";
 
 const validate = <T, T2>(querySchema: Schema | null, bodySchema: Schema | null) => {
     return eh(async (ctx: Context, next: Next) => {
@@ -17,7 +18,11 @@ const validate = <T, T2>(querySchema: Schema | null, bodySchema: Schema | null) 
             return await next();
         } catch (e: any) {
             if (e instanceof z.ZodError) {
-                throw new ValidationError("Payload is invalid", e?.message);
+                const errors: TErrorRecord = e.errors.reduce(
+                    (prv, curr) => ({ ...prv, [`${curr?.path[0]}`]: [curr?.message] }),
+                    {},
+                );
+                throw new ValidationError("Payload is invalid", errors);
             } else {
                 throw new UnknownError(e?.message || "");
             }

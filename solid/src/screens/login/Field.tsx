@@ -1,14 +1,12 @@
-import { TSetValue } from "@/types";
+import { JSX } from "solid-js";
 
-import Input from "@/components/ui/Input";
-
-const Field = (p: { id: string; value: string; setValue: TSetValue }) => {
+const Field = (p: { label?: string; id: string; input: JSX.Element }) => {
     return (
         <div class="flex items-center gap-2">
             <label for={p.id} class="w-28">
-                {p.id}:{" "}
+                {p.label || p.id}:{" "}
             </label>
-            <Input value={p.value} setValue={p.setValue} id={p.id} />
+            {p.input}
         </div>
     );
 };

@@ -2,6 +2,7 @@ import { Routes, Route } from "@solidjs/router";
 import { For, Suspense } from "solid-js";
 import { TRoute, layout_routes, public_routes } from "@/config/routes";
 import { MetaProvider } from "@solidjs/meta";
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 
 import Page404 from "@/components/ui/404";
 import Layout from "@/components/Layout";
@@ -15,18 +16,22 @@ const RenderRoutes = (p: { routes: TRoute[] }) => {
     );
 };
 
+const queryClient = new QueryClient();
+
 const App = () => {
     return (
-        <Suspense fallback={Loading}>
-            <MetaProvider>
-                <Routes>
-                    <RenderRoutes routes={public_routes} />
-                    <Route path="/" component={Layout}>
-                        <RenderRoutes routes={layout_routes} />
-                    </Route>
-                    <Route path="*" component={Page404} />
-                </Routes>
-            </MetaProvider>
+        <Suspense fallback={<Loading />}>
+            <QueryClientProvider client={queryClient}>
+                <MetaProvider>
+                    <Routes>
+                        <RenderRoutes routes={public_routes} />
+                        <Route path="/" component={Layout}>
+                            <RenderRoutes routes={layout_routes} />
+                        </Route>
+                        <Route path="*" component={Page404} />
+                    </Routes>
+                </MetaProvider>
+            </QueryClientProvider>
         </Suspense>
     );
 };

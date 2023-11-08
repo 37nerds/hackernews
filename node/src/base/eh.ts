@@ -1,6 +1,8 @@
-import  { Context, Next } from "koa";
+import { Context, Next } from "koa";
 import { HttpError, UnknownError } from "@/helpers/errors";
 import { isDev } from "@/helpers/units";
+import { TError } from "./types";
+
 import log from "@/helpers/log";
 
 const eh = <T>(func: (ctx: Context, next: Next) => Promise<T>) => {
@@ -16,9 +18,9 @@ const eh = <T>(func: (ctx: Context, next: Next) => Promise<T>) => {
             ctx.body = {
                 name: error.name,
                 message: error.message,
-                errors: error?.errors ? JSON.parse(error.errors) : undefined,
+                errors: error?.errors,
                 stack: isDev() ? error.stack : undefined,
-            };
+            } as TError;
             log.debug(e);
         }
     };

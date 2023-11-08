@@ -3,8 +3,8 @@ import { setNavLinks } from "@/states/layout";
 import { onCleanup, onMount } from "solid-js";
 import { Title } from "@solidjs/meta";
 
-import useHideFooter from "@/hooks/useHideFooter";
-import useHideRightNavLinks from "@/hooks/useHideRightNavLinks";
+import createHideFooter from "@/primitives/createHideFooter.ts";
+import createHideRightNavLinks from "@/primitives/createHideRightNavLinks.ts";
 
 import Container2 from "@/components/ui/Container2";
 import Submit from "@/components/ui/Submit";
@@ -14,8 +14,8 @@ import Input from "@/components/ui/Input";
 export default () => {
     const pageMessage = "Reset Password for p-nerd";
 
-    useHideFooter();
-    useHideRightNavLinks();
+    createHideFooter();
+    createHideRightNavLinks();
 
     onMount(() => {
         setNavLinks([{ title: pageMessage, href: "/reset-password" }]);

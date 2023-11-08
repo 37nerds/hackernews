@@ -3,7 +3,7 @@ import { setNavLinks } from "@/states/layout";
 import { onCleanup, onMount } from "solid-js";
 import { Title } from "@solidjs/meta";
 
-import useHideFooter from "@/hooks/useHideFooter";
+import createHideFooter from "@/primitives/createHideFooter.ts";
 
 import Container2 from "@/components/ui/Container2";
 import Submit from "@/components/ui/Submit";
@@ -13,7 +13,7 @@ import Input from "@/components/ui/Input";
 export default () => {
     const pageMessage = "Change Password for p-nerd";
 
-    useHideFooter();
+    createHideFooter();
 
     onMount(() => {
         setNavLinks([{ title: pageMessage, href: "/change-password" }]);

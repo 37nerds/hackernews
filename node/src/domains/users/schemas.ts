@@ -1,12 +1,14 @@
 import { z } from "zod";
 import { TUser } from "./repository";
 
-export const registerUserBodySchema = z.object({
+export const registerOrLoginUserBodySchema = z.object({
     username: z.string(),
     password: z.string().min(6),
 });
 
-export const returnUser = (user: TUser): {
+export const returnUser = (
+    user: TUser,
+): {
     [K in keyof TUser]: K extends "password" ? undefined : TUser[K];
 } => {
     return { ...user, password: undefined };

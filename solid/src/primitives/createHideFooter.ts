@@ -1,7 +1,7 @@
 import { setHideFooter } from "@/states/layout";
 import { onCleanup, onMount } from "solid-js";
 
-const useHideFooter = () => {
+const createHideFooter = () => {
     onMount(() => {
         setHideFooter(true);
     });
@@ -10,4 +10,4 @@ const useHideFooter = () => {
     });
 };
 
-export default useHideFooter;
+export default createHideFooter;

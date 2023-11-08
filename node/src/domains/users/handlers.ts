@@ -2,8 +2,11 @@ import { Context } from "koa";
 import { reply } from "@/helpers/units";
 import { loginUser } from "./logic";
 import { returnUser } from "./schemas";
+import { BadRequestError } from "@/helpers/errors";
+import { TInsertUser } from "./repository";
 
-import repository, { TInsertUser } from "./repository";
+import repository from "./repository";
+import crypto from "@/helpers/crypto";
 
 export const register = async (ctx: Context) => {
     const user = await repository.insert(ctx.request.body as TInsertUser);
@@ -11,26 +14,22 @@ export const register = async (ctx: Context) => {
     return reply(ctx, 201, returnUser(user));
 };
 
+export const login = async (ctx: Context) => {
+    const body = ctx.request.body as TInsertUser;
+    const { username, password } = body || {};
+    const user = await repository.find({ username });
+    if (!(await crypto.compare(user?.password || "", password))) {
+        throw new BadRequestError("invalid credentials");
+    }
+    await loginUser(ctx, user);
+    return reply(ctx, 200, returnUser(user));
+};
+
 // export const profile = async (ctx: Context) => {
 //     return reply(ctx, 200, userResponse(ctx.user));
 // };
 //
-// export const login = async (ctx: Context) => {
-//     const body = ctx.request.body as TLoginUserBody;
-//     const { username, email, password } = body || {};
-//     let user: TUser | null;
-//     if (username) {
-//         user = await usersRepo.find({ username });
-//     } else {
-//         user = await usersRepo.find({ email });
-//     }
-//     if (!(await crypto.compare(user.password, password))) {
-//         throw new BadRequestError("invalid credentials");
-//     }
-//     await loginUser(ctx, user);
-//     return reply(ctx, 200, userResponse(user));
-// };
-//
+
 // export const logout = async (ctx: Context) => {
 //     logoutUser(ctx);
 //     return reply(ctx, 204);

@@ -7,6 +7,7 @@ const Input = (p: {
     type?: string;
     name?: string;
     class?: string;
+    minLength?: number;
 }) => {
     return (
         <input

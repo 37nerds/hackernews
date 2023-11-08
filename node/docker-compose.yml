@@ -1,0 +1,28 @@
+version: "3"
+services:
+    mongodb:
+        image: mongo:7-jammy
+        container_name: hackernews-mongodb
+        ports:
+            - "27017:27017"
+        volumes:
+            - ./.mongodb:/data/db
+    node:
+        build:
+            context: ./
+        container_name: hackernews-node
+        volumes:
+            - ./public:/app/public
+            - ./src:/app/src
+            - ./tmpl:/app/tmpl
+            - ./.env:/app/.env
+            - ./.prettierignore:/app/.prettierignore
+            - ./prettier.config.mjs:/app/prettier.config.mjs
+            - ./tsconfig.json:/app/tsconfig.json
+        command: ["/bin/sh", "-c", "pnpm dev"]
+        ports:
+            - "8000:8000"
+        depends_on:
+            - mongodb
+        environment:
+            - MONGO_URI=mongodb://mongodb/hackernews
