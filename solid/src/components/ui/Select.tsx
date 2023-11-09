@@ -14,6 +14,7 @@ const Select = (p: {
     name?: string;
     class?: string;
     options: TOption[];
+    disabled?: boolean;
 }) => {
     return (
         <select
@@ -24,6 +25,7 @@ const Select = (p: {
             onInput={e => {
                 p.setValue(e.currentTarget.value);
             }}
+            disabled={p.disabled}
         >
             <For each={p.options}>
                 {option => <option value={option.value}>{option.label}</option>}

@@ -5,11 +5,26 @@ import http from "@/helpers/http";
 import createHandleErrorMutation from "@/primitives/createHandleErrorMutation";
 
 export type TUser = {
+    _id: string;
+    username: string;
+    karma: number;
+    about: string;
+    createdAt: string;
+};
+
+export type TLoggedUser = {
+    _id: string;
+    username: string;
+    karma: number;
+    about: string;
     createdAt: string;
     deletedAt: string | null;
-    updatedAt: string;
-    username: string;
-    _id: string;
+    delay: number;
+    minaway: number;
+    maxvisit: number;
+    noprocrast: boolean;
+    showdead: boolean;
+    email: string;
 };
 
 type TRegisterOrLogin = {
@@ -18,7 +33,7 @@ type TRegisterOrLogin = {
 };
 
 export const createRegisterMutation = () => {
-    const m = createMutation<TUser, TError, TRegisterOrLogin>(() => ({
+    const m = createMutation<TLoggedUser, TError, TRegisterOrLogin>(() => ({
         mutationFn: d => http.post("/users/register", d, 201),
         mutationKey: ["register"],
     }));
@@ -27,19 +42,18 @@ export const createRegisterMutation = () => {
 };
 
 export const createLoginMutation = () => {
-    const m = createMutation<TUser, TError, TRegisterOrLogin>(() => ({
+    return createMutation<TLoggedUser, TError, TRegisterOrLogin>(() => ({
         mutationFn: d => http.post("/users/login", d, 200),
         mutationKey: ["login"],
     }));
-    return m;
 };
 
 export const createProfileQuery = () => {
-    const q = createQuery<TUser, TError>(() => ({
+    return createQuery<TLoggedUser, TError>(() => ({
         queryKey: ["profile"],
         queryFn: () => http.get("/users/profile", 200),
+        retry: false,
     }));
-    return q;
 };
 
 export const createLogoutMutation = () => {

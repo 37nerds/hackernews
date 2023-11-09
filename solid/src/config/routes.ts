@@ -66,6 +66,11 @@ export const layout_routes: TRoute[] = [
         component: lazy(() => import("@/pages/user")),
     },
     {
+        path: "/user/:id",
+        component: lazy(() => import("@/pages/user")),
+    },
+
+    {
         path: "/reset-password",
         component: lazy(() => import("@/pages/reset-password")),
     },

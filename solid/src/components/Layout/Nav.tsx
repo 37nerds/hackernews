@@ -1,5 +1,5 @@
 import { For, Show } from "solid-js";
-import { hideRightNavLinks, isUserLoggedIn, navLinks } from "@/states/layout";
+import { hideRightNavLinks, isUserLoggedIn, loggedUserData, navLinks } from "@/states/layout";
 import { A } from "@solidjs/router";
 
 import Container from "@/components/ui/Container";
@@ -26,7 +26,7 @@ const Nav = () => {
                             when={isUserLoggedIn()}
                             fallback={<NavLink title="login" href="/login" hideBar={true} />}
                         >
-                            <NavLink title={"p-nerd (1)"} href="/user" hideBar={true} />
+                            <NavLink title={loggedUserData()?.username || ""} href="/user" hideBar={true} />
                             <span>|</span>
                             <Logout />
                         </Show>

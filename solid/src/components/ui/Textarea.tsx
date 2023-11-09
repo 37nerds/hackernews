@@ -6,6 +6,7 @@ const Textarea = (p: {
     id: string;
     name?: string;
     class?: string;
+    disabled?: boolean;
 }) => {
     return (
         <textarea
@@ -16,6 +17,7 @@ const Textarea = (p: {
             onInput={e => {
                 p.setValue(e.target.value);
             }}
+            disabled={!!p.disabled}
         >
             {p.value}
         </textarea>
