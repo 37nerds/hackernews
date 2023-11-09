@@ -1,4 +1,5 @@
 import { TSetValue } from "@/types";
+import { Show } from "solid-js";
 
 const Input = (p: {
     value: string;
@@ -7,19 +8,24 @@ const Input = (p: {
     type?: string;
     name?: string;
     class?: string;
-    minLength?: number;
+    errorMessage?: string;
 }) => {
     return (
-        <input
-            class={`w-full rounded border p-1 ${p.class || ""}`}
-            type={p.type || "text"}
-            id={p.id}
-            name={p.name || p.id}
-            value={p.value}
-            onInput={e => {
-                p.setValue(e.currentTarget.value);
-            }}
-        />
+        <div class="flex w-full flex-col gap-1">
+            <input
+                class={`w-full rounded border p-1 ${p.class || ""}`}
+                type={p.type || "text"}
+                id={p.id}
+                name={p.name || p.id}
+                value={p.value}
+                onInput={e => {
+                    p.setValue(e.currentTarget.value);
+                }}
+            />
+            <Show when={p.errorMessage}>
+                <div class="text-[13px] text-red-500">{p.errorMessage}</div>
+            </Show>
+        </div>
     );
 };
 

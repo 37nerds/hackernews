@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import Page404 from "@/components/ui/404";
 import Layout from "@/components/Layout";
 import Loading from "./components/ui/Loading";
+import { Toaster } from "solid-toast";
 
 const RenderRoutes = (p: { routes: TRoute[] }) => {
     return (
@@ -30,6 +31,7 @@ const App = () => {
                         </Route>
                         <Route path="*" component={Page404} />
                     </Routes>
+                    <Toaster />
                 </MetaProvider>
             </QueryClientProvider>
         </Suspense>

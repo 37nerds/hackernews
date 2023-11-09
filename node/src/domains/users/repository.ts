@@ -3,7 +3,7 @@ import { BadRequestError } from "@/helpers/errors";
 import { USERS_CREATED, USERS_FIND } from "./events";
 import { emitter } from "@/base/cache";
 
-import repository, {TDocBase} from "@/base/repository";
+import repository, { TDocBase } from "@/base/repository";
 import crypto from "@/helpers/crypto";
 
 export type TInsertUser = {
@@ -11,9 +11,10 @@ export type TInsertUser = {
     password: string;
 };
 
-export type TUser = TDocBase & TInsertUser & {
-    email?: string;
-};
+export type TUser = TDocBase &
+    TInsertUser & {
+        email?: string;
+    };
 
 export const USERS = "users";
 
@@ -32,7 +33,7 @@ const insert = async (doc: TInsertUser): Promise<TUser> => {
         user = null;
     }
     if (user) {
-        throw new BadRequestError("username already exits");
+        throw new BadRequestError("user already exits", { username: "username already exits" });
     }
 
     doc.password = await crypto.hash(doc.password);

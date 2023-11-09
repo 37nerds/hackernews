@@ -1,28 +1,34 @@
 import { createEffect, createSignal } from "solid-js";
-import { useRegisterMutation } from "@/queries/users";
+import { createRegisterMutation } from "@/queries/users";
 
 import Submit from "@/components/ui/Submit";
 import Field from "./Field";
 import Input from "@/components/ui/Input";
-import { TErrorRecord } from "@/types";
-import Errors from "@/components/ui/Errors";
 
 const Register = () => {
-    const [username, setUsername] = createSignal("sm");
-    const [password, setPassword] = createSignal("123");
+    const [username, setUsername] = createSignal("shihab");
+    const [password, setPassword] = createSignal("123456");
 
-    const [errors, setErrors] = createSignal<TErrorRecord | undefined>({});
+    const [errorUsername, setErrorUsername] = createSignal("");
+    const [errorPassword, setErrorPassword] = createSignal("");
 
-    const registerMutation = useRegisterMutation();
+    const registerMutation = createRegisterMutation();
 
     createEffect(() => {
-        setErrors(registerMutation.error?.errors);
+        if (registerMutation.isError) {
+            setErrorUsername(registerMutation.error?.errors?.username || "");
+            setErrorPassword(registerMutation.error?.errors?.password || "");
+        }
     });
 
     const handleSubmit = () => {
         let isNotValid = false;
         if (username().length < 3) {
-            setErrors({ ...errors(), username: ["length must be 3 characters", "hello"] });
+            setErrorUsername("length must be 3 characters");
+            isNotValid = true;
+        }
+        if (password().length < 6) {
+            setErrorPassword("length must be 6 characters");
             isNotValid = true;
         }
 
@@ -48,6 +54,7 @@ const Register = () => {
                             setValue={setUsername}
                             type="text"
                             id="register-username"
+                            errorMessage={errorUsername()}
                         />
                     }
                 />
@@ -60,10 +67,10 @@ const Register = () => {
                             setValue={setPassword}
                             type="password"
                             id="register-password"
+                            errorMessage={errorPassword()}
                         />
                     }
                 />
-                <Errors errors={errors()} />
                 <div class="flex justify-end">
                     <Submit label="create account" />
                 </div>

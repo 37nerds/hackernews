@@ -46,7 +46,7 @@ export class UnknownError extends HttpError {
 
 export class BadRequestError extends HttpError {
     errors?: TErrorRecord;
-    constructor(message: string, errors?: Record<string, string[]>) {
+    constructor(message: string, errors?: TErrorRecord) {
         super(message, 400);
         this.name = "Bad Request Error";
         this.errors = errors || {};

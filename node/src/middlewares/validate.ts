@@ -1,10 +1,9 @@
-import type { Context, Next } from "koa";
-
+import { Context, Next } from "koa";
 import { Schema, z } from "zod";
 import { UnknownError, ValidationError } from "@/helpers/errors";
+import { TErrorRecord } from "@/base/types";
 
 import eh from "@/base/eh";
-import { TErrorRecord } from "@/base/types";
 
 const validate = <T, T2>(querySchema: Schema | null, bodySchema: Schema | null) => {
     return eh(async (ctx: Context, next: Next) => {
@@ -19,7 +18,7 @@ const validate = <T, T2>(querySchema: Schema | null, bodySchema: Schema | null) 
         } catch (e: any) {
             if (e instanceof z.ZodError) {
                 const errors: TErrorRecord = e.errors.reduce(
-                    (prv, curr) => ({ ...prv, [`${curr?.path[0]}`]: [curr?.message] }),
+                    (prv, curr) => ({ ...prv, [`${curr?.path[0]}`]: curr?.message }),
                     {},
                 );
                 throw new ValidationError("Payload is invalid", errors);
