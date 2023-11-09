@@ -9,6 +9,7 @@ const Input = (p: {
     name?: string;
     class?: string;
     errorMessage?: string;
+    required?: boolean;
 }) => {
     return (
         <div class="flex w-full flex-col gap-1">
@@ -21,6 +22,7 @@ const Input = (p: {
                 onInput={e => {
                     p.setValue(e.currentTarget.value);
                 }}
+                required={!!p.required}
             />
             <Show when={p.errorMessage}>
                 <div class="text-[13px] text-red-500">{p.errorMessage}</div>

@@ -1,20 +1,26 @@
 import { createEffect, createSignal } from "solid-js";
 import { createRegisterMutation } from "@/queries/users";
+import { useNavigate } from "@solidjs/router";
 
 import Submit from "@/components/ui/Submit";
 import Field from "./Field";
 import Input from "@/components/ui/Input";
 
 const Register = () => {
-    const [username, setUsername] = createSignal("shihab");
-    const [password, setPassword] = createSignal("123456");
+    const [username, setUsername] = createSignal("");
+    const [password, setPassword] = createSignal("");
 
     const [errorUsername, setErrorUsername] = createSignal("");
     const [errorPassword, setErrorPassword] = createSignal("");
 
     const registerMutation = createRegisterMutation();
 
+    const navigate = useNavigate();
+
     createEffect(() => {
+        if (registerMutation.isSuccess) {
+            navigate("/user");
+        }
         if (registerMutation.isError) {
             setErrorUsername(registerMutation.error?.errors?.username || "");
             setErrorPassword(registerMutation.error?.errors?.password || "");
@@ -55,6 +61,7 @@ const Register = () => {
                             type="text"
                             id="register-username"
                             errorMessage={errorUsername()}
+                            required={true}
                         />
                     }
                 />
@@ -68,6 +75,7 @@ const Register = () => {
                             type="password"
                             id="register-password"
                             errorMessage={errorPassword()}
+                            required={true}
                         />
                     }
                 />

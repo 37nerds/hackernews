@@ -9,8 +9,6 @@ import repository from "./repository";
 import crypto from "@/helpers/crypto";
 
 export const register = async (ctx: Context) => {
-    throw new Error("hello bro");
-
     const user = await repository.insert(ctx.request.body as TInsertUser);
     await loginUser(ctx, user);
     return reply(ctx, 201, returnUser(user));
