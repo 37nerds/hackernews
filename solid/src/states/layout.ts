@@ -10,4 +10,4 @@ export const [hideFooter, setHideFooter] = createSignal<boolean>(false);
 export const [hideRightNavLinks, setHideRightNavLinks] = createSignal<boolean>(false);
 
 export const [isUserLoggedIn, setIsUserLoggedIn] = createSignal<boolean>(false);
-export const [loggedUser, setLoggedUser] = createStore<TUser | {}>({});
+export const [loggedUserData, setLoggedUserData] = createStore<TUser | {}>({});

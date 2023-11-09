@@ -1,13 +1,14 @@
-import  { Context } from "koa";
-import  { TUser } from "./repository";
+import { Context } from "koa";
+import { TUser } from "./repository";
 import { USERS_LOGIN, USERS_LOGOUT } from "./events";
 import { BadRequestError, ServerSideError } from "@/helpers/errors";
 import { emitter } from "@/base/cache";
+import { times } from "@/helpers/units";
 
 import jwt from "@/helpers/jwt";
 import repository from "./repository";
-import env from "@/configs/env";
 import log from "@/helpers/log";
+import cookie from "@/helpers/cookie";
 
 const TOKEN_KEY = "ds_token";
 
@@ -20,12 +21,7 @@ export const loginUser = async (ctx: Context, user: TUser) => {
         const expireInHours = 24 * 30;
         const payload: TAuthTokenPayload = { username: user.username };
         const token = await jwt.generate(payload, expireInHours);
-        ctx.cookies.set(TOKEN_KEY, token, {
-            httpOnly: true,
-            secure: env.NODE_ENV !== "dev",
-            sameSite: "none",
-            secureProxy: true,
-        });
+        cookie.set(ctx, TOKEN_KEY, token, times.hour * expireInHours, true);
         emitter().emit(USERS_LOGIN, user, ctx.request.ip, ctx.request.headers["user-agent"]);
     } catch (e: any) {
         log.debug(e);
@@ -35,7 +31,7 @@ export const loginUser = async (ctx: Context, user: TUser) => {
 
 export const logoutUser = (ctx: Context) => {
     try {
-        ctx.cookies.set(TOKEN_KEY, "", { httpOnly: true, maxAge: 0 });
+        cookie.set(ctx, TOKEN_KEY, "", 0, true);
         emitter().emit(USERS_LOGOUT);
     } catch (e: any) {
         log.debug(e);
@@ -46,8 +42,8 @@ export const logoutUser = (ctx: Context) => {
 export const verifyAuthToken = async (ctx: Context): Promise<TUser> => {
     let decoded: TAuthTokenPayload;
     try {
-        log.debug(ctx.cookies.get(TOKEN_KEY));
-        const authToken = ctx.cookies.get(TOKEN_KEY);
+        const authToken = cookie.get(ctx, TOKEN_KEY);
+        log.debug(authToken);
         decoded = (await jwt.verify(authToken || "")) as TAuthTokenPayload;
     } catch (e: any) {
         throw new BadRequestError(e?.message || "auth token is invalid");
