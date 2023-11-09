@@ -12,3 +12,11 @@ export const createRegisterMutation = () => {
     createHandleErrorMutation(m);
     return m;
 };
+
+export const createLoginMutation = () => {
+    const m = createMutation<{}, TError, { username: string; password: string }>(() => ({
+        mutationFn: d => http.post("/users/login", d, 200),
+        mutationKey: ["login"],
+    }));
+    return m;
+};

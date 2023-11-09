@@ -15,11 +15,10 @@ export const register = async (ctx: Context) => {
 };
 
 export const login = async (ctx: Context) => {
-    const body = ctx.request.body as TInsertUser;
-    const { username, password } = body || {};
+    const { username, password } = (ctx.request.body as TInsertUser) || {};
     const user = await repository.find({ username });
     if (!(await crypto.compare(user?.password || "", password))) {
-        throw new BadRequestError("invalid credentials");
+        throw new BadRequestError("invalid credentials", { password: "incorrcet credentails" });
     }
     await loginUser(ctx, user);
     return reply(ctx, 200, returnUser(user));
