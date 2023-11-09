@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import { reply } from "@/helpers/units";
-import { loginUser } from "./logic";
+import { loginUser, logoutUser } from "./logic";
 import { returnUser } from "./schemas";
 import { BadRequestError } from "@/helpers/errors";
 import { TInsertUser } from "./repository";
@@ -28,11 +28,11 @@ export const profile = async (ctx: Context) => {
     return reply(ctx, 200, returnUser(ctx.user));
 };
 
-// export const logout = async (ctx: Context) => {
-//     logoutUser(ctx);
-//     return reply(ctx, 204);
-// };
-//
+export const logout = async (ctx: Context) => {
+    logoutUser(ctx);
+    return reply(ctx, 204);
+};
+
 // export const index = async (ctx: Context) => {
 //     const { id } = (ctx.request.query as TGetUserQuery) || {};
 //     if (id) {

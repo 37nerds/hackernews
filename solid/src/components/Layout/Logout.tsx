@@ -1,5 +1,17 @@
+import { createLogoutMutation } from "@/queries/users";
+
 const Logout = () => {
-    return <button>logout</button>;
+    const logoutMutation = createLogoutMutation();
+
+    return (
+        <button
+            onClick={() => {
+                logoutMutation.mutate(null);
+            }}
+        >
+            logout
+        </button>
+    );
 };
 
 export default Logout;

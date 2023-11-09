@@ -41,3 +41,12 @@ export const createProfileQuery = () => {
     }));
     return q;
 };
+
+export const createLogoutMutation = () => {
+    const m = createMutation<null, TError, null>(() => ({
+        mutationFn: () => http.delete("/users/logout", 204),
+        mutationKey: ["logout"],
+    }));
+    createHandleErrorMutation(m);
+    return m;
+};
