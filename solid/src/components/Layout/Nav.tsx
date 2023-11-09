@@ -1,9 +1,10 @@
 import { For, Show } from "solid-js";
-import { hideRightNavLinks, navLinks } from "@/states/layout";
+import { hideRightNavLinks, isUserLoggedIn, navLinks } from "@/states/layout";
 import { A } from "@solidjs/router";
 
 import Container from "@/components/ui/Container";
 import NavLink from "./NavLink";
+import Logout from "./Logout";
 
 const Nav = () => {
     return (
@@ -21,10 +22,14 @@ const Nav = () => {
                 </div>
                 <Show when={!hideRightNavLinks()}>
                     <div class="flex items-center gap-2">
-                        <NavLink title={"p-nerd (1)"} href="/user" hideBar={true} />
-                        <span>|</span>
-                        <button>logout</button>
-                        <NavLink title="login" href="/login" />
+                        <Show
+                            when={isUserLoggedIn()}
+                            fallback={<NavLink title="login" href="/login" hideBar={true} />}
+                        >
+                            <NavLink title={"p-nerd (1)"} href="/user" hideBar={true} />
+                            <span>|</span>
+                            <Logout />
+                        </Show>
                     </div>
                 </Show>
             </nav>

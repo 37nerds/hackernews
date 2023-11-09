@@ -1,18 +1,20 @@
 import { registerOrLoginUserBodySchema } from "./schemas";
-import { login, register } from "./handlers";
+import { login, profile, register } from "./handlers";
+
+import eh from "@/base/eh";
+import validate from "@/middlewares/validate";
+import protect from "@/middlewares/protect";
 
 import Router from "@koa/router";
 import Koa from "koa";
-import eh from "@/base/eh";
-import validate from "@/middlewares/validate";
 
 export default (app: Koa) => {
     const r = new Router({ prefix: "/v1/users" });
 
     r.post("/register", validate(null, registerOrLoginUserBodySchema), eh(register));
     r.post("/login", validate(null, registerOrLoginUserBodySchema), eh(login));
+    r.get("/profile", protect(), eh(profile));
 
-    // r.get("/profile", protect(), eh(profile));
     // r.delete("/logout", protect(), eh(logout));
     //
     // r.post("/forgot-password", eh(forgotPassword));

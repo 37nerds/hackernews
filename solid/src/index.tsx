@@ -1,4 +1,5 @@
 import "./index.css";
+import "solid-devtools";
 
 import { render } from "solid-js/web";
 import { Router } from "@solidjs/router";

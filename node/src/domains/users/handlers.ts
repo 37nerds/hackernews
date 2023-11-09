@@ -24,10 +24,9 @@ export const login = async (ctx: Context) => {
     return reply(ctx, 200, returnUser(user));
 };
 
-// export const profile = async (ctx: Context) => {
-//     return reply(ctx, 200, userResponse(ctx.user));
-// };
-//
+export const profile = async (ctx: Context) => {
+    return reply(ctx, 200, returnUser(ctx.user));
+};
 
 // export const logout = async (ctx: Context) => {
 //     logoutUser(ctx);
