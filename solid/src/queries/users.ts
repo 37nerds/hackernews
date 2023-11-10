@@ -1,9 +1,9 @@
 import { TError } from "@/types";
 import { createMutation, createQuery } from "@tanstack/solid-query";
+import { createSignal } from "solid-js";
 
 import http from "@/helpers/http";
 import createHandleErrorMutation from "@/primitives/createHandleErrorMutation";
-import { createSignal } from "solid-js";
 
 export type TUser = {
     _id: string;
@@ -33,6 +33,16 @@ type TRegisterOrLogin = {
     password: string;
 };
 
+type TUpdateProfile = {
+    email?: string;
+    about?: string;
+    showdead?: boolean;
+    noprocrast?: boolean;
+    maxvisit?: number;
+    minaway?: number;
+    delay?: number;
+};
+
 export const createRegisterMutation = () => {
     const m = createMutation<TLoggedUser, TError, TRegisterOrLogin>(() => ({
         mutationFn: d => http.post("/users/register", d, 201),
@@ -55,6 +65,15 @@ export const createProfileQuery = () => {
         queryKey: ["profile"],
         retry: false,
     }));
+};
+
+export const createUpdateProfileMutation = () => {
+    const m = createMutation<TLoggedUser, TError, TUpdateProfile>(() => ({
+        mutationFn: d => http.patch("/users/profile", d, 200),
+        mutationKey: ["update_profile"],
+    }));
+    createHandleErrorMutation(m);
+    return m;
 };
 
 export const createLogoutMutation = () => {

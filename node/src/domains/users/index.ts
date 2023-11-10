@@ -1,4 +1,9 @@
-import { registerOrLoginUserBodySchema, getUserQuerySchema } from "./schemas";
+import {
+    registerOrLoginUserBodySchema,
+    getUserQuerySchema,
+    updateLoggedUserProfile,
+} from "./schemas";
+
 import { login, logout, profile, register, index, updateProfile } from "./handlers";
 
 import eh from "@/base/eh";
@@ -8,7 +13,7 @@ import protect from "@/middlewares/protect";
 import Router from "@koa/router";
 import Koa from "koa";
 
-export default (app: Koa) => {
+export default (a: Koa) => {
     const r = new Router({ prefix: "/v1/users" });
 
     r.post("/register", validate(null, registerOrLoginUserBodySchema), eh(register));
@@ -16,7 +21,7 @@ export default (app: Koa) => {
     r.delete("/logout", protect(), eh(logout));
 
     r.get("/profile", protect(), eh(profile));
-    r.patch("/profile", protect(), eh(updateProfile));
+    r.patch("/profile", validate(null, updateLoggedUserProfile), protect(), eh(updateProfile));
 
     r.get("/", validate(getUserQuerySchema, null), eh(index));
 
@@ -27,8 +32,7 @@ export default (app: Koa) => {
     // r.post("/", validate(null, postUserBodySchema), eh(save));
     // r.patch("/", validate(updateQuerySchema, updateBodySchema), eh(update));
     // r.delete("/", validate(updateQuerySchema, null), eh(destroy));
-    //
 
-    app.use(r.routes());
-    app.use(r.allowedMethods());
+    a.use(r.routes());
+    a.use(r.allowedMethods());
 };

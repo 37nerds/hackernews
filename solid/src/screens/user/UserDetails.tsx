@@ -1,15 +1,17 @@
 import { Show, createEffect, createSignal } from "solid-js";
-import { isProfileLoading, loggedUserData } from "@/states/layout";
+import { isProfileLoading, loggedUserData, setLoggedUserData } from "@/states/layout";
 import { createIsLoggedUser } from "@/pages/user";
-import { createUserByUsernameQuery } from "@/queries/users";
+import { createUpdateProfileMutation, createUserByUsernameQuery } from "@/queries/users";
 import { useParams } from "@solidjs/router";
 import { JSX } from "solid-js";
+import { displayFromNow } from "@/helpers/time";
 
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Select from "@/components/ui/Select";
 import UserPageLinks from "@/screens/user/UserPageLinks";
 import Submit from "@/components/ui/Submit";
+import log from "@/helpers/log";
 
 const Item = (p: { label: string; value: string | JSX.Element }) => {
     return (
@@ -79,7 +81,26 @@ const UserDetails = () => {
         }
     });
 
-    const handlerUpdateUserDetails = () => {};
+    const updateProfileMutation = createUpdateProfileMutation();
+
+    const handlerUpdateUserDetails = () => {
+        updateProfileMutation.mutate({
+            email: email(),
+            about: about(),
+            showdead: showdead(),
+            noprocrast: noprocrast(),
+            maxvisit: maxvisit(),
+            minaway: minaway(),
+            delay: delay(),
+        });
+    };
+
+    createEffect(() => {
+        if (updateProfileMutation.isSuccess) {
+            log.message.toast("profile updated successfully");
+            setLoggedUserData(updateProfileMutation.data);
+        }
+    });
 
     return (
         <Show
@@ -89,12 +110,12 @@ const UserDetails = () => {
             <form
                 onSubmit={e => {
                     e.preventDefault();
-                    handlerUpdateUserDetails;
+                    handlerUpdateUserDetails();
                 }}
                 class="flex flex-col gap-2"
             >
                 <Item label="user" value={<span class="text-[#3c963d]">{username()}</span>} />
-                <Item label="created" value={createdAt()} />
+                <Item label="created" value={displayFromNow(createdAt())} />
                 <Item label="karma" value={karma()} />
                 <Item
                     label="about"
@@ -191,7 +212,7 @@ const UserDetails = () => {
                         }
                     />
                     <div class="flex justify-end">
-                        <Submit label="Update" />;
+                        <Submit label="Update" />
                     </div>
                 </Show>
             </form>

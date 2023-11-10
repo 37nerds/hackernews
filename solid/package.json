@@ -16,6 +16,7 @@
         "@solidjs/meta": "^0.29.1",
         "@solidjs/router": "^0.8.3",
         "@tanstack/solid-query": "^5.7.2",
+        "dayjs": "^1.11.10",
         "solid-js": "^1.7.8",
         "solid-toast": "^0.5.0"
     },

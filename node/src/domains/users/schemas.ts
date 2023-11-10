@@ -13,7 +13,18 @@ export const getUserQuerySchema = z.object({
     username: z.string().optional(),
 });
 
+export const updateLoggedUserProfile = z.object({
+    about: z.string().optional(),
+    email: z.string().optional(),
+    showdead: z.boolean().optional(),
+    noprocrast: z.boolean().optional(),
+    maxvisit: z.number().optional(),
+    minaway: z.number().optional(),
+    delay: z.number().optional(),
+});
+
 export type TGetUserQuerySchema = z.infer<typeof getUserQuerySchema>;
+export type TUpdateLoggedUserProfile = z.infer<typeof updateLoggedUserProfile>;
 
 export const returnLoggedUser = (
     user: TUser,

@@ -1,6 +1,6 @@
 import { Filter, Document } from "mongodb";
 import { BadRequestError } from "@/helpers/errors";
-import { USERS_CREATED, USERS_FIND, USERS_FINDS } from "./events";
+import { USERS_CREATED, USERS_FIND, USERS_FINDS, USERS_UPDATED } from "./events";
 import { emitter } from "@/base/cache";
 
 import repository, { TDocBase } from "@/base/repository";
@@ -11,10 +11,18 @@ export type TInsertUser = {
     password: string;
 };
 
-export type TUser = TDocBase &
-    TInsertUser & {
-        email?: string;
-    };
+type TUserElseData = {
+    email?: string;
+    about?: string;
+    showdead?: boolean;
+    noprocrast?: boolean;
+    maxvisit?: number;
+    minaway?: number;
+    delay?: number;
+};
+
+export type TUser = TDocBase & TInsertUser & TUserElseData;
+export type TUpdateUser = { username?: string; password?: string } & TUserElseData;
 
 export const USERS = "users";
 
@@ -62,12 +70,15 @@ export const finds = async (): Promise<TUser[]> => {
     return users;
 };
 
-// const update = async (userId: string, doc: TUpdateUserBody): Promise<TUser> => {
-//     const user = await repository.update<TUpdateUserBody, TUser>(USERS, userId, doc);
-//     emitter().emit(USERS_UPDATED, user);
-//     return user;
-// };
-//
+export const update = async (userId: string, doc: TUpdateUser): Promise<TUser> => {
+    if (doc.password) {
+        doc.password = await crypto.hash(doc.password);
+    }
+    const user = await repository.update<TUpdateUser, TUser>(USERS, userId, doc);
+    emitter().emit(USERS_UPDATED, user);
+    return user;
+};
+
 // const destroy = async (userId: string): Promise<void> => {
 //     await repository.destroy(USERS, userId);
 //     emitter().emit(USERS_DELETED, userId);

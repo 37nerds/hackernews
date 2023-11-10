@@ -24,6 +24,9 @@ const http = {
     post: (endpoint: string, body: object, happy: number) => {
         return http.json(endpoint, "POST", body, happy);
     },
+    patch: (endpoint: string, body: object, happy: number) => {
+        return http.json(endpoint, "PATCH", body, happy);
+    },
     delete: (endpoint: string, happy: number) => {
         return http.json(endpoint, "DELETE", null, happy);
     },

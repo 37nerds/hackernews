@@ -1,10 +1,16 @@
+import {
+    TGetUserQuerySchema,
+    TUpdateLoggedUserProfile,
+    returnLoggedUser,
+    returnUser,
+} from "./schemas";
 import { Context } from "koa";
 import { reply } from "@/helpers/units";
 import { loginUser, logoutUser } from "./logic";
-import { TGetUserQuerySchema, returnLoggedUser, returnUser } from "./schemas";
 import { BadRequestError } from "@/helpers/errors";
 import { TInsertUser } from "./repository";
 import { TUser } from "./repository";
+import { toStringId } from "@/base/repository";
 
 import * as repository from "./repository";
 import crypto from "@/helpers/crypto";
@@ -36,8 +42,9 @@ export const profile = async (ctx: Context) => {
 
 export const updateProfile = async (ctx: Context) => {
     const user = ctx.user as TUser;
-
-    return reply(ctx, 200, returnLoggedUser(user));
+    const payload = ctx.request.body as TUpdateLoggedUserProfile;
+    const updatedProfile = await repository.update(toStringId(user._id), payload);
+    return reply(ctx, 200, returnLoggedUser(updatedProfile));
 };
 
 export const index = async (ctx: Context) => {

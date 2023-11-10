@@ -18,6 +18,14 @@ const toObjectId = (_id: string): ObjectId => {
     }
 };
 
+export const toStringId = (id: ObjectId): string => {
+    try {
+        return id.toString();
+    } catch (e: any) {
+        throw new ProcessingError(e.message);
+    }
+};
+
 const getCollection = async (collection: string) => {
     return (await db()).collection(collection);
 };
