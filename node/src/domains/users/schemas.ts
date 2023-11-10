@@ -6,6 +6,23 @@ export const registerOrLoginUserBodySchema = z.object({
     password: z.string().min(6),
 });
 
+const idSchema = z.string().length(24);
+
+export const getUserQuerySchema = z.object({
+    id: idSchema.optional(),
+    username: z.string().optional(),
+});
+
+export type TGetUserQuerySchema = z.infer<typeof getUserQuerySchema>;
+
+export const returnLoggedUser = (
+    user: TUser,
+): {
+    [K in keyof TUser]: K extends "password" ? undefined : TUser[K];
+} => {
+    return { ...user, password: undefined };
+};
+
 export const returnUser = (
     user: TUser,
 ): {
@@ -50,17 +67,12 @@ export const returnUser = (
 //     status: userStatusSchema.optional(),
 // });
 //
-// export const idSchema = z.string().length(24);
 //
 // export const updateQuerySchema = z.object({
 //     id: idSchema,
 // });
 //
-// export const getUserQuerySchema = z.object({
-//     id: idSchema.optional(),
-// });
-//
-// export type TInsertUserBody = z.infer<typeof postUserBodySchema>;
+
 // export type TUpdateUserBody = z.infer<typeof updateBodySchema>;
 // export type TUpdateUserQuery = z.infer<typeof updateQuerySchema>;
 // export type TGetUserQuery = z.infer<typeof getUserQuerySchema>;

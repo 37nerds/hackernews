@@ -6,7 +6,7 @@ import { emitter } from "@/base/cache";
 import { times } from "@/helpers/units";
 
 import jwt from "@/helpers/jwt";
-import repository from "./repository";
+import * as repository from "./repository";
 import log from "@/helpers/log";
 import cookie from "@/helpers/cookie";
 

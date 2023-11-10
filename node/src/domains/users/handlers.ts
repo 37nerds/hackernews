@@ -1,17 +1,18 @@
 import { Context } from "koa";
 import { reply } from "@/helpers/units";
 import { loginUser, logoutUser } from "./logic";
-import { returnUser } from "./schemas";
+import { TGetUserQuerySchema, returnLoggedUser, returnUser } from "./schemas";
 import { BadRequestError } from "@/helpers/errors";
 import { TInsertUser } from "./repository";
+import { TUser } from "./repository";
 
-import repository from "./repository";
+import * as repository from "./repository";
 import crypto from "@/helpers/crypto";
 
 export const register = async (ctx: Context) => {
     const user = await repository.insert(ctx.request.body as TInsertUser);
     await loginUser(ctx, user);
-    return reply(ctx, 201, returnUser(user));
+    return reply(ctx, 201, returnLoggedUser(user));
 };
 
 export const login = async (ctx: Context) => {
@@ -21,11 +22,7 @@ export const login = async (ctx: Context) => {
         throw new BadRequestError("invalid credentials", { password: "incorrcet credentails" });
     }
     await loginUser(ctx, user);
-    return reply(ctx, 200, returnUser(user));
-};
-
-export const profile = async (ctx: Context) => {
-    return reply(ctx, 200, returnUser(ctx.user));
+    return reply(ctx, 200, returnLoggedUser(user));
 };
 
 export const logout = async (ctx: Context) => {
@@ -33,20 +30,35 @@ export const logout = async (ctx: Context) => {
     return reply(ctx, 204);
 };
 
-// export const index = async (ctx: Context) => {
-//     const { id } = (ctx.request.query as TGetUserQuery) || {};
-//     if (id) {
-//         const user = await usersRepo.findById(id as string);
-//         return reply(ctx, 200, user);
-//     }
-//     const users = await usersRepo.finds();
-//     return reply(
-//         ctx,
-//         200,
-//         users.map((user) => userResponse(user)),
-//     );
-// };
-//
+export const profile = async (ctx: Context) => {
+    return reply(ctx, 200, returnLoggedUser(ctx.user));
+};
+
+export const updateProfile = async (ctx: Context) => {
+    const user = ctx.user as TUser;
+
+    return reply(ctx, 200, returnLoggedUser(user));
+};
+
+export const index = async (ctx: Context) => {
+    const { id, username } = (ctx.request.query as TGetUserQuerySchema) || {};
+    if (id) {
+        const user = await repository.findById(id as string);
+        return reply(ctx, 200, returnUser(user));
+    }
+    if (username) {
+        const user = await repository.findByUsername(username as string);
+        return reply(ctx, 200, returnUser(user));
+    }
+
+    const users = await repository.finds();
+    return reply(
+        ctx,
+        200,
+        users.map((user) => returnUser(user)),
+    );
+};
+
 // export const save = async (ctx: Context) => {
 //     const user = await usersRepo.insert(ctx.request.body as TInsertUserBody);
 //     return reply(ctx, 201, userResponse(user));

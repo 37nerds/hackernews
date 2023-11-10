@@ -1,5 +1,5 @@
-import { registerOrLoginUserBodySchema } from "./schemas";
-import { login, logout, profile, register } from "./handlers";
+import { registerOrLoginUserBodySchema, getUserQuerySchema } from "./schemas";
+import { login, logout, profile, register, index, updateProfile } from "./handlers";
 
 import eh from "@/base/eh";
 import validate from "@/middlewares/validate";
@@ -13,14 +13,17 @@ export default (app: Koa) => {
 
     r.post("/register", validate(null, registerOrLoginUserBodySchema), eh(register));
     r.post("/login", validate(null, registerOrLoginUserBodySchema), eh(login));
-    r.get("/profile", protect(), eh(profile));
     r.delete("/logout", protect(), eh(logout));
+
+    r.get("/profile", protect(), eh(profile));
+    r.patch("/profile", protect(), eh(updateProfile));
+
+    r.get("/", validate(getUserQuerySchema, null), eh(index));
 
     // r.post("/forgot-password", eh(forgotPassword));
     // r.post("/reset-password", eh(resetPassword));
     // r.post("/change-password", eh(changePassword));
     //
-    // r.get("/", validate(getUserQuerySchema, null), eh(index));
     // r.post("/", validate(null, postUserBodySchema), eh(save));
     // r.patch("/", validate(updateQuerySchema, updateBodySchema), eh(update));
     // r.delete("/", validate(updateQuerySchema, null), eh(destroy));

@@ -4,9 +4,8 @@ import { isProfileLoading, isUserLoggedIn, loggedUserData } from "@/states/layou
 
 import createHideFooter from "@/primitives/createHideFooter.ts";
 
-import UForm from "@/screens/user/UForm";
+import UserDetails from "@/screens/user/UserDetails";
 import PWrapper from "@/components/ui/PWrapper";
-import ULinks from "@/screens/user/ULinks";
 
 export const createIsLoggedUser = () => {
     const [isLoggedUser, setIsLoggedUser] = createSignal(false);
@@ -34,8 +33,7 @@ export default () => {
     return (
         <PWrapper>
             <div class="mx-auto flex w-[600px] flex-col gap-2">
-                <UForm />
-                <ULinks />
+                <UserDetails />
             </div>
         </PWrapper>
     );

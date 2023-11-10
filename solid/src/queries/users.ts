@@ -3,6 +3,7 @@ import { createMutation, createQuery } from "@tanstack/solid-query";
 
 import http from "@/helpers/http";
 import createHandleErrorMutation from "@/primitives/createHandleErrorMutation";
+import { createSignal } from "solid-js";
 
 export type TUser = {
     _id: string;
@@ -50,8 +51,8 @@ export const createLoginMutation = () => {
 
 export const createProfileQuery = () => {
     return createQuery<TLoggedUser, TError>(() => ({
-        queryKey: ["profile"],
         queryFn: () => http.get("/users/profile", 200),
+        queryKey: ["profile"],
         retry: false,
     }));
 };
@@ -63,4 +64,15 @@ export const createLogoutMutation = () => {
     }));
     createHandleErrorMutation(m);
     return m;
+};
+
+export const createUserByUsernameQuery = (username: string) => {
+    const [enabled, setEnabled] = createSignal(false);
+    const userByUsernameQuery = createQuery<TUser, TError>(() => ({
+        queryFn: () => http.get(`/users?username=${username}`, 200),
+        queryKey: ["user_by_username", username],
+        retry: false,
+        enabled: enabled(),
+    }));
+    return { userByUsernameQuery, setEnabled };
 };

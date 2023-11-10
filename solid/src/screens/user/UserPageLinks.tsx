@@ -1,8 +1,16 @@
 import { createIsLoggedUser } from "@/pages/user";
-import ULink from "./ULink";
 import { Show } from "solid-js";
+import { A } from "@solidjs/router";
 
-const ULinks = () => {
+const ULink = (p: { href: string; label: string }) => {
+    return (
+        <A href={p.href} class="underline">
+            {p.label}
+        </A>
+    );
+};
+
+const UserPageLinks = () => {
     const isLoggedUser = createIsLoggedUser();
     return (
         <div class="flex flex-col gap-1 pl-[98px]">
@@ -23,4 +31,4 @@ const ULinks = () => {
     );
 };
 
-export default ULinks;
+export default UserPageLinks;
