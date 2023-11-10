@@ -1,4 +1,4 @@
-import  { TUser } from "@/domains/users/repository";
+import { TUser } from "@/domains/users/repository";
 import { loadDynamically } from "@/helpers/units";
 import { db } from "@/base/cache";
 
@@ -56,6 +56,12 @@ const app = async () => {
     await db();
     await loadDomains(a);
 
+    a.use((ctx) => {
+        ctx.status = 404;
+        ctx.body = {
+            message: "Route not found",
+        };
+    });
     return a;
 };
 

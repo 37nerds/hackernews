@@ -83,5 +83,3 @@ export const update = async (userId: string, doc: TUpdateUser): Promise<TUser> =
 //     await repository.destroy(USERS, userId);
 //     emitter().emit(USERS_DELETED, userId);
 // };
-
-// , update, findById, find, finds, destroy

@@ -1,5 +1,5 @@
 export default {
-    printWidth: 100,
+    printWidth: 120,
     semi: true,
     tabWidth: 4,
     trailingComma: "all",

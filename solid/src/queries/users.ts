@@ -33,16 +33,6 @@ type TRegisterOrLogin = {
     password: string;
 };
 
-type TUpdateProfile = {
-    email?: string;
-    about?: string;
-    showdead?: boolean;
-    noprocrast?: boolean;
-    maxvisit?: number;
-    minaway?: number;
-    delay?: number;
-};
-
 export const createRegisterMutation = () => {
     const m = createMutation<TLoggedUser, TError, TRegisterOrLogin>(() => ({
         mutationFn: d => http.post("/users/register", d, 201),
@@ -67,10 +57,20 @@ export const createProfileQuery = () => {
     }));
 };
 
+type TUpdateProfile = {
+    email?: string;
+    about?: string;
+    showdead?: boolean;
+    noprocrast?: boolean;
+    maxvisit?: number;
+    minaway?: number;
+    delay?: number;
+};
+
 export const createUpdateProfileMutation = () => {
     const m = createMutation<TLoggedUser, TError, TUpdateProfile>(() => ({
         mutationFn: d => http.patch("/users/profile", d, 200),
-        mutationKey: ["update_profile"],
+        mutationKey: ["update-profile"],
     }));
     createHandleErrorMutation(m);
     return m;
@@ -89,9 +89,20 @@ export const createUserByUsernameQuery = (username: string) => {
     const [enabled, setEnabled] = createSignal(false);
     const userByUsernameQuery = createQuery<TUser, TError>(() => ({
         queryFn: () => http.get(`/users?username=${username}`, 200),
-        queryKey: ["user_by_username", username],
+        queryKey: ["user-by-username", username],
         retry: false,
         enabled: enabled(),
     }));
     return { userByUsernameQuery, setEnabled };
+};
+
+type TChangePasswordPayload = { current_password: string; new_password: string };
+
+export const createChangePasswordMutation = () => {
+    const m = createMutation<null, TError, TChangePasswordPayload>(() => ({
+        mutationFn: d => http.patch("/users/change-password", d, 200),
+        mutationKey: ["chagne-password"],
+    }));
+    createHandleErrorMutation(m);
+    return m;
 };

@@ -2,9 +2,10 @@ import {
     registerOrLoginUserBodySchema,
     getUserQuerySchema,
     updateLoggedUserProfile,
+    changePasswordBodySchema,
 } from "./schemas";
 
-import { login, logout, profile, register, index, updateProfile } from "./handlers";
+import { login, logout, profile, register, index, updateProfile, changePassword } from "./handlers";
 
 import eh from "@/base/eh";
 import validate from "@/middlewares/validate";
@@ -22,12 +23,12 @@ export default (a: Koa) => {
 
     r.get("/profile", protect(), eh(profile));
     r.patch("/profile", validate(null, updateLoggedUserProfile), protect(), eh(updateProfile));
+    r.patch("/change-password", validate(null, changePasswordBodySchema), protect(), eh(changePassword));
 
     r.get("/", validate(getUserQuerySchema, null), eh(index));
 
     // r.post("/forgot-password", eh(forgotPassword));
     // r.post("/reset-password", eh(resetPassword));
-    // r.post("/change-password", eh(changePassword));
     //
     // r.post("/", validate(null, postUserBodySchema), eh(save));
     // r.patch("/", validate(updateQuerySchema, updateBodySchema), eh(update));

@@ -1,65 +1,105 @@
-import { nav_links } from "@/config/links";
-import { setNavLinks } from "@/states/layout";
-import { onCleanup, onMount } from "solid-js";
-import { Title } from "@solidjs/meta";
+import { JSX, createEffect, createSignal } from "solid-js";
+import { isProfileLoading, isUserLoggedIn, loggedUserData } from "@/states/layout";
+import { useNavigate } from "@solidjs/router";
+import { createChangePasswordMutation } from "@/queries/users";
 
 import createHideFooter from "@/primitives/createHideFooter.ts";
+import createOnlyOneNavLink from "@/primitives/createOnlyOneNavLink";
+import log from "@/helpers/log";
 
 import Container2 from "@/components/ui/Container2";
 import Submit from "@/components/ui/Submit";
 import PWrapper from "@/components/ui/PWrapper";
 import Input from "@/components/ui/Input";
 
-export default () => {
-    const pageMessage = "Change Password for p-nerd";
+const Field = (p: { label: string; input: JSX.Element }) => {
+    return (
+        <div class="flex items-center gap-2">
+            <label for="password" class="w-48">
+                {p.label}:{" "}
+            </label>
+            {p.input}
+        </div>
+    );
+};
 
-    createHideFooter();
+const From = () => {
+    const [currentPassword, setCurrentPassword] = createSignal("");
+    const [newPassword, setNewPassword] = createSignal("");
 
-    onMount(() => {
-        setNavLinks([{ title: pageMessage, href: "/change-password" }]);
-    });
-    onCleanup(() => {
-        setNavLinks(() => nav_links);
+    const changePasswordMutation = createChangePasswordMutation();
+    const navigate = useNavigate();
+
+    createEffect(() => {
+        if (changePasswordMutation.isSuccess) {
+            log.message.toast("password changed successfully");
+            navigate("/user");
+        }
     });
 
     return (
-        <>
-            <Title>{pageMessage}</Title>
-            <PWrapper>
-                <Container2>
-                    <form class="flex flex-col gap-2 p-2">
-                        <div class="flex items-center gap-2">
-                            <label for="password" class="w-48">
-                                Current Password:{" "}
-                            </label>
-                            <Input
-                                value={""}
-                                setValue={value => {
-                                    console.log(value);
-                                }}
-                                id="password"
-                                type="password"
-                            />
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <label for="password" class="w-48">
-                                New Password:{" "}
-                            </label>
-                            <Input
-                                value={""}
-                                setValue={value => {
-                                    console.log(value);
-                                }}
-                                id="password"
-                                type="password"
-                            />
-                        </div>
-                        <div class="flex justify-end">
-                            <Submit label="change" />
-                        </div>
-                    </form>
-                </Container2>
-            </PWrapper>
-        </>
+        <form
+            onSubmit={e => {
+                e.preventDefault();
+                changePasswordMutation.mutate({
+                    current_password: currentPassword(),
+                    new_password: newPassword(),
+                });
+            }}
+            class="flex flex-col gap-2 p-2"
+        >
+            <Field
+                label="Current password"
+                input={
+                    <Input
+                        value={currentPassword()}
+                        setValue={setCurrentPassword}
+                        id="current-password"
+                        type="password"
+                    />
+                }
+            />
+            <Field
+                label="New password"
+                input={
+                    <Input
+                        value={newPassword()}
+                        setValue={setNewPassword}
+                        id="new-password"
+                        type="password"
+                    />
+                }
+            />
+            <div class="flex justify-end">
+                <Submit label="change" />
+            </div>
+        </form>
+    );
+};
+
+export default () => {
+    const navigate = useNavigate();
+
+    createEffect(() => {
+        if (!isProfileLoading() && !isUserLoggedIn()) {
+            navigate("/");
+        }
+    });
+
+    createHideFooter();
+
+    createEffect(() => {
+        createOnlyOneNavLink(
+            `Change Password for ${loggedUserData()?.username || ""}`,
+            "/change-password",
+        );
+    });
+
+    return (
+        <PWrapper>
+            <Container2>
+                <From />
+            </Container2>
+        </PWrapper>
     );
 };

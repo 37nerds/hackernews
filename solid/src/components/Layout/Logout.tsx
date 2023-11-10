@@ -1,5 +1,4 @@
 import { createLogoutMutation } from "@/queries/users";
-import { setLoggedUserData, setIsUserLoggedIn } from "@/states/layout";
 import { createEffect } from "solid-js";
 
 const Logout = () => {
@@ -7,8 +6,7 @@ const Logout = () => {
 
     createEffect(() => {
         if (logoutMutation.isSuccess) {
-            setIsUserLoggedIn(false);
-            setLoggedUserData({});
+            window.location.reload();
         }
     });
 

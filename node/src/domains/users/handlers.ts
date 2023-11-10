@@ -1,4 +1,5 @@
 import {
+    TChangePasswordBodySchema,
     TGetUserQuerySchema,
     TUpdateLoggedUserProfile,
     returnLoggedUser,
@@ -41,10 +42,22 @@ export const profile = async (ctx: Context) => {
 };
 
 export const updateProfile = async (ctx: Context) => {
-    const user = ctx.user as TUser;
+    const loggedUser = ctx.user as TUser;
     const payload = ctx.request.body as TUpdateLoggedUserProfile;
-    const updatedProfile = await repository.update(toStringId(user._id), payload);
+    const updatedProfile = await repository.update(toStringId(loggedUser._id), payload);
     return reply(ctx, 200, returnLoggedUser(updatedProfile));
+};
+
+export const changePassword = async (ctx: Context) => {
+    const loggedUser = ctx.user as TUser;
+    const payload = ctx.request.body as TChangePasswordBodySchema;
+
+    if (!(await crypto.compare(loggedUser.password, payload.current_password))) {
+        throw new BadRequestError("Invalid password");
+    }
+
+    await repository.update(toStringId(loggedUser._id), { password: payload.new_password });
+    return reply(ctx, 200, {});
 };
 
 export const index = async (ctx: Context) => {
@@ -87,4 +100,3 @@ export const index = async (ctx: Context) => {
 //
 // export const resetPassword = async () => {};
 //
-// export const changePassword = async () => {};

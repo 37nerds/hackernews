@@ -11,13 +11,11 @@ const Layout = () => {
     const profileQuery = createProfileQuery();
 
     createEffect(() => {
-        console.log("x", profileQuery.isSuccess, profileQuery.isLoading, profileQuery.isError);
         if (profileQuery.isSuccess) {
             setIsProfileLoading(false);
             setIsUserLoggedIn(true);
             setLoggedUserData(JSON.parse(JSON.stringify(profileQuery.data)));
         }
-
         if (profileQuery.isError) {
             setIsProfileLoading(false);
         }

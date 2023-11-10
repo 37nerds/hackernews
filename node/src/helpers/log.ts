@@ -49,9 +49,7 @@ const log = {
         log.log(`${colors.gray("-->")} '${colors.cyan(message)}'`);
         await func();
         const time = new Date().getTime() - startTime;
-        log.log(
-            `${colors.gray("<--")} '${colors.cyan(message)}' ${colors.green(formatDuration(time))}`,
-        );
+        log.log(`${colors.gray("<--")} '${colors.cyan(message)}' ${colors.green(formatDuration(time))}`);
     },
 };
 

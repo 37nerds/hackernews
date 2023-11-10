@@ -23,8 +23,14 @@ export const updateLoggedUserProfile = z.object({
     delay: z.number().optional(),
 });
 
+export const changePasswordBodySchema = z.object({
+    current_password: z.string(),
+    new_password: z.string(),
+});
+
 export type TGetUserQuerySchema = z.infer<typeof getUserQuerySchema>;
 export type TUpdateLoggedUserProfile = z.infer<typeof updateLoggedUserProfile>;
+export type TChangePasswordBodySchema = z.infer<typeof changePasswordBodySchema>;
 
 export const returnLoggedUser = (
     user: TUser,
