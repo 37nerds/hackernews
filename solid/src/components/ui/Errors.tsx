@@ -9,9 +9,7 @@ const Errors = (p: { errors?: TErrorRecord }) => {
                     {key => (
                         <div class="flex gap-2">
                             <div>{key}: </div>
-                            <div>
-                                <For each={p.errors?.[key]}>{error => <div>{error}, </div>}</For>
-                            </div>
+                            <div>{p.errors?.[key]}</div>
                         </div>
                     )}
                 </For>

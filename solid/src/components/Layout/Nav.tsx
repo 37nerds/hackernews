@@ -1,12 +1,49 @@
-import { For, Show } from "solid-js";
-import { hideRightNavLinks, isUserLoggedIn, loggedUserData, navLinks } from "@/states/layout";
-import { A } from "@solidjs/router";
+import { For, Show, createEffect } from "solid-js";
+import { hideRightNavLinks, navLinks } from "@/states/layout";
+import { useLoggedUser } from "@/contexts/loggedUser.tsx";
+import { A, useLocation } from "@solidjs/router";
+import { createLogoutMutation } from "@/queries/users";
 
 import Container from "@/components/ui/Container";
-import NavLink from "./NavLink";
-import Logout from "./Logout";
+
+const NavLink = (p: { title: string; href: string; hideBar?: boolean; notHref?: boolean }) => {
+    const location = useLocation();
+
+    return (
+        <div class="flex justify-between gap-2">
+            <Show when={!p.hideBar}>
+                <span>|</span>
+            </Show>
+            <span class={location.pathname === p.href ? "text-primary" : "text-white"}>
+                {p.notHref ? <span>{p.title}</span> : <A href={p.href}>{p.title}</A>}
+            </span>
+        </div>
+    );
+};
+
+const Logout = () => {
+    const logoutMutation = createLogoutMutation();
+
+    createEffect(() => {
+        if (logoutMutation.isSuccess) {
+            window.location.reload();
+        }
+    });
+
+    return (
+        <button
+            onClick={() => {
+                logoutMutation.mutate(null);
+            }}
+        >
+            logout
+        </button>
+    );
+};
 
 const Nav = () => {
+    const loggedUser = useLoggedUser();
+
     return (
         <Container>
             <nav class="flex items-center justify-between rounded bg-secondary-bg px-2 py-1 text-white">
@@ -23,10 +60,14 @@ const Nav = () => {
                 <Show when={!hideRightNavLinks()}>
                     <div class="flex items-center gap-2">
                         <Show
-                            when={isUserLoggedIn()}
+                            when={!!loggedUser?.data()}
                             fallback={<NavLink title="login" href="/login" hideBar={true} />}
                         >
-                            <NavLink title={loggedUserData()?.username || ""} href="/user" hideBar={true} />
+                            <NavLink
+                                title={loggedUser?.data()?.username || ""}
+                                href="/user"
+                                hideBar={true}
+                            />
                             <span>|</span>
                             <Logout />
                         </Show>

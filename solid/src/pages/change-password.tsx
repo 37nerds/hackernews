@@ -1,7 +1,7 @@
 import { JSX, createEffect, createSignal } from "solid-js";
-import { isProfileLoading, isUserLoggedIn, loggedUserData } from "@/states/layout";
 import { useNavigate } from "@solidjs/router";
 import { createChangePasswordMutation } from "@/queries/users";
+import { useLoggedUser } from "@/contexts/loggedUser";
 
 import createHideFooter from "@/primitives/createHideFooter.ts";
 import createOnlyOneNavLink from "@/primitives/createOnlyOneNavLink";
@@ -12,16 +12,14 @@ import Submit from "@/components/ui/Submit";
 import PWrapper from "@/components/ui/PWrapper";
 import Input from "@/components/ui/Input";
 
-const Field = (p: { label: string; input: JSX.Element }) => {
-    return (
-        <div class="flex items-center gap-2">
-            <label for="password" class="w-48">
-                {p.label}:{" "}
-            </label>
-            {p.input}
-        </div>
-    );
-};
+const Field = (p: { label: string; input: JSX.Element }) => (
+    <div class="flex items-center gap-2">
+        <label for="password" class="w-48">
+            {p.label}:{" "}
+        </label>
+        {p.input}
+    </div>
+);
 
 const From = () => {
     const [currentPassword, setCurrentPassword] = createSignal("");
@@ -32,7 +30,7 @@ const From = () => {
 
     createEffect(() => {
         if (changePasswordMutation.isSuccess) {
-            log.message.toast("password changed successfully");
+            log.show.toast("password changed successfully");
             navigate("/user");
         }
     });
@@ -80,8 +78,10 @@ const From = () => {
 export default () => {
     const navigate = useNavigate();
 
+    const loggedUser = useLoggedUser();
+
     createEffect(() => {
-        if (!isProfileLoading() && !isUserLoggedIn()) {
+        if (!loggedUser?.data()) {
             navigate("/");
         }
     });
@@ -90,7 +90,7 @@ export default () => {
 
     createEffect(() => {
         createOnlyOneNavLink(
-            `Change Password for ${loggedUserData()?.username || ""}`,
+            `Change Password for ${loggedUser?.data()?.username || ""}`,
             "/change-password",
         );
     });

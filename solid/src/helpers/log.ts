@@ -1,7 +1,7 @@
 import toast from "solid-toast";
 
-const error = (message: string) => {
-    console.error(message);
+const error = (...m: any[]) => {
+    console.error(m);
 };
 
 error.toast = (message: string) => {
@@ -14,11 +14,11 @@ error.toast = (message: string) => {
     });
 };
 
-const message = (message: string) => {
-    console.log(message);
+const show = (...m: any[]) => {
+    console.log(...m);
 };
 
-message.toast = (message: string) => {
+show.toast = (message: string) => {
     toast(`${message}`, {
         position: "top-right",
         style: {
@@ -28,9 +28,14 @@ message.toast = (message: string) => {
     });
 };
 
+const debug = (...m: any[]) => {
+    console.log("[debug]: ", ...m);
+};
+
 const log = {
     error,
-    message,
+    show,
+    debug,
 };
 
 export default log;

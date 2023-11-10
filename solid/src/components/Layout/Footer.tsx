@@ -1,9 +1,33 @@
 import { For, Show } from "solid-js";
+import { A } from "@solidjs/router";
 import { TLink, footer_links } from "@/config/links";
 import { hideFooter } from "@/states/layout";
 
 import Container from "@/components/ui/Container";
-import FooterLink from "./FooterLink";
+
+const FooterLink = (p: {
+    title: string;
+    href: string;
+    hideBar?: boolean;
+    notDynamic?: boolean;
+}) => {
+    return (
+        <div class="flex justify-between gap-1 text-[12px]">
+            <Show when={!p.hideBar}>
+                <span class="text-secondary">|</span>
+            </Show>
+            {p.notDynamic ? (
+                <a class="text-primary visited:text-secondary" href={p.href}>
+                    {p.title}
+                </a>
+            ) : (
+                <A class="text-primary visited:text-secondary" href={p.href}>
+                    {p.title}
+                </A>
+            )}
+        </div>
+    );
+};
 
 const Footer = () => {
     return (

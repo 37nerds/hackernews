@@ -51,7 +51,13 @@ export const createLoginMutation = () => {
 
 export const createProfileQuery = () => {
     return createQuery<TLoggedUser, TError>(() => ({
-        queryFn: () => http.get("/users/profile", 200),
+        queryFn: () => {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(http.get("/users/profile", 200));
+                }, 1000);
+            });
+        },
         queryKey: ["profile"],
         retry: false,
     }));
@@ -101,7 +107,7 @@ type TChangePasswordPayload = { current_password: string; new_password: string }
 export const createChangePasswordMutation = () => {
     const m = createMutation<null, TError, TChangePasswordPayload>(() => ({
         mutationFn: d => http.patch("/users/change-password", d, 200),
-        mutationKey: ["chagne-password"],
+        mutationKey: ["change-password"],
     }));
     createHandleErrorMutation(m);
     return m;

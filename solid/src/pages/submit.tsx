@@ -1,8 +1,7 @@
-import { nav_links } from "@/config/links";
-import { setNavLinks } from "@/states/layout";
-import { createSignal, onCleanup, onMount } from "solid-js";
+import { createSignal } from "solid-js";
 
 import createHideFooter from "@/primitives/createHideFooter.ts";
+import createOnlyOneNavLink from "@/primitives/createOnlyOneNavLink";
 
 import LabelInput from "@/screens/submit/LabelInput";
 import LabelTextarea from "@/screens/submit/LabelTextarea";
@@ -16,13 +15,7 @@ export default () => {
     const [text, setText] = createSignal("");
 
     createHideFooter();
-
-    onMount(() => {
-        setNavLinks(links => links.filter(link => link.title === "submit"));
-    });
-    onCleanup(() => {
-        setNavLinks(() => nav_links);
-    });
+    createOnlyOneNavLink("submit", "/submit");
 
     return (
         <PWrapper>

@@ -1,6 +1,5 @@
-import { Switch, Match } from "solid-js";
+import { JSX, Switch, Match } from "solid-js";
 
-import Field from "@/screens/login/Field";
 import Submit from "@/components/ui/Submit";
 import Container2 from "@/components/ui/Container2";
 
@@ -13,18 +12,23 @@ const Message = () => {
     );
 };
 
+const Field = (p: { label?: string; id: string; input: JSX.Element }) => {
+    return (
+        <div class="flex items-center gap-2">
+            <label for={p.id} class="w-28">
+                {p.label || p.id}:{" "}
+            </label>
+            {p.input}
+        </div>
+    );
+};
+
 const SentMailForm = () => {
     return (
         <Container2 class="flex flex-col gap-2 p-10">
             <h2 class="text-lg font-bold">Reset your password</h2>
             <div class="flex flex-col gap-2">
-                <Field
-                    id="username"
-                    value=""
-                    setValue={value => {
-                        console.log(value);
-                    }}
-                />
+                <Field id="username" input={<div>hello</div>} />
                 <div class="flex justify-end">
                     <Submit label="Send reset email" />
                 </div>
