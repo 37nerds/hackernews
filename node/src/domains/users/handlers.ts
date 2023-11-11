@@ -78,7 +78,7 @@ export const forgotPassword = async (ctx: Context) => {
         token: token.token,
         email: payload.email,
         username: user.username,
-        expirationTime: dayjs(token.createdAt).add(24, "hour").toISOString(),
+        expiration_time: dayjs(token.createdAt).add(24, "hour").toISOString(),
     });
     return reply(ctx, 200, {});
 };

@@ -54,7 +54,7 @@ export const isDev = () => {
     return env.NODE_ENV === "dev";
 };
 
-export const getTmpl = (filenameWithExtension: string) => {
+export const get_tmpl = (filenameWithExtension: string) => {
     const tmpls = templates();
     return tmpls[filenameWithExtension];
 };
