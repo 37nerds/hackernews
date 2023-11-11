@@ -5,14 +5,14 @@ import { TErrorRecord } from "@/base/types";
 
 import eh from "@/base/eh";
 
-const validate = <T, T2>(querySchema: Schema | null, bodySchema: Schema | null) => {
+const validate = <T, T2>(bodySchema?: Schema | null, querySchema?: Schema | null) => {
     return eh(async (ctx: Context, next: Next) => {
         try {
             if (querySchema) {
-                ctx.request.query = querySchema.parse(ctx.request.query as T);
+                ctx.request.query = querySchema.parse(ctx.request.query as T2);
             }
             if (bodySchema) {
-                ctx.request.body = bodySchema.parse(ctx.request.body as T2);
+                ctx.request.body = bodySchema.parse(ctx.request.body as T);
             }
             return await next();
         } catch (e: any) {

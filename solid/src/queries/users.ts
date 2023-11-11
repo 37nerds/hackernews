@@ -121,3 +121,12 @@ export const createForgotPasswordMutation = () => {
     createHandleErrorMutation(m);
     return m;
 };
+
+export const createResetPasswordMutation = () => {
+    const m = createMutation<null, TError, { password: string; token: string }>(() => ({
+        mutationFn: d => http.patch("/users/reset-password", d, 200),
+        mutationKey: ["reset-password"],
+    }));
+    createHandleErrorMutation(m);
+    return m;
+};

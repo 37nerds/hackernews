@@ -5,7 +5,7 @@ const Input = (p: {
     value: string;
     setValue: TSetValue;
     id: string;
-    type?: string;
+    type?: "text" | "email" | "password";
     name?: string;
     class?: string;
     errorMessage?: string;

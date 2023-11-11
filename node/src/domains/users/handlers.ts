@@ -3,6 +3,7 @@ import {
     TForgotPasswordBodySchema,
     TGetUserQuerySchema,
     TRegisterOrLoginUserBodySchema,
+    TResetPasswordBodySchema,
     TUpdateLoggedUserProfile,
     returnLoggedUser,
     returnUser,
@@ -83,6 +84,13 @@ export const forgotPassword = async (ctx: Context) => {
     return reply(ctx, 200, {});
 };
 
+export const resetPassword = async (ctx: Context) => {
+    const payload = ctx.request.body as TResetPasswordBodySchema;
+
+    console.log(payload);
+    return reply(ctx, 400, { message: "not sure" });
+};
+
 export const index = async (ctx: Context) => {
     const { id, username } = (ctx.request.query as TGetUserQuerySchema) || {};
     if (id) {
@@ -120,5 +128,4 @@ export const index = async (ctx: Context) => {
 // };
 //
 //
-// export const resetPassword = async () => {};
 //

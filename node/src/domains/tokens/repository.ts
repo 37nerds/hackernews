@@ -1,4 +1,5 @@
 import bRepository, { TDocBase } from "@/base/repository";
+import { Filter, Document } from "mongodb";
 
 export type TTokenType = "forgot-password";
 
@@ -20,8 +21,18 @@ const insert = async (type: TTokenType, token: string): Promise<TToken> => {
     });
 };
 
+const find = async (filter: Filter<Document>): Promise<TToken> => {
+    return await bRepository.find<TToken>(TOKENS, filter);
+};
+
+const findByToken = async (token: string): Promise<TToken> => {
+    return await find({ token });
+};
+
 const repository = {
     insert,
+    find,
+    findByToken,
 };
 
 export default repository;

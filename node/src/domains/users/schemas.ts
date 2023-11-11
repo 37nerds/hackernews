@@ -32,7 +32,12 @@ export const changePasswordBodySchema = z.object({
 });
 
 export const forgotPasswordBodySchema = z.object({
-    email: z.string(),
+    email: emailSchema,
+});
+
+export const resetPasswordBodySchema = z.object({
+    password: passwordSchema,
+    token: z.string(),
 });
 
 export type TRegisterOrLoginUserBodySchema = z.infer<typeof registerOrLoginUserBodySchema>;
@@ -40,6 +45,7 @@ export type TGetUserQuerySchema = z.infer<typeof getUserQuerySchema>;
 export type TUpdateLoggedUserProfile = z.infer<typeof updateLoggedUserProfile>;
 export type TChangePasswordBodySchema = z.infer<typeof changePasswordBodySchema>;
 export type TForgotPasswordBodySchema = z.infer<typeof forgotPasswordBodySchema>;
+export type TResetPasswordBodySchema = z.infer<typeof resetPasswordBodySchema>;
 
 // return users to the client
 export const returnLoggedUser = (

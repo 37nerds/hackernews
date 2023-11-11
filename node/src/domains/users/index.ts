@@ -1,12 +1,5 @@
-import {
-    registerOrLoginUserBodySchema,
-    getUserQuerySchema,
-    updateLoggedUserProfile,
-    changePasswordBodySchema,
-    forgotPasswordBodySchema,
-} from "./schemas";
-
-import { login, logout, profile, register, index, updateProfile, changePassword, forgotPassword } from "./handlers";
+import * as s from "./schemas";
+import * as h from "./handlers";
 
 import eh from "@/base/eh";
 import validate from "@/middlewares/validate";
@@ -18,19 +11,18 @@ import Koa from "koa";
 export default (a: Koa) => {
     const r = new Router({ prefix: "/v1/users" });
 
-    r.post("/register", validate(null, registerOrLoginUserBodySchema), eh(register));
-    r.post("/login", validate(null, registerOrLoginUserBodySchema), eh(login));
-    r.delete("/logout", protect(), eh(logout));
+    r.post("/register", validate(s.registerOrLoginUserBodySchema), eh(h.register));
+    r.post("/login", validate(s.registerOrLoginUserBodySchema), eh(h.login));
+    r.delete("/logout", protect(), eh(h.logout));
 
-    r.get("/profile", protect(), eh(profile));
-    r.patch("/profile", validate(null, updateLoggedUserProfile), protect(), eh(updateProfile));
-    r.patch("/change-password", validate(null, changePasswordBodySchema), protect(), eh(changePassword));
-    r.post("/forgot-password", validate(null, forgotPasswordBodySchema), eh(forgotPassword));
+    r.get("/profile", protect(), eh(h.profile));
+    r.patch("/profile", validate(s.updateLoggedUserProfile), protect(), eh(h.updateProfile));
+    r.patch("/change-password", validate(s.changePasswordBodySchema), protect(), eh(h.changePassword));
+    r.post("/forgot-password", validate(s.forgotPasswordBodySchema), eh(h.forgotPassword));
+    r.patch("/reset-password", validate(s.resetPasswordBodySchema), eh(h.resetPassword));
 
-    r.get("/", validate(getUserQuerySchema, null), eh(index));
+    r.get("/", validate(s.getUserQuerySchema), eh(h.index));
 
-    // r.post("/reset-password", eh(resetPassword));
-    //
     // r.post("/", validate(null, postUserBodySchema), eh(save));
     // r.patch("/", validate(updateQuerySchema, updateBodySchema), eh(update));
     // r.delete("/", validate(updateQuerySchema, null), eh(destroy));

@@ -59,7 +59,7 @@ const app = async () => {
     a.use((ctx) => {
         ctx.status = 404;
         ctx.body = {
-            message: "Route not found",
+            message: "route not found",
         };
     });
     return a;
