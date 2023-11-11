@@ -8,6 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import ejs from "ejs";
 import env from "@/configs/env";
+import { templates } from "@/base/cache";
 
 export const connectMongodb = async (): Promise<Db> => {
     const client = new MongoClient(env.MONGO_URI);
@@ -51,4 +52,9 @@ export const times = {
 
 export const isDev = () => {
     return env.NODE_ENV === "dev";
+};
+
+export const getTmpl = (filenameWithExtension: string) => {
+    const tmpls = templates();
+    return tmpls[filenameWithExtension];
 };

@@ -13,11 +13,12 @@ import { reply } from "@/helpers/units";
 import { loginUser, logoutUser } from "./logic";
 import { BadRequestError } from "@/helpers/errors";
 import { toStringId } from "@/base/repository";
+import { generateToken } from "../tokens/logic";
 
+import dayjs from "dayjs";
 import * as repository from "./repository";
 import crypto from "@/helpers/crypto";
-import { generateToken } from "../tokens/logic";
-import rest_password_email from "@/jobs/rest_password_email";
+import forgot_password_alert from "@/jobs/forgot_password_alert";
 
 export const register = async (ctx: Context) => {
     const user = await repository.insert(ctx.request.body as TRegisterOrLoginUserBodySchema);
@@ -73,7 +74,12 @@ export const forgotPassword = async (ctx: Context) => {
         throw e;
     }
     const token = await generateToken("forgot-password", { email: payload.email }, 24);
-    rest_password_email({ token: token.token, email: payload.email, username: user.username });
+    forgot_password_alert({
+        token: token.token,
+        email: payload.email,
+        username: user.username,
+        expirationTime: dayjs(token.createdAt).add(24, "hour").toISOString(),
+    });
     return reply(ctx, 200, {});
 };
 
