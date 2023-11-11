@@ -1,12 +1,15 @@
 import { z } from "zod";
 import { TUser } from "./repository";
 
+const idSchema = z.string().length(24);
+const emailSchema = z.string().email();
+const passwordSchema = z.string().min(6);
+
+// schemes for payload validation
 export const registerOrLoginUserBodySchema = z.object({
     username: z.string(),
-    password: z.string().min(6),
+    password: passwordSchema,
 });
-
-const idSchema = z.string().length(24);
 
 export const getUserQuerySchema = z.object({
     id: idSchema.optional(),
@@ -15,7 +18,7 @@ export const getUserQuerySchema = z.object({
 
 export const updateLoggedUserProfile = z.object({
     about: z.string().optional(),
-    email: z.string().optional(),
+    email: emailSchema.optional(),
     showdead: z.boolean().optional(),
     noprocrast: z.boolean().optional(),
     maxvisit: z.number().optional(),
@@ -24,14 +27,21 @@ export const updateLoggedUserProfile = z.object({
 });
 
 export const changePasswordBodySchema = z.object({
-    current_password: z.string(),
-    new_password: z.string(),
+    current_password: passwordSchema,
+    new_password: passwordSchema,
 });
 
+export const forgotPasswordBodySchema = z.object({
+    email: z.string(),
+});
+
+export type TRegisterOrLoginUserBodySchema = z.infer<typeof registerOrLoginUserBodySchema>;
 export type TGetUserQuerySchema = z.infer<typeof getUserQuerySchema>;
 export type TUpdateLoggedUserProfile = z.infer<typeof updateLoggedUserProfile>;
 export type TChangePasswordBodySchema = z.infer<typeof changePasswordBodySchema>;
+export type TForgotPasswordBodySchema = z.infer<typeof forgotPasswordBodySchema>;
 
+// return users to the client
 export const returnLoggedUser = (
     user: TUser,
 ): {
@@ -47,53 +57,3 @@ export const returnUser = (
 } => {
     return { ...user, password: undefined };
 };
-
-// export type TUserResponse = {
-//     _id: ObjectId;
-//     createdAt: Date;
-//     updatedAt: Date;
-//     username: string;
-//     email: string;
-//     name?: string;
-// };
-//
-//
-// const userStatusSchema = z.enum(["active", "inactive"]);
-//
-// export const loginUserBodySchema = z
-//     .object({
-//         username: z.string().optional(),
-//         email: z.string().optional(),
-//         password: z.string(),
-//     })
-//     .refine((data) => data.username || data.email, {
-//         message: "Either 'username' or 'email' is required.",
-//     });
-//
-// export const postUserBodySchema = registerUserBodySchema.merge(
-//     z.object({
-//         status: userStatusSchema.optional(),
-//     }),
-// );
-//
-// export const updateBodySchema = z.object({
-//     username: z.string().optional(),
-//     email: z.string().optional(),
-//     password: z.string().optional(),
-//     name: z.string().optional(),
-//     status: userStatusSchema.optional(),
-// });
-//
-//
-// export const updateQuerySchema = z.object({
-//     id: idSchema,
-// });
-//
-
-// export type TUpdateUserBody = z.infer<typeof updateBodySchema>;
-// export type TUpdateUserQuery = z.infer<typeof updateQuerySchema>;
-// export type TGetUserQuery = z.infer<typeof getUserQuerySchema>;
-// export type TDeleteUserQuery = z.infer<typeof updateQuerySchema>;
-// export type TLoginUserBody = z.infer<typeof loginUserBodySchema>;
-// export type TRegisterUserBody = z.infer<typeof registerUserBodySchema>;
-//

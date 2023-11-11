@@ -1,29 +1,32 @@
 import {
     TChangePasswordBodySchema,
+    TForgotPasswordBodySchema,
     TGetUserQuerySchema,
+    TRegisterOrLoginUserBodySchema,
     TUpdateLoggedUserProfile,
     returnLoggedUser,
     returnUser,
 } from "./schemas";
+
 import { Context } from "koa";
 import { reply } from "@/helpers/units";
 import { loginUser, logoutUser } from "./logic";
 import { BadRequestError } from "@/helpers/errors";
-import { TInsertUser } from "./repository";
-import { TUser } from "./repository";
 import { toStringId } from "@/base/repository";
 
 import * as repository from "./repository";
 import crypto from "@/helpers/crypto";
+import { generateToken } from "../tokens/logic";
+import rest_password_email from "@/jobs/rest_password_email";
 
 export const register = async (ctx: Context) => {
-    const user = await repository.insert(ctx.request.body as TInsertUser);
+    const user = await repository.insert(ctx.request.body as TRegisterOrLoginUserBodySchema);
     await loginUser(ctx, user);
     return reply(ctx, 201, returnLoggedUser(user));
 };
 
 export const login = async (ctx: Context) => {
-    const { username, password } = (ctx.request.body as TInsertUser) || {};
+    const { username, password } = (ctx.request.body as TRegisterOrLoginUserBodySchema) || {};
     const user = await repository.find({ username });
     if (!(await crypto.compare(user?.password || "", password))) {
         throw new BadRequestError("invalid credentials", { password: "incorrcet credentails" });
@@ -42,14 +45,14 @@ export const profile = async (ctx: Context) => {
 };
 
 export const updateProfile = async (ctx: Context) => {
-    const loggedUser = ctx.user as TUser;
+    const loggedUser = ctx.user;
     const payload = ctx.request.body as TUpdateLoggedUserProfile;
     const updatedProfile = await repository.update(toStringId(loggedUser._id), payload);
     return reply(ctx, 200, returnLoggedUser(updatedProfile));
 };
 
 export const changePassword = async (ctx: Context) => {
-    const loggedUser = ctx.user as TUser;
+    const loggedUser = ctx.user;
     const payload = ctx.request.body as TChangePasswordBodySchema;
 
     if (!(await crypto.compare(loggedUser.password, payload.current_password))) {
@@ -57,6 +60,20 @@ export const changePassword = async (ctx: Context) => {
     }
 
     await repository.update(toStringId(loggedUser._id), { password: payload.new_password });
+    return reply(ctx, 200, {});
+};
+
+export const forgotPassword = async (ctx: Context) => {
+    const payload = ctx.request.body as TForgotPasswordBodySchema;
+    let user: repository.TUser;
+    try {
+        user = await repository.findByEmail(payload.email);
+    } catch (e: any) {
+        e.message = "invalid email";
+        throw e;
+    }
+    const token = await generateToken("forgot-password", { email: payload.email }, 24);
+    rest_password_email({ token: token.token, email: payload.email, username: user.username });
     return reply(ctx, 200, {});
 };
 
@@ -96,7 +113,6 @@ export const index = async (ctx: Context) => {
 //     return reply(ctx, 204);
 // };
 //
-// export const forgotPassword = async () => {};
 //
 // export const resetPassword = async () => {};
 //

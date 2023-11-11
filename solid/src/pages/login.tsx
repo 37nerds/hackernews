@@ -8,6 +8,7 @@ import { useLoggedUser } from "@/contexts/loggedUser";
 import Link from "@/components/ui/Link";
 import Submit from "@/components/ui/Submit";
 import Input from "@/components/ui/Input";
+import createGuestRoute from "@/primitives/createGuestRoute";
 
 const Field = (p: { label?: string; id: string; input: JSX.Element }) => {
     return (
@@ -177,14 +178,7 @@ const Register = () => {
 };
 
 export default () => {
-    const loggedUser = useLoggedUser();
-    const navigate = useNavigate();
-
-    createEffect(() => {
-        if (loggedUser?.data()) {
-            navigate("/");
-        }
-    });
+    createGuestRoute();
 
     return (
         <div class="mx-auto flex w-[450px] flex-col gap-5 p-10">

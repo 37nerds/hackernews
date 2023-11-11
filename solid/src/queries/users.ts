@@ -112,3 +112,12 @@ export const createChangePasswordMutation = () => {
     createHandleErrorMutation(m);
     return m;
 };
+
+export const createForgotPasswordMutation = () => {
+    const m = createMutation<null, TError, { email: string }>(() => ({
+        mutationFn: d => http.post("/users/forgot-password", d, 200),
+        mutationKey: ["forgot-password"],
+    }));
+    createHandleErrorMutation(m);
+    return m;
+};

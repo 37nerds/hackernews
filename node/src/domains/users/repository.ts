@@ -44,6 +44,12 @@ export const findByUsername = async (username: string): Promise<TUser> => {
     return user;
 };
 
+export const findByEmail = async (email: string): Promise<TUser> => {
+    const user = await repository.find<TUser>(USERS, { email });
+    emitter().emit(USERS_FIND, user);
+    return user;
+};
+
 export const insert = async (doc: TInsertUser): Promise<TUser> => {
     const { username } = doc;
     let user: TUser | null;
