@@ -59,14 +59,7 @@ const From = () => {
             />
             <Field
                 label="New password"
-                input={
-                    <Input
-                        value={newPassword()}
-                        setValue={setNewPassword}
-                        id="new-password"
-                        type="password"
-                    />
-                }
+                input={<Input value={newPassword()} setValue={setNewPassword} id="new-password" type="password" />}
             />
             <div class="flex justify-end">
                 <Submit label="change" />
@@ -89,10 +82,7 @@ export default () => {
     createHideFooter();
 
     createEffect(() => {
-        createOnlyOneNavLink(
-            `Change Password for ${loggedUser?.data()?.username || ""}`,
-            "/change-password",
-        );
+        createOnlyOneNavLink(`Change Password for ${loggedUser?.data()?.username || ""}`, "/change-password");
     });
 
     return (

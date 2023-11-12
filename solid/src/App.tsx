@@ -11,11 +11,7 @@ import Loading from "./components/ui/Loading";
 import { LoggedUserProvider } from "./contexts/loggedUser";
 
 const RenderRoutes = (p: { routes: TRoute[] }) => {
-    return (
-        <For each={p.routes}>
-            {(route: TRoute) => <Route path={route.path} component={route.component} />}
-        </For>
-    );
+    return <For each={p.routes}>{(route: TRoute) => <Route path={route.path} component={route.component} />}</For>;
 };
 
 const XRoutes = () => (

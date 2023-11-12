@@ -27,9 +27,7 @@ const Select = (p: {
             }}
             disabled={p.disabled}
         >
-            <For each={p.options}>
-                {option => <option value={option.value}>{option.label}</option>}
-            </For>
+            <For each={p.options}>{option => <option value={option.value}>{option.label}</option>}</For>
         </select>
     );
 };

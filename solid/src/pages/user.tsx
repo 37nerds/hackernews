@@ -112,10 +112,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
     });
 
     return (
-        <Show
-            when={isUserExist()}
-            fallback={<div class="text-center text-red-500">user not exist</div>}
-        >
+        <Show when={isUserExist()} fallback={<div class="text-center text-red-500">user not exist</div>}>
             <form
                 onSubmit={e => {
                     e.preventDefault();
@@ -138,12 +135,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                     label="about"
                     value={
                         p.isLoggedUser ? (
-                            <Textarea
-                                id="about"
-                                value={about()}
-                                setValue={setAbout}
-                                disabled={!p.isLoggedUser}
-                            />
+                            <Textarea id="about" value={about()} setValue={setAbout} disabled={!p.isLoggedUser} />
                         ) : (
                             <div>{about()}</div>
                         )

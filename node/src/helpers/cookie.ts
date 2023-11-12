@@ -3,13 +3,7 @@ import type { Context } from "koa";
 import env from "@/configs/env";
 
 const cookie = {
-    set: (
-        ctx: Context,
-        key: string,
-        value: string,
-        age_in_milliseconds: number = 0,
-        http_only: boolean = false,
-    ) => {
+    set: (ctx: Context, key: string, value: string, age_in_milliseconds: number = 0, http_only: boolean = false) => {
         ctx.cookies.set(key, value, {
             maxAge: age_in_milliseconds,
             httpOnly: http_only,

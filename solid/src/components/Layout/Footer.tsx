@@ -5,12 +5,7 @@ import { hideFooter } from "@/states/layout";
 
 import Container from "@/components/ui/Container";
 
-const FooterLink = (p: {
-    title: string;
-    href: string;
-    hideBar?: boolean;
-    notDynamic?: boolean;
-}) => {
+const FooterLink = (p: { title: string; href: string; hideBar?: boolean; notDynamic?: boolean }) => {
     return (
         <div class="flex justify-between gap-1 text-[12px]">
             <Show when={!p.hideBar}>

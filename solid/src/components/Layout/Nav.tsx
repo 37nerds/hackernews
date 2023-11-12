@@ -52,9 +52,7 @@ const Nav = () => {
                         Hacker News
                     </A>
                     <For each={navLinks}>
-                        {link => (
-                            <NavLink title={link.title} href={link.href} notHref={link.not_href} />
-                        )}
+                        {link => <NavLink title={link.title} href={link.href} notHref={link.not_href} />}
                     </For>
                 </div>
                 <Show when={!hideRightNavLinks()}>
@@ -63,11 +61,7 @@ const Nav = () => {
                             when={!!loggedUser?.data()}
                             fallback={<NavLink title="login" href="/login" hideBar={true} />}
                         >
-                            <NavLink
-                                title={loggedUser?.data()?.username || ""}
-                                href="/user"
-                                hideBar={true}
-                            />
+                            <NavLink title={loggedUser?.data()?.username || ""} href="/user" hideBar={true} />
                             <span>|</span>
                             <Logout />
                         </Show>

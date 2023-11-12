@@ -35,10 +35,7 @@ const News = (p: TNews & { no: number }) => {
                     <A href={p.url} target="_blank" class="text-primay text-sm">
                         {p.title}
                     </A>
-                    <A
-                        href={`/from?site=${p.domain}`}
-                        class="text-[11px] text-secondary hover:underline"
-                    >
+                    <A href={`/from?site=${p.domain}`} class="text-[11px] text-secondary hover:underline">
                         ({p.domain})
                     </A>
                 </div>
@@ -47,11 +44,7 @@ const News = (p: TNews & { no: number }) => {
                     <A href={`/user?id=${p.user}`} class="hover:underline">
                         {p.user}
                     </A>{" "}
-                    <A
-                        title={new Date().toUTCString()}
-                        href={`/item?id=${p.id}`}
-                        class="hover:underline"
-                    >
+                    <A title={new Date().toUTCString()} href={`/item?id=${p.id}`} class="hover:underline">
                         {p.time_ago}
                     </A>{" "}
                     | <button class="hover:underline">hide</button> |{" "}
