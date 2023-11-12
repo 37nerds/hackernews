@@ -14,6 +14,7 @@ import Select from "@/components/ui/Select";
 import Submit from "@/components/ui/Submit";
 import PWrapper from "@/components/ui/PWrapper";
 import Link from "@/components/ui/Link";
+import Button from "@/components/ui/Button";
 
 const UserPageLinks = (p: { isLoggedUser: boolean }) => {
     return (
@@ -45,6 +46,8 @@ const Item = (p: { label: string; value: string | JSX.Element }) => {
 };
 
 const UserDetails = (p: { isLoggedUser: boolean }) => {
+    const [isEdit, setIsEdit] = createSignal(false);
+
     const [username, setUsername] = createSignal<string>("");
     const [createdAt, setCreateAt] = createSignal<string>("");
     const [karma, setKarma] = createSignal<number>(0);
@@ -108,11 +111,19 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
         if (updateProfileMutation.isSuccess) {
             log.show.toast("profile updated successfully");
             loggedUser?.setData(updateProfileMutation.data);
+            setIsEdit(false);
         }
     });
 
     return (
         <Show when={isUserExist()} fallback={<div class="text-center text-red-500">user not exist</div>}>
+            <div class="flex justify-end">
+                <Show when={!isEdit() && p.isLoggedUser}>
+                    <Button onClick={() => setIsEdit(true)} class="bg-green-500 text-white">
+                        Edit
+                    </Button>
+                </Show>
+            </div>
             <form
                 onSubmit={e => {
                     e.preventDefault();
@@ -134,10 +145,15 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                 <Item
                     label="about"
                     value={
-                        p.isLoggedUser ? (
-                            <Textarea id="about" value={about()} setValue={setAbout} disabled={!p.isLoggedUser} />
+                        p.isLoggedUser && isEdit() ? (
+                            <Textarea
+                                id="about"
+                                value={about()}
+                                setValue={setAbout}
+                                disabled={!p.isLoggedUser || !isEdit()}
+                            />
                         ) : (
-                            <div>{about()}</div>
+                            <div class="text-justify">{about()}</div>
                         )
                     }
                 />
@@ -150,7 +166,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                                 id="email"
                                 value={email()}
                                 setValue={setEmail}
-                                disabled={!p.isLoggedUser}
+                                disabled={!p.isLoggedUser || !isEdit()}
                             />
                         }
                     />
@@ -165,7 +181,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                                     { label: "no", value: "no" },
                                     { label: "yes", value: "yes" },
                                 ]}
-                                disabled={!p.isLoggedUser}
+                                disabled={!p.isLoggedUser || !isEdit()}
                             />
                         }
                     />
@@ -180,7 +196,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                                     { label: "no", value: "no" },
                                     { label: "yes", value: "yes" },
                                 ]}
-                                disabled={!p.isLoggedUser}
+                                disabled={!p.isLoggedUser || !isEdit()}
                             />
                         }
                     />
@@ -192,7 +208,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                                 id="maxvisit"
                                 value={String(maxvisit())}
                                 setValue={v => setMaxvisit(Number(v))}
-                                disabled={!p.isLoggedUser}
+                                disabled={!p.isLoggedUser || !isEdit()}
                             />
                         }
                     />
@@ -204,7 +220,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                                 id="minaway"
                                 value={String(minaway())}
                                 setValue={v => setMinaway(Number(v))}
-                                disabled={!p.isLoggedUser}
+                                disabled={!p.isLoggedUser || !isEdit()}
                             />
                         }
                     />
@@ -216,12 +232,14 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                                 id="delay"
                                 value={String(delay())}
                                 setValue={v => setDelay(Number(v))}
-                                disabled={!p.isLoggedUser}
+                                disabled={!p.isLoggedUser || !isEdit()}
                             />
                         }
                     />
                     <div class="flex justify-end">
-                        <Submit label="Update" />
+                        <Show when={isEdit()}>
+                            <Submit label="Update" />
+                        </Show>
                     </div>
                 </Show>
             </form>

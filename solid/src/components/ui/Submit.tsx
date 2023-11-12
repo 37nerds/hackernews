@@ -1,8 +1,10 @@
+import Button from "./Button";
+
 const Submit = (p: { label?: string }) => {
     return (
-        <button type="submit" class="rounded bg-secondary-bg px-2 py-1 text-white">
+        <Button type="submit" class="bg-secondary-bg text-white">
             {p.label || "Submit"}
-        </button>
+        </Button>
     );
 };
 

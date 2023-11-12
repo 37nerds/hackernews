@@ -21,7 +21,7 @@ export default (a: Koa) => {
     r.post("/forgot-password", validate(s.forgot_password_body_schema), eh(h.forgot_password));
     r.patch("/reset-password", validate(s.reset_password_body_schema), eh(h.reset_password));
 
-    r.get("/", validate(s.get_user_query_schema), eh(h.index));
+    r.get("/", validate(null, s.get_user_query_schema), eh(h.index));
 
     // r.post("/", validate(null, postUserBodySchema), eh(save));
     // r.patch("/", validate(updateQuerySchema, updateBodySchema), eh(update));

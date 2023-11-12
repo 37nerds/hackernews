@@ -7,21 +7,18 @@ const Textarea = (p: {
     name?: string;
     class?: string;
     disabled?: boolean;
-}) => {
-    return (
-        <textarea
-            class={`w-full rounded border p-1 ${p.class || ""}`}
-            rows={3}
-            id={p.id}
-            name={p.name || p.id}
-            onInput={e => {
-                p.setValue(e.target.value);
-            }}
-            disabled={!!p.disabled}
-        >
-            {p.value}
-        </textarea>
-    );
-};
+    rows?: number;
+}) => (
+    <textarea
+        onInput={e => p.setValue(e.target.value)}
+        id={p.id}
+        name={p.name || p.id}
+        class={`w-full rounded border p-1 ${p.class || ""}`}
+        disabled={!!p.disabled}
+        rows={p.rows || 3}
+    >
+        {p.value}
+    </textarea>
+);
 
 export default Textarea;
