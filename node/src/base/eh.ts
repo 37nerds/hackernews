@@ -1,7 +1,8 @@
-import { Context, Next } from "koa";
+import type { Context, Next } from "koa";
+import type { TError } from "./types";
+
 import { HttpError, UnknownError } from "@/helpers/errors";
-import { isDev } from "@/helpers/units";
-import { TError } from "./types";
+import { is_dev } from "@/helpers/units";
 
 import log from "@/helpers/log";
 
@@ -19,7 +20,7 @@ const eh = <T>(func: (ctx: Context, next: Next) => Promise<T>) => {
                 name: error.name,
                 message: error.message,
                 errors: error?.errors,
-                stack: isDev() ? error.stack : undefined,
+                stack: is_dev() ? error.stack : undefined,
             } as TError;
             log.debug(e);
         }

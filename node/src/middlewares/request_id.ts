@@ -1,17 +1,17 @@
-import * as uuid from "uuid";
-
 import type { Context, Next } from "koa";
+
+import * as uuid from "uuid";
 
 const X_REQUEST_ID = "X-Request-Id";
 
-export const getRequestId = (ctx: Context): string => {
+export const get_request_id = (ctx: Context): string => {
     return ctx.response.get(X_REQUEST_ID) || "";
 };
 
-const requestId = () => async (ctx: Context, next: Next) => {
+const request_id = () => async (ctx: Context, next: Next) => {
     const requestId = uuid.v4();
     ctx.response.set(X_REQUEST_ID, requestId);
     return await next();
 };
 
-export default requestId;
+export default request_id;

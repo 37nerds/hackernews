@@ -1,5 +1,5 @@
-import { TUser } from "@/domains/users/repository";
-import { loadDynamically } from "@/helpers/units";
+import type { TUser } from "@/domains/users/repository";
+import { load_module_dynamically } from "@/helpers/units";
 import { db } from "@/base/cache";
 
 import koaLogger from "koa-logger";
@@ -8,7 +8,7 @@ import koaCors from "@koa/cors";
 import koaBodyparser from "@koa/bodyparser";
 import koaStatic from "koa-static";
 import koaMount from "koa-mount";
-import requestId from "@/middlewares/request_id";
+import request_id from "@/middlewares/request_id";
 import domains from "@/configs/domains";
 import KoaRouter from "@koa/router";
 
@@ -23,7 +23,7 @@ declare module "koa" {
 const loadMiddlewares = async (app: Koa) => {
     app.proxy = true;
 
-    app.use(requestId());
+    app.use(request_id());
     app.use(koaBodyparser());
     app.use(
         koaCors({
@@ -44,7 +44,7 @@ const loadMiddlewares = async (app: Koa) => {
 
 const loadDomains = async (app: Koa) => {
     for (const domain of domains) {
-        const m = await loadDynamically(`../domains/${domain}/index`);
+        const m = await load_module_dynamically(`../domains/${domain}/index`);
         m.default(app);
     }
 };

@@ -1,29 +1,19 @@
 import env from "@/configs/env";
 
-const formatDuration = (durationInMilliseconds: number) => {
-    const milliseconds = durationInMilliseconds % 1000;
-    const seconds = Math.floor((durationInMilliseconds / 1000) % 60);
-    const minutes = Math.floor((durationInMilliseconds / (1000 * 60)) % 60);
-    const hours = Math.floor((durationInMilliseconds / (1000 * 60 * 60)) % 24);
-    const days = Math.floor(durationInMilliseconds / (1000 * 60 * 60 * 24));
+const format_duration = (duration_in_milliseconds: number) => {
+    const milliseconds = duration_in_milliseconds % 1000;
+    const seconds = Math.floor((duration_in_milliseconds / 1000) % 60);
+    const minutes = Math.floor((duration_in_milliseconds / (1000 * 60)) % 60);
+    const hours = Math.floor((duration_in_milliseconds / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(duration_in_milliseconds / (1000 * 60 * 60 * 24));
 
     const parts = [];
 
-    if (days > 0) {
-        parts.push(`${days} day${days === 1 ? "" : "s"}`);
-    }
-    if (hours > 0) {
-        parts.push(`${hours} hour${hours === 1 ? "" : "s"}`);
-    }
-    if (minutes > 0) {
-        parts.push(`${minutes} minute${minutes === 1 ? "" : "s"}`);
-    }
-    if (seconds > 0) {
-        parts.push(`${seconds} second${seconds === 1 ? "" : "s"}`);
-    }
-    if (milliseconds > 0) {
-        parts.push(`${milliseconds} millisecond${milliseconds === 1 ? "" : "s"}`);
-    }
+    if (days > 0) parts.push(`${days} day${days === 1 ? "" : "s"}`);
+    if (hours > 0) parts.push(`${hours} hour${hours === 1 ? "" : "s"}`);
+    if (minutes > 0) parts.push(`${minutes} minute${minutes === 1 ? "" : "s"}`);
+    if (seconds > 0) parts.push(`${seconds} second${seconds === 1 ? "" : "s"}`);
+    if (milliseconds > 0) parts.push(`${milliseconds} millisecond${milliseconds === 1 ? "" : "s"}`);
 
     return parts.join(", ");
 };
@@ -45,11 +35,11 @@ const log = {
     boot: (...x: any) => log.log("[boot]", ...x),
     info: (...x: any) => log.log("[info]", ...x),
     time: async (message: string, func: () => Promise<void>) => {
-        const startTime = new Date().getTime();
+        const start_time = new Date().getTime();
         log.log(`${colors.gray("-->")} '${colors.cyan(message)}'`);
         await func();
-        const time = new Date().getTime() - startTime;
-        log.log(`${colors.gray("<--")} '${colors.cyan(message)}' ${colors.green(formatDuration(time))}`);
+        const time = new Date().getTime() - start_time;
+        log.log(`${colors.gray("<--")} '${colors.cyan(message)}' ${colors.green(format_duration(time))}`);
     },
 };
 

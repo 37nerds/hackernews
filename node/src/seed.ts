@@ -1,4 +1,4 @@
-import { loadDynamically } from "@/helpers/units";
+import { load_module_dynamically } from "@/helpers/units";
 import { faker } from "@faker-js/faker";
 
 import domains, { seed_items_count } from "@/configs/domains";
@@ -8,15 +8,15 @@ import log from "@/helpers/log";
 const main = async () => {
     await app();
 
-    const firstArgument = process.argv[2];
+    const first_argument = process.argv[2];
 
-    const dropBeforeSeed = firstArgument === "drop before seed";
+    const drop_before_seed = first_argument === "drop before seed";
 
     for (const domain of domains) {
         await log.time(`seeding: ${domain}`, async () => {
-            const m = await loadDynamically(`domains/${domain}/seeder`);
+            const m = await load_module_dynamically(`domains/${domain}/seeder`);
             const count: number = seed_items_count[domain] || 5;
-            await m.default(faker, count, dropBeforeSeed);
+            await m.default(faker, count, drop_before_seed);
         });
     }
 

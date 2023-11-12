@@ -1,5 +1,5 @@
 import type { Filter, Document } from "mongodb";
-import type { TDocBase } from "@/base/repository";
+import type { TBaseDoc } from "@/base/repository";
 
 import { USERS_CREATED, USERS_DELETED, USERS_FIND, USERS_FINDS, USERS_UPDATED } from "./events";
 import { BadRequestError } from "@/helpers/errors";
@@ -25,7 +25,7 @@ export type TUserInsert = {
 
 export type TUserUpdate = { username?: string; password?: string } & TUserElseData;
 
-export type TUser = TDocBase & TUserInsert & TUserElseData;
+export type TUser = TBaseDoc & TUserInsert & TUserElseData;
 
 export const USERS = "users";
 

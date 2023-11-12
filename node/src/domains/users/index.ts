@@ -16,9 +16,9 @@ export default (a: Koa) => {
     r.delete("/logout", protect(), eh(h.logout));
 
     r.get("/profile", protect(), eh(h.profile));
-    r.patch("/profile", validate(s.update_profile_body_schema), protect(), eh(h.updateProfile));
-    r.patch("/change-password", validate(s.change_password_body_schema), protect(), eh(h.changePassword));
-    r.post("/forgot-password", validate(s.forgot_password_body_schema), eh(h.forgotPassword));
+    r.patch("/profile", validate(s.update_profile_body_schema), protect(), eh(h.update_profile));
+    r.patch("/change-password", validate(s.change_password_body_schema), protect(), eh(h.change_password));
+    r.post("/forgot-password", validate(s.forgot_password_body_schema), eh(h.forgot_password));
     r.patch("/reset-password", validate(s.reset_password_body_schema), eh(h.reset_password));
 
     r.get("/", validate(s.get_user_query_schema), eh(h.index));

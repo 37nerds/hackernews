@@ -1,37 +1,23 @@
-import env from "@/configs/env";
 import nodemailer from "nodemailer";
-import log from "@/helpers/log";
+import env from "@/configs/env";
 
-const transporter = nodemailer.createTransport({
-    host: env.SMTP_HOST,
-    port: env.SMTP_PORT,
-    secure: false,
-    auth: {
-        user: env.SMTP_USERNAME,
-        pass: env.SMTP_PASSWORD,
-    },
-});
+const default_from_email = "notify@37nerds.com";
+
+const host = env.SMTP_HOST;
+const port = env.SMTP_PORT;
+const secure = false;
+const user = env.SMTP_USERNAME;
+const pass = env.SMTP_PASSWORD;
+
+const transporter = nodemailer.createTransport({ host, port, secure, auth: { user, pass } });
 
 const email = {
-    send: (to: string, subject: string, content: string, from: string = "notify@37nerds.com"): Promise<string> => {
+    send: (to: string, subject: string, html: string, from: string = default_from_email): Promise<string> => {
         return new Promise((resolve, reject) => {
-            transporter.sendMail(
-                {
-                    from,
-                    to,
-                    subject,
-                    html: content,
-                },
-                (error, info) => {
-                    if (error) {
-                        log.info("error sending email:", error);
-                        reject(error);
-                    } else {
-                        log.info("email sent:", info.response);
-                        resolve(info.response);
-                    }
-                },
-            );
+            transporter.sendMail({ from, to, subject, html }, (error, info) => {
+                if (error) reject(error);
+                else resolve(info.response);
+            });
         });
     },
 };

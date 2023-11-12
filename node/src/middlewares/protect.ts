@@ -1,5 +1,6 @@
+import type { Context, Next } from "koa";
+
 import { verify_auth_token } from "@/domains/users/logic";
-import { Context, Next } from "koa";
 
 import eh from "@/base/eh";
 

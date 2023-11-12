@@ -1,5 +1,5 @@
-import { Filter, Document } from "mongodb";
-import { TDocBase } from "@/base/repository";
+import type { Filter, Document } from "mongodb";
+import type { TBaseDoc } from "@/base/repository";
 
 import repository from "@/base/repository";
 
@@ -17,7 +17,7 @@ export type TTokenUpdate = {
     invalid: boolean;
 };
 
-export type TToken = TDocBase & TTokenInsert;
+export type TToken = TBaseDoc & TTokenInsert;
 
 const token_repository = {
     insert: (type: TTokenType, token: string): Promise<TToken> => {

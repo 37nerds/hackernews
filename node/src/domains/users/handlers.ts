@@ -42,14 +42,14 @@ export const profile = async (ctx: Context) => {
     return reply(ctx, 200, return_logged_user(ctx.user));
 };
 
-export const updateProfile = async (ctx: Context) => {
+export const update_profile = async (ctx: Context) => {
     const loggedUser = ctx.user;
     const payload = ctx.request.body as TUpdateProfileBodySchema;
     const updatedProfile = await user_repository.update(to_string_id(loggedUser._id), payload);
     return reply(ctx, 200, return_logged_user(updatedProfile));
 };
 
-export const changePassword = async (ctx: Context) => {
+export const change_password = async (ctx: Context) => {
     const loggedUser = ctx.user;
     const payload = ctx.request.body as TChangePasswordBodySchema;
 
@@ -65,7 +65,7 @@ type TForgotJWTPayload = {
     email: string;
 };
 
-export const forgotPassword = async (ctx: Context) => {
+export const forgot_password = async (ctx: Context) => {
     const payload = ctx.request.body as TForgotPasswordBodySchema;
     let user: TUser;
     try {
@@ -135,6 +135,3 @@ export const index = async (ctx: Context) => {
 //     await usersRepo.destroy(id as string);
 //     return reply(ctx, 204);
 // };
-//
-//
-//
