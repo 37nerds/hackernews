@@ -1,12 +1,13 @@
-import { Context } from "koa";
-import { TUser } from "./repository";
+import type { Context } from "koa";
+import type { TUser } from "./repository";
+
 import { USERS_LOGIN, USERS_LOGOUT } from "./events";
 import { BadRequestError, ServerSideError } from "@/helpers/errors";
 import { emitter } from "@/base/cache";
 import { times } from "@/helpers/units";
 
 import jwt from "@/helpers/jwt";
-import * as repository from "./repository";
+import user_repository from "./repository";
 import log from "@/helpers/log";
 import cookie from "@/helpers/cookie";
 
@@ -16,7 +17,7 @@ export type TAuthTokenPayload = {
     username: string;
 };
 
-export const loginUser = async (ctx: Context, user: TUser) => {
+export const login_user = async (ctx: Context, user: TUser) => {
     try {
         const expireInHours = 24 * 30;
         const payload: TAuthTokenPayload = { username: user.username };
@@ -29,7 +30,7 @@ export const loginUser = async (ctx: Context, user: TUser) => {
     }
 };
 
-export const logoutUser = (ctx: Context) => {
+export const logout_user = (ctx: Context) => {
     try {
         cookie.set(ctx, TOKEN_KEY, "", 0, true);
         emitter().emit(USERS_LOGOUT);
@@ -39,7 +40,7 @@ export const logoutUser = (ctx: Context) => {
     }
 };
 
-export const verifyAuthToken = async (ctx: Context): Promise<TUser> => {
+export const verify_auth_token = async (ctx: Context): Promise<TUser> => {
     let decoded: TAuthTokenPayload;
     try {
         const authToken = cookie.get(ctx, TOKEN_KEY);
@@ -48,5 +49,5 @@ export const verifyAuthToken = async (ctx: Context): Promise<TUser> => {
     } catch (e: any) {
         throw new BadRequestError(e?.message || "auth token is invalid");
     }
-    return await repository.find({ username: decoded.username });
+    return await user_repository.find({ username: decoded.username });
 };

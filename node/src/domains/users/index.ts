@@ -11,17 +11,17 @@ import Koa from "koa";
 export default (a: Koa) => {
     const r = new Router({ prefix: "/v1/users" });
 
-    r.post("/register", validate(s.registerOrLoginUserBodySchema), eh(h.register));
-    r.post("/login", validate(s.registerOrLoginUserBodySchema), eh(h.login));
+    r.post("/register", validate(s.register_or_login_user_body_schema), eh(h.register));
+    r.post("/login", validate(s.register_or_login_user_body_schema), eh(h.login));
     r.delete("/logout", protect(), eh(h.logout));
 
     r.get("/profile", protect(), eh(h.profile));
-    r.patch("/profile", validate(s.updateLoggedUserProfile), protect(), eh(h.updateProfile));
-    r.patch("/change-password", validate(s.changePasswordBodySchema), protect(), eh(h.changePassword));
-    r.post("/forgot-password", validate(s.forgotPasswordBodySchema), eh(h.forgotPassword));
-    r.patch("/reset-password", validate(s.resetPasswordBodySchema), eh(h.resetPassword));
+    r.patch("/profile", validate(s.update_profile_body_schema), protect(), eh(h.updateProfile));
+    r.patch("/change-password", validate(s.change_password_body_schema), protect(), eh(h.changePassword));
+    r.post("/forgot-password", validate(s.forgot_password_body_schema), eh(h.forgotPassword));
+    r.patch("/reset-password", validate(s.reset_password_body_schema), eh(h.reset_password));
 
-    r.get("/", validate(s.getUserQuerySchema), eh(h.index));
+    r.get("/", validate(s.get_user_query_schema), eh(h.index));
 
     // r.post("/", validate(null, postUserBodySchema), eh(save));
     // r.patch("/", validate(updateQuerySchema, updateBodySchema), eh(update));

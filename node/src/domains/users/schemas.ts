@@ -1,24 +1,25 @@
-import { z } from "zod";
-import { TUser } from "./repository";
+import type { TUser } from "./repository";
 
-const idSchema = z.string().length(24);
-const emailSchema = z.string().email();
-const passwordSchema = z.string().min(6);
+import { z } from "zod";
+
+const id_schema = z.string().length(24);
+const email_schema = z.string().email();
+const password_schema = z.string().min(6);
 
 // schemes for payload validation
-export const registerOrLoginUserBodySchema = z.object({
+export const register_or_login_user_body_schema = z.object({
     username: z.string(),
-    password: passwordSchema,
+    password: password_schema,
 });
 
-export const getUserQuerySchema = z.object({
-    id: idSchema.optional(),
+export const get_user_query_schema = z.object({
+    id: id_schema.optional(),
     username: z.string().optional(),
 });
 
-export const updateLoggedUserProfile = z.object({
+export const update_profile_body_schema = z.object({
     about: z.string().optional(),
-    email: emailSchema.optional(),
+    email: email_schema.optional(),
     showdead: z.boolean().optional(),
     noprocrast: z.boolean().optional(),
     maxvisit: z.number().optional(),
@@ -26,29 +27,29 @@ export const updateLoggedUserProfile = z.object({
     delay: z.number().optional(),
 });
 
-export const changePasswordBodySchema = z.object({
-    current_password: passwordSchema,
-    new_password: passwordSchema,
+export const change_password_body_schema = z.object({
+    current_password: password_schema,
+    new_password: password_schema,
 });
 
-export const forgotPasswordBodySchema = z.object({
-    email: emailSchema,
+export const forgot_password_body_schema = z.object({
+    email: email_schema,
 });
 
-export const resetPasswordBodySchema = z.object({
-    password: passwordSchema,
+export const reset_password_body_schema = z.object({
+    password: password_schema,
     token: z.string(),
 });
 
-export type TRegisterOrLoginUserBodySchema = z.infer<typeof registerOrLoginUserBodySchema>;
-export type TGetUserQuerySchema = z.infer<typeof getUserQuerySchema>;
-export type TUpdateLoggedUserProfile = z.infer<typeof updateLoggedUserProfile>;
-export type TChangePasswordBodySchema = z.infer<typeof changePasswordBodySchema>;
-export type TForgotPasswordBodySchema = z.infer<typeof forgotPasswordBodySchema>;
-export type TResetPasswordBodySchema = z.infer<typeof resetPasswordBodySchema>;
+export type TRegisterOrLoginUserBodySchema = z.infer<typeof register_or_login_user_body_schema>;
+export type TGetUserQuerySchema = z.infer<typeof get_user_query_schema>;
+export type TUpdateProfileBodySchema = z.infer<typeof update_profile_body_schema>;
+export type TChangePasswordBodySchema = z.infer<typeof change_password_body_schema>;
+export type TForgotPasswordBodySchema = z.infer<typeof forgot_password_body_schema>;
+export type TResetPasswordBodySchema = z.infer<typeof reset_password_body_schema>;
 
 // return users to the client
-export const returnLoggedUser = (
+export const return_logged_user = (
     user: TUser,
 ): {
     [K in keyof TUser]: K extends "password" ? undefined : TUser[K];
@@ -56,7 +57,7 @@ export const returnLoggedUser = (
     return { ...user, password: undefined };
 };
 
-export const returnUser = (
+export const return_user = (
     user: TUser,
 ): {
     [K in keyof TUser]: K extends "password" ? undefined : TUser[K];

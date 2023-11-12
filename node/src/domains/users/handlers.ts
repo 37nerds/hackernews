@@ -1,56 +1,52 @@
-import {
-    TChangePasswordBodySchema,
-    TForgotPasswordBodySchema,
-    TGetUserQuerySchema,
-    TRegisterOrLoginUserBodySchema,
-    TResetPasswordBodySchema,
-    TUpdateLoggedUserProfile,
-    returnLoggedUser,
-    returnUser,
-} from "./schemas";
+import type { TRegisterOrLoginUserBodySchema, TResetPasswordBodySchema, TUpdateProfileBodySchema } from "./schemas";
+import type { TChangePasswordBodySchema, TForgotPasswordBodySchema, TGetUserQuerySchema } from "./schemas";
+import type { Context } from "koa";
+import type { TUser } from "./repository";
 
-import { Context } from "koa";
-import { reply } from "@/helpers/units";
-import { loginUser, logoutUser } from "./logic";
 import { BadRequestError } from "@/helpers/errors";
-import { toStringId } from "@/base/repository";
-import { generateToken } from "../tokens/logic";
+import { login_user, logout_user } from "./logic";
+import { reply } from "@/helpers/units";
+import { to_string_id } from "@/base/repository";
+import { generate_token } from "../tokens/logic";
+import { return_logged_user, return_user } from "./schemas";
 
 import dayjs from "dayjs";
-import * as repository from "./repository";
+import user_repository from "./repository";
+import token_repository from "@/domains/tokens/repository";
 import crypto from "@/helpers/crypto";
 import forgot_password_alert from "@/jobs/forgot_password_alert";
+import jwt from "@/helpers/jwt";
 
 export const register = async (ctx: Context) => {
-    const user = await repository.insert(ctx.request.body as TRegisterOrLoginUserBodySchema);
-    await loginUser(ctx, user);
-    return reply(ctx, 201, returnLoggedUser(user));
+    const user = await user_repository.insert(ctx.request.body as TRegisterOrLoginUserBodySchema);
+    await login_user(ctx, user);
+    return reply(ctx, 201, return_logged_user(user));
 };
 
 export const login = async (ctx: Context) => {
     const { username, password } = (ctx.request.body as TRegisterOrLoginUserBodySchema) || {};
-    const user = await repository.find({ username });
+    const user = await user_repository.find({ username });
     if (!(await crypto.compare(user?.password || "", password))) {
-        throw new BadRequestError("invalid credentials", { password: "incorrcet credentails" });
+        throw new BadRequestError("invalid credentials", { password: "incorrect credentials" });
     }
-    await loginUser(ctx, user);
-    return reply(ctx, 200, returnLoggedUser(user));
+    await login_user(ctx, user);
+    return reply(ctx, 200, return_logged_user(user));
 };
 
 export const logout = async (ctx: Context) => {
-    logoutUser(ctx);
+    logout_user(ctx);
     return reply(ctx, 204);
 };
 
 export const profile = async (ctx: Context) => {
-    return reply(ctx, 200, returnLoggedUser(ctx.user));
+    return reply(ctx, 200, return_logged_user(ctx.user));
 };
 
 export const updateProfile = async (ctx: Context) => {
     const loggedUser = ctx.user;
-    const payload = ctx.request.body as TUpdateLoggedUserProfile;
-    const updatedProfile = await repository.update(toStringId(loggedUser._id), payload);
-    return reply(ctx, 200, returnLoggedUser(updatedProfile));
+    const payload = ctx.request.body as TUpdateProfileBodySchema;
+    const updatedProfile = await user_repository.update(to_string_id(loggedUser._id), payload);
+    return reply(ctx, 200, return_logged_user(updatedProfile));
 };
 
 export const changePassword = async (ctx: Context) => {
@@ -61,20 +57,24 @@ export const changePassword = async (ctx: Context) => {
         throw new BadRequestError("Invalid password");
     }
 
-    await repository.update(toStringId(loggedUser._id), { password: payload.new_password });
+    await user_repository.update(to_string_id(loggedUser._id), { password: payload.new_password });
     return reply(ctx, 200, {});
+};
+
+type TForgotJWTPayload = {
+    email: string;
 };
 
 export const forgotPassword = async (ctx: Context) => {
     const payload = ctx.request.body as TForgotPasswordBodySchema;
-    let user: repository.TUser;
+    let user: TUser;
     try {
-        user = await repository.findByEmail(payload.email);
+        user = await user_repository.find_by_email(payload.email);
     } catch (e: any) {
         e.message = "invalid email";
         throw e;
     }
-    const token = await generateToken("forgot-password", { email: payload.email }, 24);
+    const token = await generate_token("forgot-password", { email: payload.email } as TForgotJWTPayload, 24);
     forgot_password_alert({
         token: token.token,
         email: payload.email,
@@ -84,29 +84,38 @@ export const forgotPassword = async (ctx: Context) => {
     return reply(ctx, 200, {});
 };
 
-export const resetPassword = async (ctx: Context) => {
+export const reset_password = async (ctx: Context) => {
     const payload = ctx.request.body as TResetPasswordBodySchema;
-
-    console.log(payload);
-    return reply(ctx, 400, { message: "not sure" });
+    const token = await token_repository.find_by_token(payload.token);
+    if (token.invalid) throw new BadRequestError("token is invalid!");
+    let jwt_payload: TForgotJWTPayload;
+    try {
+        jwt_payload = (await jwt.verify(payload.token)) as TForgotJWTPayload;
+    } catch (e: any) {
+        throw new BadRequestError("token is invalid!!");
+    }
+    const user = await user_repository.find_by_email(jwt_payload.email);
+    await user_repository.update(to_string_id(user._id), { password: payload.password });
+    await token_repository.update(to_string_id(token._id), { invalid: true });
+    return reply(ctx, 200, { message: "password successfully updated" });
 };
 
 export const index = async (ctx: Context) => {
     const { id, username } = (ctx.request.query as TGetUserQuerySchema) || {};
     if (id) {
-        const user = await repository.findById(id as string);
-        return reply(ctx, 200, returnUser(user));
+        const user = await user_repository.find_by_id(id as string);
+        return reply(ctx, 200, return_user(user));
     }
     if (username) {
-        const user = await repository.findByUsername(username as string);
-        return reply(ctx, 200, returnUser(user));
+        const user = await user_repository.find_by_username(username as string);
+        return reply(ctx, 200, return_user(user));
     }
 
-    const users = await repository.finds();
+    const users = await user_repository.finds();
     return reply(
         ctx,
         200,
-        users.map((user) => returnUser(user)),
+        users.map((user) => return_user(user)),
     );
 };
 

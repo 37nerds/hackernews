@@ -18,7 +18,7 @@ const toObjectId = (_id: string): ObjectId => {
     }
 };
 
-export const toStringId = (id: ObjectId): string => {
+export const to_string_id = (id: ObjectId): string => {
     try {
         return id.toString();
     } catch (e: any) {

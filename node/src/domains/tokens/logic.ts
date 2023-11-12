@@ -1,7 +1,9 @@
-import jwt from "@/helpers/jwt";
-import repository, { TToken, TTokenType } from "./repository";
+import { TToken, TTokenType } from "./repository";
 
-export const generateToken = async (type: TTokenType, payload: object, expiresInHours?: number): Promise<TToken> => {
-    const token = await jwt.generate(payload, expiresInHours);
+import jwt from "@/helpers/jwt";
+import repository from "./repository";
+
+export const generate_token = async (type: TTokenType, payload: object, expires_in_hours?: number): Promise<TToken> => {
+    const token = await jwt.generate(payload, expires_in_hours);
     return await repository.insert(type, token);
 };

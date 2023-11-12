@@ -10,7 +10,8 @@
         "start": "TS_NODE_BASEURL='./dist' node -r tsconfig-paths/register ./dist/api.js",
         "seed:append": "ts-node -r tsconfig-paths/register ./src/seed.ts",
         "seed:refresh": "ts-node -r tsconfig-paths/register ./src/seed.ts 'drop before seed'",
-        "dx": "docker exec -it hackernews-node pnpm"
+        "d:x": "docker exec -it hackernews-node pnpm",
+        "d:up": "docker compose up"
     },
     "engines": {
         "node": "^20.9.0"

@@ -1,38 +1,41 @@
-import bRepository, { TDocBase } from "@/base/repository";
 import { Filter, Document } from "mongodb";
+import { TDocBase } from "@/base/repository";
+
+import repository from "@/base/repository";
+
+const TOKENS = "tokens";
 
 export type TTokenType = "forgot-password";
 
-type TTokenInsert = {
+export type TTokenInsert = {
     type: TTokenType;
     token: string;
-    invalid: boolean; // default: false
+    invalid: boolean;
+};
+
+export type TTokenUpdate = {
+    invalid: boolean;
 };
 
 export type TToken = TDocBase & TTokenInsert;
 
-const TOKENS = "tokens";
-
-const insert = async (type: TTokenType, token: string): Promise<TToken> => {
-    return await bRepository.insert<TTokenInsert, TToken>(TOKENS, {
-        type,
-        token,
-        invalid: false,
-    });
+const token_repository = {
+    insert: (type: TTokenType, token: string): Promise<TToken> => {
+        return repository.insert<TTokenInsert, TToken>(TOKENS, {
+            type,
+            token,
+            invalid: false,
+        });
+    },
+    find: (filter: Filter<Document>): Promise<TToken> => {
+        return repository.find<TToken>(TOKENS, filter);
+    },
+    find_by_token: (token: string): Promise<TToken> => {
+        return token_repository.find({ token });
+    },
+    update: (token_id: string, doc: TTokenUpdate): Promise<TToken> => {
+        return repository.update<TTokenUpdate, TToken>(TOKENS, token_id, doc);
+    },
 };
 
-const find = async (filter: Filter<Document>): Promise<TToken> => {
-    return await bRepository.find<TToken>(TOKENS, filter);
-};
-
-const findByToken = async (token: string): Promise<TToken> => {
-    return await find({ token });
-};
-
-const repository = {
-    insert,
-    find,
-    findByToken,
-};
-
-export default repository;
+export default token_repository;
