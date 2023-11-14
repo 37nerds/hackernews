@@ -1,40 +1,31 @@
-import type { Filter, Document } from "mongodb";
-import type { TBaseDoc } from "@/base/repository";
-
-import repository from "@/base/repository";
-
-const TOKENS = "tokens";
+import type { TBaseDoc, TFilter } from "@/base/repo";
+import repo from "@/base/repo";
 
 export type TTokenType = "forgot-password";
 
-export type TTokenInsert = {
+export type TToken = TBaseDoc & {
     type: TTokenType;
     token: string;
     invalid: boolean;
 };
 
-export type TTokenUpdate = {
-    invalid: boolean;
-};
-
-export type TToken = TBaseDoc & TTokenInsert;
+const TOKENS = "tokens";
 
 const token_repository = {
-    insert: (type: TTokenType, token: string): Promise<TToken> => {
-        return repository.insert<TTokenInsert, TToken>(TOKENS, {
-            type,
-            token,
+    insert: (doc: { type: TTokenType; token: string }) => {
+        return repo.insert<{ type: TTokenType; token: string; invalid: boolean }, TToken>(TOKENS, {
+            ...doc,
             invalid: false,
         });
     },
-    find: (filter: Filter<Document>): Promise<TToken> => {
-        return repository.find<TToken>(TOKENS, filter);
+    find: (filter: TFilter) => {
+        return repo.find<TToken>(TOKENS, filter);
     },
-    find_by_token: (token: string): Promise<TToken> => {
+    find_by_token: (token: string) => {
         return token_repository.find({ token });
     },
-    update: (token_id: string, doc: TTokenUpdate): Promise<TToken> => {
-        return repository.update<TTokenUpdate, TToken>(TOKENS, token_id, doc);
+    update: (id: string, doc: { invalid: boolean }) => {
+        return repo.update<{ invalid: boolean }, TToken>(TOKENS, id, doc);
     },
 };
 

@@ -6,7 +6,7 @@ import type { TUser } from "./repository";
 import { BadRequestError } from "@/helpers/errors";
 import { login_user, logout_user } from "./logic";
 import { reply } from "@/helpers/units";
-import { to_string_id } from "@/base/repository";
+import { to_string_id } from "@/base/repo";
 import { generate_token } from "../tokens/logic";
 import { return_logged_user, return_user } from "./schemas";
 
@@ -118,20 +118,3 @@ export const index = async (ctx: Context) => {
         users.map((user) => return_user(user)),
     );
 };
-
-// export const save = async (ctx: Context) => {
-//     const user = await usersRepo.insert(ctx.request.body as TInsertUserBody);
-//     return reply(ctx, 201, userResponse(user));
-// };
-//
-// export const update = async (ctx: Context) => {
-//     const { id } = (ctx.request.query as TUpdateUserQuery) || {};
-//     const user = await usersRepo.update(id as string, ctx.request.body as TUpdateUserBody);
-//     return reply(ctx, 200, userResponse(user));
-// };
-//
-// export const destroy = async (ctx: Context) => {
-//     const { id } = (ctx.request.query as TDeleteUserQuery) || {};
-//     await usersRepo.destroy(id as string);
-//     return reply(ctx, 204);
-// };

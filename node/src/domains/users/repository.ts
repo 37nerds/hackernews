@@ -1,11 +1,10 @@
-import type { Filter, Document } from "mongodb";
-import type { TBaseDoc } from "@/base/repository";
+import type { TBaseDoc, TFilter } from "@/base/repo";
 
 import { USERS_CREATED, USERS_DELETED, USERS_FIND, USERS_FINDS, USERS_UPDATED } from "./events";
 import { BadRequestError } from "@/helpers/errors";
 import { emitter } from "@/base/cache";
 
-import repository from "@/base/repository";
+import repo, { to_object_id } from "@/base/repo";
 import crypto from "@/helpers/crypto";
 
 type TUserElseData = {
@@ -42,46 +41,46 @@ const user_repository = {
             throw new BadRequestError("user already exits", { username: "username already exits" });
         }
         doc.password = await crypto.hash(doc.password);
-        user = await repository.insert<TUserInsert, TUser>(USERS, doc);
+        user = await repo.insert<TUserInsert, TUser>(USERS, doc);
         emitter().emit(USERS_CREATED, user);
         return user;
     },
     finds: async (): Promise<TUser[]> => {
-        const users = await repository.finds<TUser>(USERS);
+        const users = await repo.finds<TUser>(USERS);
         emitter().emit(USERS_FINDS, users);
         return users;
     },
-    find: async (filter: Filter<Document>) => {
-        const user = await repository.find<TUser>(USERS, filter);
+    find: async (filter: TFilter) => {
+        const user = await repo.find<TUser>(USERS, filter);
         emitter().emit(USERS_FIND, user);
         return user;
     },
-    find_by_id: async (user_id: string): Promise<TUser> => {
-        const user = await repository.find<TUser>(USERS, user_id);
+    find_by_id: async (id: string): Promise<TUser> => {
+        const user = await repo.find<TUser>(USERS, { _id: to_object_id(id) });
         emitter().emit(USERS_FIND, user);
         return user;
     },
     find_by_username: async (username: string): Promise<TUser> => {
-        const user = await repository.find<TUser>(USERS, { username });
+        const user = await repo.find<TUser>(USERS, { username });
         emitter().emit(USERS_FIND, user);
         return user;
     },
     find_by_email: async (email: string): Promise<TUser> => {
-        const user = await repository.find<TUser>(USERS, { email });
+        const user = await repo.find<TUser>(USERS, { email });
         emitter().emit(USERS_FIND, user);
         return user;
     },
-    update: async (user_id: string, doc: TUserUpdate): Promise<TUser> => {
+    update: async (id: string, doc: TUserUpdate): Promise<TUser> => {
         if (doc.password) {
             doc.password = await crypto.hash(doc.password);
         }
-        const user = await repository.update<TUserUpdate, TUser>(USERS, user_id, doc);
+        const user = await repo.update<TUserUpdate, TUser>(USERS, id, doc);
         emitter().emit(USERS_UPDATED, user);
         return user;
     },
-    destroy: async (user_id: string): Promise<void> => {
-        await repository.destroy(USERS, user_id);
-        emitter().emit(USERS_DELETED, user_id);
+    destroy: async (id: string): Promise<void> => {
+        await repo.destroy(USERS, id);
+        emitter().emit(USERS_DELETED, id);
     },
 };
 

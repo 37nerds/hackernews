@@ -3,6 +3,7 @@ import type { Filter, Document, WithId, OptionalId } from "mongodb";
 import { DatabaseError, NotFoundError, ProcessingError } from "@/helpers/errors";
 import { ObjectId } from "mongodb";
 import { db } from "@/base/cache";
+import { TUser } from "@/domains/users/repository";
 
 export type TBaseDoc = {
     _id: ObjectId;
@@ -11,7 +12,9 @@ export type TBaseDoc = {
     deletedAt: Date | null;
 };
 
-const to_object_id = (_id: string): ObjectId => {
+export type TFilter = Filter<Document<TUser>>;
+
+export const to_object_id = (_id: string): ObjectId => {
     try {
         return new ObjectId(_id);
     } catch (e: any) {
@@ -31,7 +34,7 @@ const get_collection = async (collection: string) => {
     return (await db()).collection(collection);
 };
 
-const repository = {
+const repo = {
     insert: async <T, T2>(collection: string, doc: T): Promise<T2> => {
         const c = await get_collection(collection);
         doc = { ...doc, createdAt: new Date(), updatedAt: new Date(), deletedAt: null };
@@ -58,11 +61,7 @@ const repository = {
         const items = await c.find(filter).toArray();
         return items as T[];
     },
-    find: async <T>(
-        collection: string,
-        filter_or_id: string | Filter<Document>,
-        shallow: boolean = false,
-    ): Promise<T> => {
+    find: async <T>(collection: string, filter_or_id: string | TFilter, shallow: boolean = false): Promise<T> => {
         const c = await get_collection(collection);
         let item: WithId<Document> | null;
         if (typeof filter_or_id === "string") {
@@ -87,7 +86,7 @@ const repository = {
         if (r.matchedCount === 0) {
             throw new DatabaseError(`failed to update item in '${collection}' collection`);
         }
-        return repository.find<T2>(collection, id);
+        return repo.find<T2>(collection, id);
     },
     destroy: async (collection: string, id: string, shallow: boolean = false): Promise<void> => {
         const c = await get_collection(collection);
@@ -113,4 +112,4 @@ const repository = {
     },
 };
 
-export default repository;
+export default repo;

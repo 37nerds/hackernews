@@ -1,4 +1,4 @@
-import { TNews } from "@/components/Newses/News";
+import { TNews } from "@/components/Newses";
 
 const newses: TNews[] = [
     {

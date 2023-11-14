@@ -23,10 +23,6 @@ export default (a: Koa) => {
 
     r.get("/", validate(null, s.get_user_query_schema), eh(h.index));
 
-    // r.post("/", validate(null, postUserBodySchema), eh(save));
-    // r.patch("/", validate(updateQuerySchema, updateBodySchema), eh(update));
-    // r.delete("/", validate(updateQuerySchema, null), eh(destroy));
-
     a.use(r.routes());
     a.use(r.allowedMethods());
 };
