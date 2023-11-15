@@ -3,7 +3,6 @@ import type { Filter, Document, WithId, OptionalId } from "mongodb";
 import { DatabaseError, NotFoundError, ProcessingError } from "@/helpers/errors";
 import { ObjectId } from "mongodb";
 import { db } from "@/base/cache";
-import { TUser } from "@/domains/users/repository";
 
 export type TBaseDoc = {
     _id: ObjectId;
@@ -12,7 +11,7 @@ export type TBaseDoc = {
     deletedAt: Date | null;
 };
 
-export type TFilter = Filter<Document<TUser>>;
+export type TFilter = Filter<Document>;
 
 export const to_object_id = (_id: string): ObjectId => {
     try {

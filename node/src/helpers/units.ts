@@ -34,6 +34,10 @@ export const reply = (ctx: Context, status: TStatus, body?: object) => {
     ctx.body = body;
 };
 
+export const xr = (ctx: Context, status: TStatus, body?: object) => {
+    reply(ctx, status, body);
+};
+
 export const load_module_dynamically = async (filepath: string, log_error: boolean = true) => {
     try {
         return await import(filepath);

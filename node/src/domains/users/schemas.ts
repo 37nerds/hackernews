@@ -1,8 +1,8 @@
 import type { TUser } from "./repository";
 
 import { z } from "zod";
+import { id_schema } from "@/base/schema";
 
-const id_schema = z.string().length(24);
 const email_schema = z.string().email();
 const password_schema = z.string().min(6);
 

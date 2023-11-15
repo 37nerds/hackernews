@@ -4,6 +4,7 @@ import { createSignal } from "solid-js";
 
 import http from "@/helpers/http";
 import createHandleErrorMutation from "@/primitives/createHandleErrorMutation";
+import { TNews } from "@/components/Newses";
 
 export type TUser = {
     _id: string;
@@ -129,4 +130,12 @@ export const createResetPasswordMutation = () => {
     }));
     createHandleErrorMutation(m);
     return m;
+};
+
+export const createGetNewsQuery = () => {
+    return createQuery<TNews[], TError>(() => ({
+        queryFn: () => http.get("/news", 200),
+        queryKey: ["news"],
+        retry: false,
+    }));
 };
