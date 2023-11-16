@@ -2,6 +2,7 @@ import type { TNews } from "@/queries/newses";
 
 import { For } from "solid-js";
 import { A } from "@solidjs/router";
+import { display_from_now } from "@/helpers/time";
 
 import Triangle from "@/components/icons/Triangle";
 
@@ -9,7 +10,7 @@ const News = (p: TNews & { no: number }) => {
     return (
         <div class="flex gap-1 rounded bg-primary-bg px-1 py-0.5">
             <div class="items-top flex gap-1">
-                <div class="w-5 text-end text-secondary">{p.no}.</div>
+                <div class="min-w-5 text-end text-secondary">{p.no}.</div>
                 <button
                     class="items-top flex h-3 w-3"
                     onClick={() => {
@@ -30,11 +31,11 @@ const News = (p: TNews & { no: number }) => {
                 </div>
                 <div class="text-[11px] text-secondary">
                     {p.points} points by{" "}
-                    <A href={`/user?id=${p.user}`} class="hover:underline">
+                    <A href={`/user/${p.user}`} class="hover:underline">
                         {p.user}
                     </A>{" "}
                     <A title={new Date().toUTCString()} href={`/item?id=${p._id}`} class="hover:underline">
-                        {p.time_ago}
+                        {display_from_now(p.created_at)}
                     </A>{" "}
                     | <button class="hover:underline">hide</button> |{" "}
                     <A href={`/item?id=${p._id}`} class="hover:underline">
@@ -59,8 +60,6 @@ const Newses = (p: { newses: TNews[]; page?: number; total?: number }) => {
                         domain={news.domain}
                         points={news.points}
                         user={news.user}
-                        time={news.time}
-                        time_ago={news.time_ago}
                         comments_count={news.comments_count}
                         type={news.type}
                         created_at={news.created_at}

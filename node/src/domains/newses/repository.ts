@@ -10,8 +10,6 @@ type TNewsElseData = {
     title: string;
     points: number | null;
     user: string | null;
-    time: number;
-    time_ago: string;
     comments_count: number;
     type: TNewsType;
     url: string;
@@ -19,13 +17,23 @@ type TNewsElseData = {
 };
 
 export type TNews = TBaseDoc & TNewsElseData;
-export type TNewsInsert = TNewsElseData;
+
+export type TNewsInsert = {
+    title: string;
+    user: string;
+    type: TNewsType;
+    url: string;
+    domain?: string;
+};
+
 export type TNewsUpdate = TNewsElseData;
 
 export const NEWSES = "newses";
 
 const news_repository = {
-    insert: (doc: TNewsInsert) => repo.insert<TNewsInsert, TNews>(NEWSES, doc),
+    insert: (doc: TNewsInsert) => {
+        return repo.insert<TNewsElseData, TNews>(NEWSES, { ...doc, points: 0, comments_count: 0 });
+    },
     finds: (per_page?: number, page?: number, sort_column?: keyof TNews, sort_order?: TSort) => {
         return repo.finds<TNews>(NEWSES, per_page, page, sort_column, sort_order);
     },

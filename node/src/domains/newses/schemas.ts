@@ -9,7 +9,16 @@ export const get_newses_query_schema = z.object({
     sort: z.enum(["home", "newest"]).default("home"),
 });
 
+export const post_newses_body_schema = z.object({
+    title: z.string(),
+    url: z.string(),
+    text: z.string(),
+    type: z.enum(["link"]),
+    domain: z.string(),
+});
+
 export type TGetNewsesQuerySchema = z.infer<typeof get_newses_query_schema>;
+export type TPostNewsesBodySchema = z.infer<typeof post_newses_body_schema>;
 
 export const return_news = (doc: TNews) => {
     return doc;

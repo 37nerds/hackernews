@@ -13,11 +13,13 @@ export default async (f: Faker, count: number, delete_before: boolean = false) =
             async () => ({
                 username: "shihab",
                 password: await crypto.hash("password"),
+                karma: 1,
             }),
         ],
         fake_doc: async () => ({
             username: f.internet.userName(),
             password: await crypto.hash("password"),
+            karma: 1,
         }),
         count,
         delete_before,

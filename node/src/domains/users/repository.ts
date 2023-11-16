@@ -15,11 +15,13 @@ type TUserElseData = {
     maxvisit?: number;
     minaway?: number;
     delay?: number;
+    karma?: number;
 };
 
 export type TUserInsert = {
     username: string;
     password: string;
+    karma: number;
 };
 
 export type TUserUpdate = { username?: string; password?: string } & TUserElseData;
@@ -29,7 +31,7 @@ export type TUser = TBaseDoc & TUserInsert & TUserElseData;
 export const USERS = "users";
 
 const user_repository = {
-    insert: async (doc: TUserInsert): Promise<TUser> => {
+    insert: async (doc: { username: string; password: string }): Promise<TUser> => {
         const { username } = doc;
         let user: TUser | null;
         try {
@@ -41,7 +43,7 @@ const user_repository = {
             throw new BadRequestError("user already exits", { username: "username already exits" });
         }
         doc.password = await crypto.hash(doc.password);
-        user = await repo.insert<TUserInsert, TUser>(USERS, doc);
+        user = await repo.insert<TUserInsert, TUser>(USERS, { ...doc, karma: 1 });
         emitter().emit(USERS_CREATED, user);
         return user;
     },

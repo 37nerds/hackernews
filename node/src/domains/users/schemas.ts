@@ -25,6 +25,7 @@ export const update_profile_body_schema = z.object({
     maxvisit: z.number().optional(),
     minaway: z.number().optional(),
     delay: z.number().optional(),
+    karma: z.number().optional(),
 });
 
 export const change_password_body_schema = z.object({

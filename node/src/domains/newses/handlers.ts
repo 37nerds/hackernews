@@ -1,10 +1,12 @@
 import type { Context } from "koa";
-import type { TGetNewsesQuerySchema } from "./schemas";
+import type { TGetNewsesQuerySchema, TPostNewsesBodySchema } from "./schemas";
+import type { TNews } from "./repository";
 
 import { return_news } from "./schemas";
 import { xr } from "@/helpers/units";
 
-import news_repository, { TNews } from "./repository";
+import news_repository from "./repository";
+import { to_string_id } from "@/base/repo";
 
 export const index = async (ctx: Context) => {
     const queries = (ctx.request.query as TGetNewsesQuerySchema) || {};
@@ -32,4 +34,12 @@ export const index = async (ctx: Context) => {
         200,
         newses.map((n) => return_news(n)),
     );
+};
+
+export const insert = async (ctx: Context) => {
+    const body = ctx.request.body as TPostNewsesBodySchema;
+
+    console.log(ctx.user);
+    const news = await news_repository.insert({ ...body, user: to_string_id(ctx?.user?._id) });
+    return xr(ctx, 201, news);
 };
