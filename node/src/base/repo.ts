@@ -46,7 +46,12 @@ const repo = {
         }
         return saved_doc as T2;
     },
-    finds: async <T>(collection: string, shallow: boolean = false): Promise<T[]> => {
+    finds: async <T>(
+        collection: string,
+        per_page: number = 20,
+        page: number = 1,
+        shallow: boolean = false,
+    ): Promise<T[]> => {
         const c = await get_collection(collection);
         let filter = {};
         if (shallow) {
@@ -57,7 +62,11 @@ const repo = {
                 },
             };
         }
-        const items = await c.find(filter).toArray();
+        const items = await c
+            .find(filter)
+            .limit(per_page)
+            .skip((page - 1) * per_page)
+            .toArray();
         return items as T[];
     },
     find: async <T>(collection: string, filter_or_id: string | TFilter, shallow: boolean = false): Promise<T> => {

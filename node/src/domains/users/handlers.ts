@@ -96,7 +96,7 @@ export const reset_password = async (ctx: Context) => {
     }
     const user = await user_repository.find_by_email(jwt_payload.email);
     await user_repository.update(to_string_id(user._id), { password: payload.password });
-    await token_repository.update(to_string_id(token._id), { invalid: true });
+    await token_repository.destroy(to_string_id(token._id));
     return reply(ctx, 200, { message: "password successfully updated" });
 };
 

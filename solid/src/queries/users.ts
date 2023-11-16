@@ -133,9 +133,13 @@ export const createResetPasswordMutation = () => {
 };
 
 export const createGetNewsQuery = () => {
-    return createQuery<TNews[], TError>(() => ({
-        queryFn: () => http.get("/news", 200),
-        queryKey: ["news"],
+    const [page, setPage] = createSignal<number>(1);
+
+    const query = createQuery<TNews[], TError>(() => ({
+        queryFn: () => http.get(`/news?per_page=30&page=${page()}`, 200),
+        queryKey: ["news", page],
         retry: false,
     }));
+
+    return { query, setPage };
 };

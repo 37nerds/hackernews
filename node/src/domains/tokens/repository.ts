@@ -18,15 +18,12 @@ const token_repository = {
             invalid: false,
         });
     },
-    find: (filter: TFilter) => {
-        return repo.find<TToken>(TOKENS, filter);
-    },
-    find_by_token: (token: string) => {
-        return token_repository.find({ token });
-    },
+    find: (filter: TFilter) => repo.find<TToken>(TOKENS, filter),
+    find_by_token: (token: string) => token_repository.find({ token }),
     update: (id: string, doc: { invalid: boolean }) => {
         return repo.update<{ invalid: boolean }, TToken>(TOKENS, id, doc);
     },
+    destroy: (id: string) => repo.destroy(TOKENS, id),
 };
 
 export default token_repository;

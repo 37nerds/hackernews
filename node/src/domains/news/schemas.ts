@@ -4,6 +4,8 @@ import { TNews } from "./repository";
 
 export const get_news_query_schema = z.object({
     id: id_schema.optional(),
+    per_page: z.string().optional(),
+    page: z.string().optional(),
 });
 
 export type TGetNewsQuerySchema = z.infer<typeof get_news_query_schema>;

@@ -24,7 +24,7 @@ export const NEWS = "news";
 
 const news_repository = {
     insert: (doc: TNewsInsert) => repo.insert<TNewsInsert, TNews>(NEWS, doc),
-    finds: (): Promise<TNews[]> => repo.finds<TNews>(NEWS),
+    finds: (per_page?: number, page?: number): Promise<TNews[]> => repo.finds<TNews>(NEWS, per_page, page),
     find: (filter: TFilter) => repo.find<TNews>(NEWS, filter),
     find_by_id: (id: string) => repo.find<TNews>(NEWS, { _id: to_object_id(id) }),
     update: (id: string, doc: TNewsUpdate) => repo.update<TNewsUpdate, TNews>(NEWS, id, doc),
