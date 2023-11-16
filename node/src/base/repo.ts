@@ -6,9 +6,9 @@ import { db } from "@/base/cache";
 
 export type TBaseDoc = {
     _id: ObjectId;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: Date | null;
 };
 
 export type TFilter = Filter<Document>;
@@ -36,7 +36,12 @@ const get_collection = async (collection: string) => {
 const repo = {
     insert: async <T, T2>(collection: string, doc: T): Promise<T2> => {
         const c = await get_collection(collection);
-        doc = { ...doc, createdAt: new Date(), updatedAt: new Date(), deletedAt: null };
+        doc = {
+            ...doc,
+            created_at: new Date(),
+            updated_at: new Date(),
+            deleted_at: null,
+        };
         const r = await c.insertOne(doc as OptionalId<T>);
         const saved_doc = await c.findOne({
             _id: r.insertedId,
@@ -58,7 +63,7 @@ const repo = {
             filter = {
                 ...filter,
                 ...{
-                    deletedAt: { $eq: null },
+                    deleted_at: { $eq: null },
                 },
             };
         }
@@ -81,7 +86,7 @@ const repo = {
             throw new NotFoundError(`item not found in '${collection}' collection`);
         }
         if (shallow) {
-            if (item.deletedAt !== null) {
+            if (item.deleted_at !== null) {
                 throw new NotFoundError(`item not found in '${collection}' collection`);
             }
         }
@@ -89,7 +94,7 @@ const repo = {
     },
     update: async <T, T2>(collection: string, id: string, doc: T): Promise<T2> => {
         const c = await get_collection(collection);
-        doc = { ...doc, updatedAt: new Date() };
+        doc = { ...doc, updated_at: new Date() };
         const r = await c.updateOne({ _id: to_object_id(id) }, { $set: doc });
         if (r.matchedCount === 0) {
             throw new DatabaseError(`failed to update item in '${collection}' collection`);
@@ -104,10 +109,10 @@ const repo = {
             throw new NotFoundError(`item not found in '${collection}' collection`);
         }
         if (shallow) {
-            if (item.deletedAt !== null) {
+            if (item.deleted_at !== null) {
                 throw new NotFoundError(`item not found in '${collection}' collection`);
             }
-            const r = await c.updateOne({ _id: o_id }, { $set: { deletedAt: new Date() } });
+            const r = await c.updateOne({ _id: o_id }, { $set: { deleted_at: new Date() } });
             if (r.matchedCount === 0) {
                 throw new DatabaseError(`failed to update item in '${collection}' collection`);
             }

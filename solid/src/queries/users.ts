@@ -1,9 +1,7 @@
 import type { TError } from "@/types";
-import type { TNews } from "@/components/Newses";
 
 import { createMutation, createQuery } from "@tanstack/solid-query";
 import { createSignal } from "solid-js";
-import { news_per_page } from "@/config/misc";
 
 import http from "@/helpers/http";
 import createHandleErrorMutation from "@/primitives/createHandleErrorMutation";
@@ -13,7 +11,7 @@ export type TUser = {
     username: string;
     karma: number;
     about: string;
-    createdAt: string;
+    created_at: string;
 };
 
 export type TLoggedUser = {
@@ -21,8 +19,8 @@ export type TLoggedUser = {
     username: string;
     karma: number;
     about: string;
-    createdAt: string;
-    deletedAt: string | null;
+    created_at: string;
+    deleted_at: string | null;
     delay: number;
     minaway: number;
     maxvisit: number;
@@ -132,16 +130,4 @@ export const createResetPasswordMutation = () => {
     }));
     createHandleErrorMutation(m);
     return m;
-};
-
-export const createGetNewsQuery = () => {
-    const [page, setPage] = createSignal<number>(1);
-
-    const query = createQuery<TNews[], TError>(() => ({
-        queryFn: () => http.get(`/news?per_page=${news_per_page}&page=${page()}`, 200),
-        queryKey: ["news", page()],
-        retry: false,
-    }));
-
-    return { query, setPage };
 };

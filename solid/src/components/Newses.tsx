@@ -1,20 +1,9 @@
+import type { TNews } from "@/queries/newses";
+
 import { For } from "solid-js";
 import { A } from "@solidjs/router";
 
 import Triangle from "@/components/icons/Triangle";
-
-export type TNews = {
-    id: number;
-    title: string;
-    points: number | null;
-    user: string | null;
-    time: number;
-    time_ago: string;
-    comments_count: number;
-    type: string;
-    url: string;
-    domain?: string;
-};
 
 const News = (p: TNews & { no: number }) => {
     return (

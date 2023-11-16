@@ -16,7 +16,7 @@
         </b>,</p>
 
     <p>Your login information was recently accessed on <span style="color: #333;">
-            <%= new Date(updatedAt).toLocaleString() %>
+            <%= new Date(updated_at).toLocaleString() %>
         </span>. If you did not perform this action, please take appropriate security measures immediately.</p>
 
     <p>Here is the information about the login:</p>
@@ -28,7 +28,7 @@
                 <%= email %>
             </span></li>
         <li>Timestamp of Login: <span style="color: #333;">
-                <%= new Date(updatedAt).toLocaleString() %>
+                <%= new Date(updated_at).toLocaleString() %>
             </span></li>
         <li>IP Address: <span style="color: #333;">
                 <%= ip %>

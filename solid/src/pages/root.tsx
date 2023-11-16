@@ -1,7 +1,7 @@
-import { createGetNewsQuery } from "@/queries/users";
 import { Show, createEffect } from "solid-js";
 import { useSearchParams } from "@solidjs/router";
 import { news_per_page } from "@/config/misc";
+import { createGetNewsesQuery } from "@/queries/newses";
 
 import Newses from "@/components/Newses";
 import More from "@/components/ui/More";
@@ -10,7 +10,7 @@ import Loading from "@/components/ui/Loading";
 export default () => {
     const [searchParams] = useSearchParams();
 
-    const { query, setPage } = createGetNewsQuery();
+    const { query, setPage } = createGetNewsesQuery();
 
     const page = () => Number(searchParams.page) || 1;
 

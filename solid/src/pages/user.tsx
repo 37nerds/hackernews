@@ -69,7 +69,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
             console.log("here", loggedUser?.data());
             if (loggedUser?.data()) {
                 setUsername(loggedUser?.data()?.username || "");
-                setCreateAt(loggedUser?.data()?.createdAt || "");
+                setCreateAt(loggedUser?.data()?.created_at || "");
                 setKarma(loggedUser?.data()?.karma || 0);
                 setAbout(loggedUser?.data()?.about || "");
                 setEmail(loggedUser?.data()?.email || "");
@@ -99,7 +99,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
         if (userByUsernameQuery.isSuccess && userByUsernameQuery.data) {
             const user = userByUsernameQuery.data;
             setUsername(user?.username || "");
-            setCreateAt(user?.createdAt || "");
+            setCreateAt(user?.created_at || "");
             setKarma(user?.karma || 0);
             setAbout(user?.about || "");
         }
