@@ -5,3 +5,4 @@ export type TError = {
     message: string;
     errors?: TErrorRecord;
 };
+export type TType = "text" | "email" | "password" | "number";

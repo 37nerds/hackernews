@@ -1,11 +1,12 @@
-import { TSetValue } from "@/types";
+import type { TSetValue, TType } from "@/types";
+
 import { Show } from "solid-js";
 
 const Input = (p: {
     value: string;
     setValue: TSetValue;
     id: string;
-    type?: "text" | "email" | "password" | "number";
+    type?: TType;
     name?: string;
     class?: string;
     errorMessage?: string;

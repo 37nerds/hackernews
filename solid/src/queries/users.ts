@@ -1,10 +1,12 @@
-import { TError } from "@/types";
+import type { TError } from "@/types";
+import type { TNews } from "@/components/Newses";
+
 import { createMutation, createQuery } from "@tanstack/solid-query";
 import { createSignal } from "solid-js";
+import { news_per_page } from "@/config/misc";
 
 import http from "@/helpers/http";
 import createHandleErrorMutation from "@/primitives/createHandleErrorMutation";
-import { TNews } from "@/components/Newses";
 
 export type TUser = {
     _id: string;
@@ -136,8 +138,8 @@ export const createGetNewsQuery = () => {
     const [page, setPage] = createSignal<number>(1);
 
     const query = createQuery<TNews[], TError>(() => ({
-        queryFn: () => http.get(`/news?per_page=30&page=${page()}`, 200),
-        queryKey: ["news", page],
+        queryFn: () => http.get(`/news?per_page=${news_per_page}&page=${page()}`, 200),
+        queryKey: ["news", page()],
         retry: false,
     }));
 

@@ -3,7 +3,6 @@ import { createLoginMutation } from "@/queries/users";
 import { useNavigate } from "@solidjs/router";
 
 import { createRegisterMutation } from "@/queries/users";
-import { useLoggedUser } from "@/contexts/loggedUser";
 
 import Link from "@/components/ui/Link";
 import Submit from "@/components/ui/Submit";

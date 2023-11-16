@@ -19,7 +19,7 @@ export const get_user_query_schema = z.object({
 
 export const update_profile_body_schema = z.object({
     about: z.string().optional(),
-    email: email_schema.optional(),
+    email: z.string().optional(),
     showdead: z.boolean().optional(),
     noprocrast: z.boolean().optional(),
     maxvisit: z.number().optional(),
