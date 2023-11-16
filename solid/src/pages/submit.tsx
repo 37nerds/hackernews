@@ -2,9 +2,7 @@ import type { TSetValue, TType } from "@/types";
 
 import { JSX, createSignal } from "solid-js";
 import { createSaveNewsMutation } from "@/queries/newses";
-
-import createHideFooter from "@/primitives/createHideFooter.ts";
-import createOnlyOneNavLink from "@/primitives/createOnlyOneNavLink";
+import { createHideFooter, createOnlyOneNavLink } from "@/helpers/primitives";
 
 import Input from "@/components/ui/Input";
 import Container2 from "@/components/ui/Container2";

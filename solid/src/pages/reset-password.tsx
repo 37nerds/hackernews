@@ -1,10 +1,7 @@
 import { createEffect, createSignal } from "solid-js";
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import { createResetPasswordMutation } from "@/queries/users";
-
-import createHideFooter from "@/primitives/createHideFooter.ts";
-import createHideRightNavLinks from "@/primitives/createHideRightNavLinks.ts";
-import createOnlyOneNavLink from "@/primitives/createOnlyOneNavLink";
+import { createHideFooter, createOnlyOneNavLink, createHideRightNavLinks } from "@/helpers/primitives";
 
 import Container2 from "@/components/ui/Container2";
 import Submit from "@/components/ui/Submit";

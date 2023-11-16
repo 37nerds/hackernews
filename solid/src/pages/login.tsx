@@ -2,11 +2,11 @@ import { JSX, createEffect, createSignal } from "solid-js";
 import { createLoginMutation } from "@/queries/users";
 import { useNavigate } from "@solidjs/router";
 import { createRegisterMutation } from "@/queries/users";
+import { createGuestRoute } from "@/helpers/primitives";
 
 import Link from "@/components/ui/Link";
 import Submit from "@/components/ui/Submit";
 import Input from "@/components/ui/Input";
-import createGuestRoute from "@/primitives/createGuestRoute";
 
 const Field = (p: { label?: string; id: string; input: JSX.Element }) => {
     return (

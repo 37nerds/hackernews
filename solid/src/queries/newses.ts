@@ -1,13 +1,14 @@
 import type { TError } from "@/types";
 
+import { useSearchParams } from "@solidjs/router";
+import { format_to_param_date } from "@/helpers/time";
 import { extract_domain_from_url } from "@/helpers/utils";
 import { news_per_page } from "@/config/misc";
-import { createMutation, createQuery } from "@tanstack/solid-query";
-import { createSignal } from "solid-js";
+import { createMutation } from "@tanstack/solid-query";
+import { createEffect, createResource } from "solid-js";
+import { createHandleErrorMutation } from "@/helpers/primitives";
 
 import http from "@/helpers/http";
-import createHandleErrorMutation from "@/primitives/createHandleErrorMutation";
-
 type TNewsType = "link";
 
 export type TNews = {
@@ -24,18 +25,26 @@ export type TNews = {
     domain?: string;
 };
 
-export type TSort = "newest" | "home";
+export type TSort = "newest" | "home" | "date";
 
 export const createGetNewsesQuery = (sort: TSort = "home") => {
-    const [page, setPage] = createSignal<number>(1);
+    const [searchParams] = useSearchParams();
 
-    const query = createQuery<TNews[], TError>(() => ({
-        queryFn: () => http.get(`/newses?per_page=${news_per_page}&page=${page()}&sort=${sort}`, 200),
-        queryKey: ["get-newses", page(), sort],
-        retry: false,
-    }));
+    const page = () => Number(searchParams.page) || 1;
+    const date = () => searchParams.date || format_to_param_date(Date.now());
 
-    return { query, setPage };
+    const [data, { refetch }] = createResource<TNews[]>(() =>
+        http.get(`/newses?per_page=${news_per_page}&page=${page()}&sort=${sort}&date=${date()}`, 200),
+    );
+
+    createEffect(() => {
+        if (page()) refetch();
+    });
+
+    const newses = () => data() || [];
+    const loading = () => data.loading;
+
+    return { newses, loading, page, date };
 };
 
 export const createSaveNewsMutation = () => {

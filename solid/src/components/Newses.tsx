@@ -1,10 +1,12 @@
 import type { TNews } from "@/queries/newses";
 
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 import { A } from "@solidjs/router";
 import { display_from_now } from "@/helpers/time";
+import { news_per_page } from "@/config/misc";
 
 import Triangle from "@/components/icons/Triangle";
+import Loading from "./ui/Loading";
 
 const News = (p: TNews & { no: number }) => {
     return (
@@ -34,6 +36,7 @@ const News = (p: TNews & { no: number }) => {
                     <A href={`/user/${p.user}`} class="hover:underline">
                         {p.user}
                     </A>{" "}
+                    |{" "}
                     <A title={new Date().toUTCString()} href={`/item?id=${p._id}`} class="hover:underline">
                         {display_from_now(p.created_at)}
                     </A>{" "}
@@ -47,7 +50,7 @@ const News = (p: TNews & { no: number }) => {
     );
 };
 
-const Newses = (p: { newses: TNews[]; page?: number; total?: number }) => {
+const NewsesList = (p: { newses: TNews[]; page?: number; total?: number }) => {
     return (
         <div class="flex flex-col gap-1">
             <For each={p.newses}>
@@ -68,6 +71,29 @@ const Newses = (p: { newses: TNews[]; page?: number; total?: number }) => {
                     />
                 )}
             </For>
+        </div>
+    );
+};
+
+const More = (p: { href: string }) => {
+    return (
+        <div class="flex justify-end">
+            <A href={p.href} class="px-1 underline">
+                More
+            </A>
+        </div>
+    );
+};
+
+const Newses = (p: { loading: boolean; newses: TNews[]; page: number }) => {
+    return (
+        <div class="flex flex-col gap-3">
+            <Show when={!p.loading} fallback={<Loading message="Show loading in Newses ..." />}>
+                <NewsesList newses={p.newses} page={p.page || 1} total={news_per_page} />
+                <Show when={p.newses.length !== 0}>
+                    <More href={`/?page=${p.page + 1}`} />
+                </Show>
+            </Show>
         </div>
     );
 };

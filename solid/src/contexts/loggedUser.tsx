@@ -3,6 +3,7 @@ import { createContext, useContext, createSignal, createEffect } from "solid-js"
 import { TLoggedUser, createProfileQuery } from "@/queries/users";
 
 import log from "@/helpers/log";
+import Loading from "@/components/ui/Loading";
 
 type TLoggedUserContext = {
     data: Accessor<TLoggedUser | null>;
@@ -39,7 +40,7 @@ export const LoggedUserProvider = (p: { children: JSX.Element }) => {
 
     return (
         <LoggedUserContext.Provider value={loggedUser}>
-            <Show when={!isProfileLoading()} fallback={<div>Hell loading...</div>}>
+            <Show when={!isProfileLoading()} fallback={<Loading message="loading in logged user ..." />}>
                 {p.children}
             </Show>
         </LoggedUserContext.Provider>

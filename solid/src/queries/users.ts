@@ -1,10 +1,10 @@
 import type { TError } from "@/types";
 
-import { createMutation, createQuery } from "@tanstack/solid-query";
 import { createSignal } from "solid-js";
+import { createMutation, createQuery } from "@tanstack/solid-query";
+import { createHandleErrorMutation } from "@/helpers/primitives";
 
 import http from "@/helpers/http";
-import createHandleErrorMutation from "@/primitives/createHandleErrorMutation";
 
 export type TUser = {
     _id: string;

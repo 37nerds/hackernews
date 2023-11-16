@@ -4,9 +4,9 @@ import { createUpdateProfileMutation, createUserByUsernameQuery } from "@/querie
 import { display_from_now } from "@/helpers/time";
 import { convert_boolean_to_yes_no, convert_yes_no_to_boolean } from "@/helpers/utils";
 import { useLoggedUser } from "@/contexts/loggedUser";
+import { createHideFooter } from "@/helpers/primitives";
 
 import log from "@/helpers/log";
-import createHideFooter from "@/primitives/createHideFooter.ts";
 
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";

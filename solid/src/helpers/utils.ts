@@ -11,3 +11,11 @@ export const extract_domain_from_url = (url: string): string => {
     const match = url.match(domainRegex);
     return match ? match[1] || "" : "";
 };
+
+export const timeout = <T>(fn: Function, time: number = 1000): Promise<T> => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(fn());
+        }, time);
+    });
+};
