@@ -19,13 +19,18 @@ export const index = async (ctx: Context) => {
     const per_page = Number(queries?.per_page) || 20;
     const page = Number(queries?.page) || 1;
     const sort = queries.sort;
+    const filter = queries.filter;
+    const filter_value = queries.filter_value;
+
     let newses: TNews[] = [];
 
-    if (sort === "home") {
+    if (filter === "date") {
         newses = await news_repository.finds(per_page, page, "created_at", "asc");
     }
 
-    if (sort === "newest") {
+    if (sort === "home") {
+        newses = await news_repository.finds(per_page, page, "created_at", "asc");
+    } else if (sort === "newest") {
         newses = await news_repository.finds(per_page, page, "created_at", "desc");
     }
 

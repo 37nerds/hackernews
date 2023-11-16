@@ -6,7 +6,9 @@ export const get_newses_query_schema = z.object({
     id: id_schema.optional(),
     per_page: z.string().optional(),
     page: z.string().optional(),
-    sort: z.enum(["home", "newest"]).default("home"),
+    sort: z.enum(["home", "newest"]).default("newest"),
+    filter: z.enum(["date"]).optional(),
+    filter_value: z.string().optional(),
 });
 
 export const post_newses_body_schema = z.object({

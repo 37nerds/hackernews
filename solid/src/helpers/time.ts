@@ -1,15 +1,17 @@
-import d from "dayjs";
+import d, { Dayjs } from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 d.extend(relativeTime);
 
-export const display_from_now = (time: string) => d(time).fromNow();
-export const format_to_param_date = (time: number) => d(time).format("YYYY-MM-DD");
-export const format_to_disply_date = (time: number | string) => d(time).format("MMMM D, YYYY");
-export const add_days = (time: number | string, days: number = 1) => d(time).add(days, "day");
-export const add_months = (time: number | string, months: number = 1) => d(time).add(months, "month");
-export const add_years = (time: number | string, days: number = 1) => d(time).add(days, "year");
-export const previous_days = (time: number | string, days: number = 1) => d(time).subtract(days, "day");
-export const previous_months = (time: number | string, months: number = 1) => d(time).subtract(months, "month");
-export const previous_years = (time: number | string, days: number = 1) => d(time).subtract(days, "year");
-export const is_getter_then_now = (time: number | string) => d(time).isAfter(d());
+export type TTime = number | string | Dayjs;
+
+export const display_from_now = (time: string): string => d(time).fromNow();
+export const format_to_param_date = (time: TTime): string => d(time).format("YYYY-MM-DD");
+export const format_to_display_date = (time: TTime): string => d(time).format("MMMM D, YYYY");
+export const add_days = (time: TTime, days: number = 1): TTime => d(time).add(days, "day");
+export const add_months = (time: TTime, months: number = 1): TTime => d(time).add(months, "month");
+export const add_years = (time: TTime, days: number = 1): TTime => d(time).add(days, "year");
+export const previous_days = (time: TTime, days: number = 1): TTime => d(time).subtract(days, "day");
+export const previous_months = (time: TTime, months: number = 1): TTime => d(time).subtract(months, "month");
+export const previous_years = (time: TTime, days: number = 1): TTime => d(time).subtract(days, "year");
+export const is_getter_then_now = (time: TTime): boolean => d(time).isAfter(d());

@@ -9,6 +9,7 @@ import { createEffect, createResource } from "solid-js";
 import { createHandleErrorMutation } from "@/helpers/primitives";
 
 import http from "@/helpers/http";
+
 type TNewsType = "link";
 
 export type TNews = {
@@ -37,13 +38,20 @@ export const createGetNewsesQuery = (args: { sort?: TSort; filter?: TFilter }) =
     const page = () => Number(searchParams.page) || 1;
     const date = () => searchParams.date || format_to_param_date(Date.now());
 
-    const [data, { refetch }] = createResource<TNews[]>(() =>
-        http.get(
-            `/newses?per_page=${news_per_page}&page=${page()}&sort=${sort}${
-                filter ? `&filter=${filter}&date=${date()}` : ""
-            }`,
-            200,
-        ),
+    const [data, { refetch }] = createResource<TNews[]>(
+        () =>
+            new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(
+                        http.get(
+                            `/newses?per_page=${news_per_page}&page=${page()}&sort=${sort}${
+                                filter ? `&filter=${filter}&filter_value=${date()}` : ""
+                            }`,
+                            200,
+                        ),
+                    );
+                }, 2000);
+            }),
     );
 
     createEffect(() => {
