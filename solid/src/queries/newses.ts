@@ -25,16 +25,25 @@ export type TNews = {
     domain?: string;
 };
 
-export type TSort = "newest" | "home" | "date";
+export type TSort = "newest" | "home";
+export type TFilter = "date";
 
-export const createGetNewsesQuery = (sort: TSort = "home") => {
+export const createGetNewsesQuery = (args: { sort?: TSort; filter?: TFilter }) => {
+    const sort = args.sort || "newest";
+    const filter = args.filter || "";
+
     const [searchParams] = useSearchParams();
 
     const page = () => Number(searchParams.page) || 1;
     const date = () => searchParams.date || format_to_param_date(Date.now());
 
     const [data, { refetch }] = createResource<TNews[]>(() =>
-        http.get(`/newses?per_page=${news_per_page}&page=${page()}&sort=${sort}&date=${date()}`, 200),
+        http.get(
+            `/newses?per_page=${news_per_page}&page=${page()}&sort=${sort}${
+                filter ? `&filter=${filter}&date=${date()}` : ""
+            }`,
+            200,
+        ),
     );
 
     createEffect(() => {

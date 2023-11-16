@@ -30,7 +30,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
     return (
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<Loading message="app suspense loading ..." />}>
             <QueryClientProvider client={queryClient}>
                 <MetaProvider>
                     <LoggedUserProvider>

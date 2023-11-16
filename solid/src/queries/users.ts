@@ -56,7 +56,7 @@ export const createProfileQuery = () => {
             return new Promise(resolve => {
                 setTimeout(() => {
                     resolve(http.get("/users/profile", 200));
-                }, 1000);
+                }, 10);
             });
         },
         queryKey: ["profile"],

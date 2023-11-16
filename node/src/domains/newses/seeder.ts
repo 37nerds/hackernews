@@ -8,6 +8,7 @@ export default async (faker: Faker, count: number, delete_before: boolean = fals
     await x_seed<TNewsInsert, TNews>({
         collection: NEWSES,
         fake_doc: async () => ({
+            create_at: faker.date.anytime(),
             title: faker.lorem.sentence(),
             points: random.number(0, 100),
             user: faker.internet.userName(),
