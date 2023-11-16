@@ -22,7 +22,9 @@ export default () => {
         <main class="flex flex-col gap-3">
             <Show when={!query.isLoading} fallback={<Loading />}>
                 <Newses newses={query?.data || []} page={page()} total={news_per_page} />
-                <More href={"/?page=2"} />
+                <Show when={(query?.data || []).length !== 0}>
+                    <More href={`/?page=${page() + 1}`} />
+                </Show>
             </Show>
         </main>
     );

@@ -1,8 +1,8 @@
-const domains = ["users", "news"];
+const domains = ["users", "newses"];
 
 export const seed_items_count: Record<string, number> = {
     users: 20,
-    news: 60,
+    newses: 110,
 };
 
 export default domains;

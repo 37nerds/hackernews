@@ -1,12 +1,12 @@
 import type { TNewsInsert, TNews } from "./repository";
 import type { Faker } from "@faker-js/faker";
 
-import { NEWS } from "./repository";
+import { NEWSES } from "./repository";
 import { random, x_seed } from "@/helpers/seeding";
 
 export default async (faker: Faker, count: number, delete_before: boolean = false) => {
     await x_seed<TNewsInsert, TNews>({
-        collection: NEWS,
+        collection: NEWSES,
         fake_doc: async () => ({
             title: faker.lorem.sentence(),
             points: random.number(0, 100),

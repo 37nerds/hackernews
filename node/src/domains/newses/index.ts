@@ -8,9 +8,9 @@ import Router from "@koa/router";
 import Koa from "koa";
 
 export default (a: Koa) => {
-    const r = new Router({ prefix: "/v1/news" });
+    const r = new Router({ prefix: "/v1/newses" });
 
-    r.get("/", validate(null, s.get_news_query_schema), eh(h.index));
+    r.get("/", validate(null, s.get_newses_query_schema), eh(h.index));
 
     a.use(r.routes());
     a.use(r.allowedMethods());

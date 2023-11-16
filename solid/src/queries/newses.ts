@@ -23,12 +23,14 @@ export type TNews = {
     domain?: string;
 };
 
-export const createGetNewsesQuery = () => {
+export type TSort = "newest" | "home";
+
+export const createGetNewsesQuery = (sort: TSort = "home") => {
     const [page, setPage] = createSignal<number>(1);
 
     const query = createQuery<TNews[], TError>(() => ({
-        queryFn: () => http.get(`/news?per_page=${news_per_page}&page=${page()}`, 200),
-        queryKey: ["get-newses", page()],
+        queryFn: () => http.get(`/newses?per_page=${news_per_page}&page=${page()}&sort=${sort}`, 200),
+        queryKey: ["get-newses", page(), sort],
         retry: false,
     }));
 
@@ -38,7 +40,7 @@ export const createGetNewsesQuery = () => {
 export const createSaveNewsMutation = () => {
     return createHandleErrorMutation(
         createMutation<TNews, TError, { title: string; url: string; text: string }>(() => ({
-            mutationFn: d => http.post("/news", d, 201),
+            mutationFn: d => http.post("/newses", d, 201),
             mutationKey: ["save-news"],
         })),
     );

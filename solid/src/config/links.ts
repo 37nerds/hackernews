@@ -7,10 +7,6 @@ export type TLink = {
 
 export const nav_links = [
     {
-        title: "welcome",
-        href: "/welcome",
-    },
-    {
         title: "new",
         href: "/newest",
     },

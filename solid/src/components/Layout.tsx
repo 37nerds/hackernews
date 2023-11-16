@@ -64,7 +64,11 @@ const Nav = () => {
                             when={!!loggedUser?.data()}
                             fallback={<NavLink title="login" href="/login" hideBar={true} />}
                         >
-                            <NavLink title={loggedUser?.data()?.username || ""} href="/user" hideBar={true} />
+                            <NavLink
+                                title={`${loggedUser?.data()?.username || ""}(${loggedUser?.data()?.karma || 0})`}
+                                href="/user"
+                                hideBar={true}
+                            />
                             <span>|</span>
                             <Logout />
                         </Show>

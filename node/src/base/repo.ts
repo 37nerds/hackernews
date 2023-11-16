@@ -13,6 +13,8 @@ export type TBaseDoc = {
 
 export type TFilter = Filter<Document>;
 
+export type TSort = "desc" | "asc";
+
 export const to_object_id = (_id: string): ObjectId => {
     try {
         return new ObjectId(_id);
@@ -55,6 +57,8 @@ const repo = {
         collection: string,
         per_page: number = 20,
         page: number = 1,
+        sort_column: string = "created_at",
+        sort_order: TSort = "desc",
         shallow: boolean = false,
     ): Promise<T[]> => {
         const c = await get_collection(collection);
@@ -69,6 +73,7 @@ const repo = {
         }
         const items = await c
             .find(filter)
+            .sort({ [sort_column]: sort_order === "asc" ? 1 : -1 })
             .limit(per_page)
             .skip((page - 1) * per_page)
             .toArray();
