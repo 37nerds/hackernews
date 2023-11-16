@@ -1,6 +1,7 @@
 import type { TSetValue, TType } from "@/types";
 
 import { JSX, createSignal } from "solid-js";
+import { createSaveNewsMutation } from "@/queries/newses";
 
 import createHideFooter from "@/primitives/createHideFooter.ts";
 import createOnlyOneNavLink from "@/primitives/createOnlyOneNavLink";
@@ -42,17 +43,31 @@ const LabelTextarea = (p: { value: string; setValue: TSetValue; id: string; labe
 };
 
 export default () => {
+    createHideFooter();
+    createOnlyOneNavLink("submit", "/submit");
+
     const [title, setTitle] = createSignal("");
     const [url, setUrl] = createSignal("");
     const [text, setText] = createSignal("");
 
-    createHideFooter();
-    createOnlyOneNavLink("submit", "/submit");
+    const saveNewsMutation = createSaveNewsMutation();
+
+    const handlerSubmit = () => {
+        if (url() !== "") {
+            saveNewsMutation.mutate({ title: title(), url: url(), text: text() });
+        }
+    };
 
     return (
         <PWrapper>
             <Container2>
-                <form class="flex flex-col gap-2 p-2">
+                <form
+                    onSubmit={e => {
+                        e.preventDefault();
+                        handlerSubmit();
+                    }}
+                    class="flex flex-col gap-2 p-2"
+                >
                     <LabelInput id="title" value={title()} setValue={setTitle} />
                     <LabelInput id="url" value={url()} setValue={setUrl} />
                     <LabelTextarea id="text" value={text()} setValue={setText} />

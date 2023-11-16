@@ -4,6 +4,8 @@ import { to_object_id } from "@/base/repo";
 
 import repo from "@/base/repo";
 
+type TNewsType = "link";
+
 type TNewsElseData = {
     title: string;
     points: number | null;
@@ -11,7 +13,7 @@ type TNewsElseData = {
     time: number;
     time_ago: string;
     comments_count: number;
-    type: "link";
+    type: TNewsType;
     url: string;
     domain?: string;
 };

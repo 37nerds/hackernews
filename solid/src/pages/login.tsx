@@ -1,7 +1,6 @@
 import { JSX, createEffect, createSignal } from "solid-js";
 import { createLoginMutation } from "@/queries/users";
 import { useNavigate } from "@solidjs/router";
-
 import { createRegisterMutation } from "@/queries/users";
 
 import Link from "@/components/ui/Link";
@@ -40,8 +39,8 @@ const Login = () => {
             window.location.reload();
         }
         if (loginMutation.isError) {
-            setErrorUsername("invalid credientails");
-            setErrorPassword("invalid credientails");
+            setErrorUsername("invalid credentials");
+            setErrorPassword("invalid credentials");
         }
     });
 

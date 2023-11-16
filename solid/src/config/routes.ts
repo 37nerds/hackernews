@@ -1,4 +1,6 @@
-import { Component, lazy } from "solid-js";
+import type { Component } from "solid-js";
+
+import { lazy } from "solid-js";
 
 export type TRoute = {
     path: string;
@@ -20,10 +22,6 @@ export const layout_routes: TRoute[] = [
     {
         path: "/",
         component: lazy(() => import("@/pages/root")),
-    },
-    {
-        path: "/welcome",
-        component: lazy(() => import("@/pages/welcome")),
     },
     {
         path: "/from",

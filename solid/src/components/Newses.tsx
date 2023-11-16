@@ -13,7 +13,7 @@ const News = (p: TNews & { no: number }) => {
                 <button
                     class="items-top flex h-3 w-3"
                     onClick={() => {
-                        console.log(`votted on ${p.id}`);
+                        console.log(`voted on ${p._id}`);
                     }}
                 >
                     <Triangle />
@@ -33,11 +33,11 @@ const News = (p: TNews & { no: number }) => {
                     <A href={`/user?id=${p.user}`} class="hover:underline">
                         {p.user}
                     </A>{" "}
-                    <A title={new Date().toUTCString()} href={`/item?id=${p.id}`} class="hover:underline">
+                    <A title={new Date().toUTCString()} href={`/item?id=${p._id}`} class="hover:underline">
                         {p.time_ago}
                     </A>{" "}
                     | <button class="hover:underline">hide</button> |{" "}
-                    <A href={`/item?id=${p.id}`} class="hover:underline">
+                    <A href={`/item?id=${p._id}`} class="hover:underline">
                         {p.comments_count} comments
                     </A>
                 </div>
@@ -53,7 +53,7 @@ const Newses = (p: { newses: TNews[]; page?: number; total?: number }) => {
                 {(news: TNews, i) => (
                     <News
                         no={(p.total || 30) * ((p.page || 1) - 1) + i() + 1}
-                        id={news.id}
+                        _id={news._id}
                         title={news.title}
                         url={news.url}
                         domain={news.domain}
@@ -63,6 +63,9 @@ const Newses = (p: { newses: TNews[]; page?: number; total?: number }) => {
                         time_ago={news.time_ago}
                         comments_count={news.comments_count}
                         type={news.type}
+                        created_at={news.created_at}
+                        deleted_at={news.deleted_at}
+                        updated_at={news.updated_at}
                     />
                 )}
             </For>

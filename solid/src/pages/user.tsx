@@ -1,8 +1,8 @@
 import { JSX, Show, createEffect, createSignal } from "solid-js";
 import { useNavigate, useParams } from "@solidjs/router";
 import { createUpdateProfileMutation, createUserByUsernameQuery } from "@/queries/users";
-import { displayFromNow } from "@/helpers/time";
-import { convertBooleanToYesNo, convertYesNoToBoolean } from "@/helpers/utils";
+import { display_from_now } from "@/helpers/time";
+import { convert_boolean_to_yes_no, convert_yes_no_to_boolean } from "@/helpers/utils";
 import { useLoggedUser } from "@/contexts/loggedUser";
 
 import log from "@/helpers/log";
@@ -140,7 +140,7 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                 class="flex flex-col gap-2"
             >
                 <Item label="user" value={<span class="text-[#3c963d]">{username()}</span>} />
-                <Item label="created" value={displayFromNow(createdAt())} />
+                <Item label="created" value={display_from_now(createdAt())} />
                 <Item label="karma" value={karma()} />
                 <Item
                     label="about"
@@ -175,8 +175,8 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                         value={
                             <Select
                                 id="showdead"
-                                value={convertBooleanToYesNo(showdead())}
-                                setValue={v => setShowdead(convertYesNoToBoolean(v))}
+                                value={convert_boolean_to_yes_no(showdead())}
+                                setValue={v => setShowdead(convert_yes_no_to_boolean(v))}
                                 options={[
                                     { label: "no", value: "no" },
                                     { label: "yes", value: "yes" },
@@ -190,8 +190,8 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
                         value={
                             <Select
                                 id="noprocrast"
-                                value={convertBooleanToYesNo(noprocrast())}
-                                setValue={v => setNoprocrast(convertYesNoToBoolean(v))}
+                                value={convert_boolean_to_yes_no(noprocrast())}
+                                setValue={v => setNoprocrast(convert_yes_no_to_boolean(v))}
                                 options={[
                                     { label: "no", value: "no" },
                                     { label: "yes", value: "yes" },

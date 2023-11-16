@@ -3,6 +3,6 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
-export const displayFromNow = (time: string) => {
+export const display_from_now = (time: string) => {
     return dayjs(time).fromNow();
 };

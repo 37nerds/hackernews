@@ -1,6 +1,8 @@
+import type { TRoute } from "@/config/routes";
+
 import { Routes, Route } from "@solidjs/router";
 import { For, Suspense } from "solid-js";
-import { TRoute, layout_routes, public_routes } from "@/config/routes";
+import { layout_routes, public_routes } from "@/config/routes";
 import { MetaProvider } from "@solidjs/meta";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { Toaster } from "solid-toast";

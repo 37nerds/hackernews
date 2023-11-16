@@ -1,9 +1,9 @@
 import { JSX, createSignal, Show, createEffect } from "solid-js";
+import { createForgotPasswordMutation } from "@/queries/users";
 
 import Submit from "@/components/ui/Submit";
 import Container2 from "@/components/ui/Container2";
 import Input from "@/components/ui/Input";
-import { createForgotPasswordMutation } from "@/queries/users";
 
 const Message = () => (
     <div class="p-10 text-center">
