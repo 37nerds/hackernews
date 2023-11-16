@@ -1,4 +1,4 @@
-import { id_schema } from "@/base/schema";
+import { id_schema } from "@/helpers/schema";
 import { z } from "zod";
 import { TNews } from "./repository";
 

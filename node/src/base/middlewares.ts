@@ -1,13 +1,30 @@
+import * as uuid from "uuid";
+
 import type { Context, Next } from "koa";
 import type { Schema } from "zod";
 import type { TErrorRecord } from "@/base/types";
 
 import { z } from "zod";
 import { UnknownError, ValidationError } from "@/helpers/errors";
+import { verify_auth_token } from "@/domains/users/logic";
 
 import eh from "@/base/eh";
 
-const validate = <T, T2>(body_schema?: Schema | null, query_schema?: Schema | null) => {
+export const protect = () => {
+    return eh(async (ctx: Context, next: Next) => {
+        ctx.user = await verify_auth_token(ctx);
+        return await next();
+    });
+};
+
+export const request_id = () => async (ctx: Context, next: Next) => {
+    const X_REQUEST_ID = "X-Request-Id";
+    const requestId = uuid.v4();
+    ctx.response.set(X_REQUEST_ID, requestId);
+    return await next();
+};
+
+export const validate = <T, T2>(body_schema?: Schema | null, query_schema?: Schema | null) => {
     return eh(async (ctx: Context, next: Next) => {
         try {
             if (body_schema) ctx.request.body = body_schema.parse(ctx.request.body as T);
@@ -26,5 +43,3 @@ const validate = <T, T2>(body_schema?: Schema | null, query_schema?: Schema | nu
         }
     });
 };
-
-export default validate;

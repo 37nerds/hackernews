@@ -2,11 +2,10 @@ import * as s from "./schemas";
 import * as h from "./handlers";
 
 import eh from "@/base/eh";
-import validate from "@/middlewares/validate";
-import protect from "@/middlewares/protect";
 
 import Router from "@koa/router";
 import Koa from "koa";
+import { protect, validate } from "@/base/middlewares";
 
 export default (a: Koa) => {
     const r = new Router({ prefix: "/v1/newses" });

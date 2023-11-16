@@ -4,9 +4,9 @@ import type { TNews } from "./repository";
 
 import { return_news } from "./schemas";
 import { xr } from "@/helpers/units";
+import { to_string_id } from "@/base/repo";
 
 import news_repository from "./repository";
-import { to_string_id } from "@/base/repo";
 
 export const index = async (ctx: Context) => {
     const queries = (ctx.request.query as TGetNewsesQuerySchema) || {};
