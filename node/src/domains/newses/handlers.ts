@@ -24,14 +24,25 @@ export const index = async (ctx: Context) => {
 
     let newses: TNews[] = [];
 
-    if (filter === "date") {
-        newses = await news_repository.finds(per_page, page, "created_at", "asc");
-    }
-
-    if (sort === "home") {
-        newses = await news_repository.finds(per_page, page, "created_at", "asc");
+    if (filter === "day") {
+        const selectedDate = new Date(filter_value || "");
+        const dayStart = new Date(selectedDate);
+        dayStart.setHours(0, 0, 0, 0);
+        const dayEnd = new Date(selectedDate);
+        dayEnd.setHours(23, 59, 59, 999);
+        newses = await news_repository.finds(
+            {
+                created_at: { $gte: dayStart, $lt: dayEnd },
+            },
+            per_page,
+            page,
+            "created_at",
+            "asc",
+        );
+    } else if (sort === "home") {
+        newses = await news_repository.finds({}, per_page, page, "created_at", "asc");
     } else if (sort === "newest") {
-        newses = await news_repository.finds(per_page, page, "created_at", "desc");
+        newses = await news_repository.finds({}, per_page, page, "created_at", "desc");
     }
 
     return xr(

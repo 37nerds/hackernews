@@ -3,6 +3,7 @@ import type { Filter, Document, WithId, OptionalId } from "mongodb";
 import { DatabaseError, NotFoundError, ProcessingError } from "@/helpers/errors";
 import { ObjectId } from "mongodb";
 import { db } from "@/base/cache";
+import log from "@/helpers/log";
 
 export type TBaseDoc = {
     _id: ObjectId;
@@ -38,13 +39,14 @@ const get_collection = async (collection: string) => {
 const repo = {
     insert: async <T, T2>(collection: string, doc: T): Promise<T2> => {
         const c = await get_collection(collection);
-        doc = {
-            ...doc,
-            created_at: new Date(),
-            updated_at: new Date(),
-            deleted_at: null,
-        };
-        const r = await c.insertOne(doc as OptionalId<T>);
+        const doc2: any = { ...doc };
+        if (!doc2?.created_at) {
+            doc2.created_at = new Date();
+        }
+        if (!doc2?.deleted_at) {
+            doc2.deleted_at = null;
+        }
+        const r = await c.insertOne(doc2 as OptionalId<T>);
         const saved_doc = await c.findOne({
             _id: r.insertedId,
         });
@@ -55,6 +57,7 @@ const repo = {
     },
     finds: async <T>(
         collection: string,
+        filter: object = {},
         per_page: number = 20,
         page: number = 1,
         sort_column: string = "created_at",
@@ -62,7 +65,6 @@ const repo = {
         shallow: boolean = false,
     ): Promise<T[]> => {
         const c = await get_collection(collection);
-        let filter = {};
         if (shallow) {
             filter = {
                 ...filter,
@@ -71,6 +73,7 @@ const repo = {
                 },
             };
         }
+        log.debug("filter object: ", filter);
         const items = await c
             .find(filter)
             .sort({ [sort_column]: sort_order === "asc" ? 1 : -1 })

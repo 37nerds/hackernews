@@ -54,6 +54,15 @@ export const createOnlyOneNavLink = (title: string, href: string) => {
         setNavLinks([{ title, href }]);
     });
     onCleanup(() => {
-        setNavLinks(() => nav_links);
+        setNavLinks([...nav_links]);
+    });
+};
+
+export const createAddNavLink = (title: string, href: string, not_href?: boolean) => {
+    onMount(() => {
+        setNavLinks([...nav_links, { title, href, not_href }]);
+    });
+    onCleanup(() => {
+        setNavLinks([...nav_links]);
     });
 };

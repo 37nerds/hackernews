@@ -1,7 +1,7 @@
 import type { TError } from "@/types";
 
 import { useSearchParams } from "@solidjs/router";
-import { format_to_param_date } from "@/helpers/time";
+import { format_to_param_date, previous_days } from "@/helpers/time";
 import { extract_domain_from_url } from "@/helpers/utils";
 import { news_per_page } from "@/config/misc";
 import { createMutation } from "@tanstack/solid-query";
@@ -27,7 +27,7 @@ export type TNews = {
 };
 
 export type TSort = "newest" | "home";
-export type TFilter = "date";
+export type TFilter = "day";
 
 export const createGetNewsesQuery = (args: { sort?: TSort; filter?: TFilter }) => {
     const sort = args.sort || "newest";
@@ -36,7 +36,7 @@ export const createGetNewsesQuery = (args: { sort?: TSort; filter?: TFilter }) =
     const [searchParams] = useSearchParams();
 
     const page = () => Number(searchParams.page) || 1;
-    const date = () => searchParams.date || format_to_param_date(Date.now());
+    const day = () => searchParams.day || format_to_param_date(previous_days(Date.now()));
 
     const [data, { refetch }] = createResource<TNews[]>(
         () =>
@@ -45,12 +45,12 @@ export const createGetNewsesQuery = (args: { sort?: TSort; filter?: TFilter }) =
                     resolve(
                         http.get(
                             `/newses?per_page=${news_per_page}&page=${page()}&sort=${sort}${
-                                filter ? `&filter=${filter}&filter_value=${date()}` : ""
+                                filter ? `&filter=${filter}&filter_value=${day()}` : ""
                             }`,
                             200,
                         ),
                     );
-                }, 2000);
+                }, 0);
             }),
     );
 
@@ -58,10 +58,14 @@ export const createGetNewsesQuery = (args: { sort?: TSort; filter?: TFilter }) =
         if (page()) refetch();
     });
 
+    createEffect(() => {
+        if (day()) refetch();
+    });
+
     const newses = () => data() || [];
     const loading = () => data.loading;
 
-    return { newses, loading, page, date };
+    return { newses, loading, page, day };
 };
 
 export const createSaveNewsMutation = () => {

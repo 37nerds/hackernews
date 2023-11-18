@@ -7,7 +7,7 @@ export const get_newses_query_schema = z.object({
     per_page: z.string().optional(),
     page: z.string().optional(),
     sort: z.enum(["home", "newest"]).default("newest"),
-    filter: z.enum(["date"]).optional(),
+    filter: z.enum(["day"]).optional(),
     filter_value: z.string().optional(),
 });
 

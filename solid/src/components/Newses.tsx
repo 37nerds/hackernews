@@ -1,6 +1,6 @@
 import type { TNews } from "@/queries/newses";
 
-import { For, Show } from "solid-js";
+import { For, Show, Suspense } from "solid-js";
 import { A } from "@solidjs/router";
 import { display_from_now } from "@/helpers/time";
 import { news_per_page } from "@/config/misc";
@@ -85,15 +85,17 @@ const More = (p: { href: string }) => {
     );
 };
 
-const Newses = (p: { loading: boolean; newses: TNews[]; page: number }) => {
+const Newses = (p: { loading: boolean; newses: TNews[]; page: number; more_page_prefix?: string }) => {
     return (
         <div class="flex flex-col gap-3">
-            <Show when={!p.loading} fallback={<Loading message="Show loading in Newses ..." />}>
-                <NewsesList newses={p.newses} page={p.page || 1} total={news_per_page} />
-                <Show when={p.newses.length !== 0}>
-                    <More href={`/?page=${p.page + 1}`} />
+            <Suspense fallback={<Loading message="Suspense loading in Newses ..." />}>
+                <Show when={!p.loading} fallback={<Loading message="Show loading in Newses ..." />}>
+                    <NewsesList newses={p.newses} page={p.page || 1} total={news_per_page} />
+                    <Show when={p.newses.length === news_per_page}>
+                        <More href={`${p.more_page_prefix || "/?"}page=${p.page + 1}`} />
+                    </Show>
                 </Show>
-            </Show>
+            </Suspense>
         </div>
     );
 };

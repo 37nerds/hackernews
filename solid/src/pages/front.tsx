@@ -1,39 +1,49 @@
 import type { TTime } from "@/helpers/time";
 
+import { Show, createEffect } from "solid-js";
+import { A } from "@solidjs/router";
+import { createAddNavLink } from "@/helpers/primitives";
+import { createGetNewsesQuery } from "@/queries/newses";
 import { add_days, add_months, add_years, previous_days, previous_months, previous_years } from "@/helpers/time";
 import { format_to_display_date, format_to_param_date, is_getter_then_now } from "@/helpers/time";
-import { createGetNewsesQuery } from "@/queries/newses";
-import { A } from "@solidjs/router";
-import { Show } from "solid-js";
 
 import Newses from "@/components/Newses";
 
-const Lk = (p: { date: TTime; label: string; prefix?: string; suffix?: string }) => (
-    <Show when={!is_getter_then_now(p.date)}>
+const Lk = (p: { day: TTime; label: string; prefix?: string; suffix?: string }) => (
+    <Show when={!is_getter_then_now(p.day)}>
         {p.prefix || ""}
-        <A class="underline" href={`/front?date=${format_to_param_date(p.date)}`}>
+        <A class="underline" href={`/front?day=${format_to_param_date(p.day)}`}>
             {p.label}
         </A>
         {p.suffix || ""}
     </Show>
 );
 
+const DateSelector = (p: { day: () => string }) => (
+    <div class="flex flex-col gap-1 bg-primary-bg py-5">
+        <div class="text-center">Stories from {format_to_display_date(p.day())}</div>
+        <div class="text-center">
+            <Lk day={previous_days(p.day(), 1)} prefix="Go back a " label="day" />
+            <Lk day={previous_months(p.day(), 1)} prefix=" , " label="month" />
+            <Lk day={previous_years(p.day(), 1)} prefix=" , or " label="year" suffix=". " />
+            <Lk day={add_days(p.day(), 1)} prefix="Go forward a " label="day" />
+            <Lk day={add_months(p.day(), 1)} prefix=" , " label="month" />
+            <Lk day={add_years(p.day(), 1)} prefix=" , or " label="year" suffix="." />
+        </div>
+    </div>
+);
+
 export default () => {
-    const { newses, loading, page, date } = createGetNewsesQuery({ filter: "date" });
+    const { newses, loading, page, day } = createGetNewsesQuery({ filter: "day" });
+
+    createEffect(() => {
+        createAddNavLink(day(), `/front`, true);
+    });
+
     return (
-        <main>
-            <div class="mb-[14px] ml-9 mt-[6px]">
-                Stories from {format_to_display_date(date())}
-                <div class="mt-[9px]">
-                    <Lk date={previous_days(date(), 1)} prefix="Go back a " label="day" />
-                    <Lk date={previous_months(date(), 1)} prefix=" , " label="month" />
-                    <Lk date={previous_years(date(), 1)} prefix=" , or " label="year" suffix=". " />
-                    <Lk date={add_days(date(), 1)} prefix="Go forward a " label="day" />
-                    <Lk date={add_months(date(), 1)} prefix=" , " label="month" />
-                    <Lk date={add_years(date(), 1)} prefix=" , or " label="year" suffix="." />
-                </div>
-            </div>
-            <Newses newses={newses()} page={page()} loading={loading()} />
+        <main class="flex flex-col gap-3">
+            <DateSelector day={day} />
+            <Newses newses={newses()} page={page()} loading={loading()} more_page_prefix={`/front?day=${day()}&`} />
         </main>
     );
 };
