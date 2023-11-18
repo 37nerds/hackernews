@@ -3,11 +3,11 @@ import { createGetNewsesQuery } from "@/queries/newses";
 import Newses from "@/components/Newses";
 
 export default () => {
-    const { newses, loading, page } = createGetNewsesQuery({ sort: "newest" });
+    const { newses, loading, page } = createGetNewsesQuery("newest");
 
     return (
         <main>
-            <Newses newses={newses()} page={page()} loading={loading()} />
+            <Newses newses={newses()} page={page()} loading={loading()} more_page_prefix="/newest?" />
         </main>
     );
 };

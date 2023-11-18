@@ -4,7 +4,7 @@ import { Show, createEffect } from "solid-js";
 import { A } from "@solidjs/router";
 import { createAddNavLink } from "@/helpers/primitives";
 import { createGetNewsesQuery } from "@/queries/newses";
-import { add_days, add_months, add_years, previous_days, previous_months, previous_years } from "@/helpers/time";
+import { add_days, add_months, add_years, subtract_days, subtract_months, subtract_years } from "@/helpers/time";
 import { format_to_display_date, format_to_param_date, is_getter_then_now } from "@/helpers/time";
 
 import Newses from "@/components/Newses";
@@ -23,9 +23,9 @@ const DateSelector = (p: { day: () => string }) => (
     <div class="flex flex-col gap-1 bg-primary-bg py-5">
         <div class="text-center">Stories from {format_to_display_date(p.day())}</div>
         <div class="text-center">
-            <Lk day={previous_days(p.day(), 1)} prefix="Go back a " label="day" />
-            <Lk day={previous_months(p.day(), 1)} prefix=" , " label="month" />
-            <Lk day={previous_years(p.day(), 1)} prefix=" , or " label="year" suffix=". " />
+            <Lk day={subtract_days(p.day(), 1)} prefix="Go back a " label="day" />
+            <Lk day={subtract_months(p.day(), 1)} prefix=" , " label="month" />
+            <Lk day={subtract_years(p.day(), 1)} prefix=" , or " label="year" suffix=". " />
             <Lk day={add_days(p.day(), 1)} prefix="Go forward a " label="day" />
             <Lk day={add_months(p.day(), 1)} prefix=" , " label="month" />
             <Lk day={add_years(p.day(), 1)} prefix=" , or " label="year" suffix="." />
@@ -34,7 +34,7 @@ const DateSelector = (p: { day: () => string }) => (
 );
 
 export default () => {
-    const { newses, loading, page, day } = createGetNewsesQuery({ filter: "day" });
+    const { newses, loading, page, day } = createGetNewsesQuery("day");
 
     createEffect(() => {
         createAddNavLink(day(), `/front`, true);

@@ -15,6 +15,10 @@ const http = {
         return payload;
     },
     get: (endpoint: string, happy: number) => http.json(endpoint, "GET", null, happy),
+    get_wq: (endpoint: string, queries: Record<string, string>, happy: number) => {
+        const qs = Object.keys(queries).reduce((c, k) => c + (queries[k] ? `&${k}=${queries[k]}` : ""), "?");
+        return http.get(endpoint + qs, happy);
+    },
     post: (endpoint: string, body: object, happy: number) => http.json(endpoint, "POST", body, happy),
     patch: (endpoint: string, body: object, happy: number) => http.json(endpoint, "PATCH", body, happy),
     delete: (endpoint: string, happy: number) => http.json(endpoint, "DELETE", null, happy),

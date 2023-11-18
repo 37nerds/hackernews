@@ -1,6 +1,6 @@
 import type { TSetValue, TType } from "@/types";
 
-import { JSX, createSignal } from "solid-js";
+import { JSX, createEffect, createSignal } from "solid-js";
 import { createSaveNewsMutation } from "@/queries/newses";
 import { createHideFooter, createOnlyOneNavLink } from "@/helpers/primitives";
 
@@ -9,6 +9,7 @@ import Container2 from "@/components/ui/Container2";
 import Submit from "@/components/ui/Submit";
 import PWrapper from "@/components/ui/PWrapper";
 import Textarea from "@/components/ui/Textarea";
+import { useNavigate } from "@solidjs/router";
 
 const Wrapper = (p: { children: JSX.Element; itemsPosition?: string }) => {
     return <div class={`flex gap-2 ${p.itemsPosition || "items-center"}`}>{p.children}</div>;
@@ -56,6 +57,13 @@ export default () => {
         }
     };
 
+    const navigate = useNavigate();
+    createEffect(() => {
+        if (saveNewsMutation.isSuccess) {
+            navigate("/newest");
+        }
+    });
+
     return (
         <PWrapper>
             <Container2>
@@ -70,7 +78,7 @@ export default () => {
                     <LabelInput id="url" value={url()} setValue={setUrl} />
                     <LabelTextarea id="text" value={text()} setValue={setText} />
                     <div class="flex justify-end">
-                        <Submit />
+                        <Submit disabled={saveNewsMutation.isPending} />
                     </div>
                 </form>
                 <p class="ml-[45px] text-[13px] text-secondary">

@@ -1,11 +1,10 @@
 import type { TError } from "@/types";
 
 import { useSearchParams } from "@solidjs/router";
-import { format_to_param_date, previous_days } from "@/helpers/time";
+import { format_to_param_date, subtract_days } from "@/helpers/time";
 import { extract_domain_from_url } from "@/helpers/utils";
 import { news_per_page } from "@/config/misc";
-import { createMutation } from "@tanstack/solid-query";
-import { createEffect, createResource } from "solid-js";
+import { createMutation, createQuery } from "@tanstack/solid-query";
 import { createHandleErrorMutation } from "@/helpers/primitives";
 
 import http from "@/helpers/http";
@@ -26,44 +25,32 @@ export type TNews = {
     domain?: string;
 };
 
-export type TSort = "newest" | "home";
-export type TFilter = "day";
+export type TFilter = "day" | "newest" | "home";
 
-export const createGetNewsesQuery = (args: { sort?: TSort; filter?: TFilter }) => {
-    const sort = args.sort || "newest";
-    const filter = args.filter || "";
-
+export const createGetNewsesQuery = (filter?: TFilter = "home") => {
     const [searchParams] = useSearchParams();
 
     const page = () => Number(searchParams.page) || 1;
-    const day = () => searchParams.day || format_to_param_date(previous_days(Date.now()));
+    const day = () => searchParams.day || format_to_param_date(subtract_days(Date.now()));
 
-    const [data, { refetch }] = createResource<TNews[]>(
-        () =>
-            new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(
-                        http.get(
-                            `/newses?per_page=${news_per_page}&page=${page()}&sort=${sort}${
-                                filter ? `&filter=${filter}&filter_value=${day()}` : ""
-                            }`,
-                            200,
-                        ),
-                    );
-                }, 0);
-            }),
-    );
+    const q = createQuery<TNews[], TError>(() => ({
+        queryFn: () => {
+            const queries = {
+                per_page: news_per_page,
+                page: page(),
+                filter,
+            };
+            if (filter === "day") {
+                queries["value"] = day();
+            }
+            return http.get_wq(`/newses`, queries, 200);
+        },
+        queryKey: ["fetch-newses", filter, page(), day()],
+        retry: false,
+    }));
 
-    createEffect(() => {
-        if (page()) refetch();
-    });
-
-    createEffect(() => {
-        if (day()) refetch();
-    });
-
-    const newses = () => data() || [];
-    const loading = () => data.loading;
+    const newses = () => q.data || [];
+    const loading = () => q.isLoading;
 
     return { newses, loading, page, day };
 };

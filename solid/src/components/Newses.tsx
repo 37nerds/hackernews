@@ -75,11 +75,11 @@ const NewsesList = (p: { newses: TNews[]; page?: number; total?: number }) => {
     );
 };
 
-const More = (p: { href: string }) => {
+const More = (p: { href: string; label?: string }) => {
     return (
         <div class="flex justify-end">
             <A href={p.href} class="px-1 underline">
-                More
+                {p.label || "More"}
             </A>
         </div>
     );
@@ -91,9 +91,14 @@ const Newses = (p: { loading: boolean; newses: TNews[]; page: number; more_page_
             <Suspense fallback={<Loading message="Suspense loading in Newses ..." />}>
                 <Show when={!p.loading} fallback={<Loading message="Show loading in Newses ..." />}>
                     <NewsesList newses={p.newses} page={p.page || 1} total={news_per_page} />
-                    <Show when={p.newses.length === news_per_page}>
-                        <More href={`${p.more_page_prefix || "/?"}page=${p.page + 1}`} />
-                    </Show>
+                    <div class="flex justify-end">
+                        <Show when={p.page - 1}>
+                            <More label="Less" href={`${p.more_page_prefix || "/?"}page=${p.page - 1}`} />
+                        </Show>
+                        <Show when={p.newses.length === news_per_page}>
+                            <More href={`${p.more_page_prefix || "/?"}page=${p.page + 1}`} />
+                        </Show>
+                    </div>
                 </Show>
             </Suspense>
         </div>
