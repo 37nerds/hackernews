@@ -6,7 +6,7 @@ import { x_seed } from "@/helpers/seeding";
 
 import crypto from "@/helpers/crypto";
 
-export default async (f: Faker, count: number, delete_before: boolean = false) => {
+export default async (f: Faker, delete_before: boolean = false) => {
     await x_seed<TUserInsert, TUser>({
         collection: USERS,
         default_docs: [
@@ -21,7 +21,7 @@ export default async (f: Faker, count: number, delete_before: boolean = false) =
             password: await crypto.hash("password"),
             karma: 1,
         }),
-        count,
+        count: 20,
         delete_before,
     });
 };
