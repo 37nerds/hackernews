@@ -56,8 +56,6 @@ export const index = async (ctx: Context) => {
 
 export const insert = async (ctx: Context) => {
     const body = ctx.request.body as TPostNewsesBodySchema;
-
-    console.log(ctx.user);
     const news = await news_repository.insert({ ...body, user: to_string_id(ctx?.user?._id) });
     return reply(ctx, 201, news);
 };

@@ -44,7 +44,6 @@ export const verify_auth_token = async (ctx: Context): Promise<TUser> => {
     let decoded: TAuthTokenPayload;
     try {
         const authToken = cookie.get(ctx, TOKEN_KEY);
-        log.debug(authToken);
         decoded = (await jwt.verify(authToken || "")) as TAuthTokenPayload;
     } catch (e: any) {
         throw new BadRequestError(e?.message || "auth token is invalid");

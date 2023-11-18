@@ -16,7 +16,10 @@ const http = {
     },
     get: (endpoint: string, happy: number) => http.json(endpoint, "GET", null, happy),
     get_wq: (endpoint: string, queries: Record<string, string>, happy: number) => {
-        const qs = Object.keys(queries).reduce((c, k) => c + (queries[k] ? `&${k}=${queries[k]}` : ""), "?");
+        const qs = Object.keys(queries).reduce(
+            (c, k, i) => c + (queries[k] ? `${i === 0 ? "?" : "&"}${k}=${queries[k]}` : ""),
+            "",
+        );
         return http.get(endpoint + qs, happy);
     },
     post: (endpoint: string, body: object, happy: number) => http.json(endpoint, "POST", body, happy),

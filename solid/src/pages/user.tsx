@@ -66,7 +66,6 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
 
     createEffect(() => {
         if (p.isLoggedUser) {
-            console.log("here", loggedUser?.data());
             if (loggedUser?.data()) {
                 setUsername(loggedUser?.data()?.username || "");
                 setCreateAt(loggedUser?.data()?.created_at || "");
@@ -84,10 +83,6 @@ const UserDetails = (p: { isLoggedUser: boolean }) => {
         } else {
             setEnabled(true);
         }
-    });
-
-    createEffect(() => {
-        console.log("here is the problem", username());
     });
 
     const [isUserExist, setIsUserExist] = createSignal<boolean>(true);
@@ -254,8 +249,6 @@ export default () => {
     const navigate = useNavigate();
     const params = useParams();
     const loggedUser = useLoggedUser();
-
-    console.log("interesting", params.id, loggedUser?.data());
 
     const [isLoggedUser, setIsLoggedUser] = createSignal<boolean>(false);
 

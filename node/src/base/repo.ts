@@ -73,7 +73,6 @@ const repo = {
                 },
             };
         }
-        log.debug("filter object: ", filter);
         const items = await c
             .find(filter)
             .sort({ [sort_column]: sort_order === "asc" ? 1 : -1 })
