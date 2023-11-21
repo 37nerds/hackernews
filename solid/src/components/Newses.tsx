@@ -85,20 +85,26 @@ const More = (p: { href: string; label?: string }) => {
     );
 };
 
+const NoStories = () => {
+    return <div class="py-5 text-center text-lg text-red-500">There is no stories</div>;
+};
+
 const Newses = (p: { loading: boolean; newses: TNews[]; page: number; more_page_prefix?: string }) => {
     return (
         <div class="flex flex-col gap-3">
             <Suspense fallback={<Loading message="Suspense loading in Newses ..." />}>
                 <Show when={!p.loading} fallback={<Loading message="Show loading in Newses ..." />}>
-                    <NewsesList newses={p.newses} page={p.page || 1} total={news_per_page} />
-                    <div class="flex justify-end">
-                        <Show when={p.page - 1}>
-                            <More label="Less" href={`${p.more_page_prefix || "/?"}page=${p.page - 1}`} />
-                        </Show>
-                        <Show when={p.newses.length === news_per_page}>
-                            <More href={`${p.more_page_prefix || "/?"}page=${p.page + 1}`} />
-                        </Show>
-                    </div>
+                    <Show when={p.newses.length !== 0} fallback={<NoStories />}>
+                        <NewsesList newses={p.newses} page={p.page || 1} total={news_per_page} />
+                        <div class="flex justify-end">
+                            <Show when={p.page - 1}>
+                                <More label="Less" href={`${p.more_page_prefix || "/?"}page=${p.page - 1}`} />
+                            </Show>
+                            <Show when={p.newses.length === news_per_page}>
+                                <More href={`${p.more_page_prefix || "/?"}page=${p.page + 1}`} />
+                            </Show>
+                        </div>
+                    </Show>
                 </Show>
             </Suspense>
         </div>

@@ -15,7 +15,7 @@ const http = {
         return payload;
     },
     get: (endpoint: string, happy: number) => http.json(endpoint, "GET", null, happy),
-    get_wq: (endpoint: string, queries: Record<string, string>, happy: number) => {
+    get_wq: (endpoint: string, queries: Record<string, string | number>, happy: number) => {
         const qs = Object.keys(queries).reduce(
             (c, k, i) => c + (queries[k] ? `${i === 0 ? "?" : "&"}${k}=${queries[k]}` : ""),
             "",

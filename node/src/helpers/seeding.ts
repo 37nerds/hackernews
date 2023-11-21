@@ -28,6 +28,7 @@ export const x_seed = async <TInsert, TModel>(options: {
         await repo.insert<TInsert, TModel>(collection, await doc());
     }
     for (let i = 1; i <= count; i++) {
+        log.info(`seeding the ${collection} with fake data: ${i}`);
         await repo.insert<TInsert, TModel>(collection, await fake_doc());
     }
     log.info("done");

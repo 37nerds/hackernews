@@ -27,7 +27,7 @@ export type TNews = {
 
 export type TFilter = "day" | "newest" | "home";
 
-export const createGetNewsesQuery = (filter?: TFilter = "home") => {
+export const createGetNewsesQuery = (filter: TFilter = "home") => {
     const [searchParams] = useSearchParams();
 
     const page = () => Number(searchParams.page) || 1;
@@ -35,7 +35,7 @@ export const createGetNewsesQuery = (filter?: TFilter = "home") => {
 
     const q = createQuery<TNews[], TError>(() => ({
         queryFn: () => {
-            const queries = {
+            const queries: Record<string, string | number> = {
                 per_page: news_per_page,
                 page: page(),
                 filter,
