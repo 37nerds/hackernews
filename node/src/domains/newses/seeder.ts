@@ -20,7 +20,7 @@ export default async (faker: Faker, delete_before: boolean = false) => {
             url: faker.internet.url(),
             domain: faker.internet.url(),
         }),
-        count: 100000,
+        count: 2000,
         delete_before,
     });
 };
