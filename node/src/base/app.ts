@@ -39,7 +39,8 @@ const loadMiddlewares = async (app: Koa) => {
     const router = new KoaRouter();
     router.get("/health", (ctx: Context) => {
         ctx.body = {
-            time: Date.now().toString(),
+            time: new Date().toISOString(),
+            message: "ok",
         };
     });
     app.use(router.routes());
@@ -47,7 +48,8 @@ const loadMiddlewares = async (app: Koa) => {
 
     router.get("/", (ctx: Context) => {
         ctx.body = {
-            time: Date.now().toString(),
+            time: new Date().toISOString(),
+            message: "ok",
         };
     });
 };
