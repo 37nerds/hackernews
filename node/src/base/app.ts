@@ -1,4 +1,5 @@
 import type { TUser } from "@/domains/users/repository";
+import type { Context } from "koa";
 
 import { load_module_dynamically } from "@/helpers/units";
 import { db } from "@/base/cache";
@@ -36,11 +37,19 @@ const loadMiddlewares = async (app: Koa) => {
     app.use(koaMount("/public", koaStatic("./public")));
 
     const router = new KoaRouter();
-    router.get("/health", () => {
-        return "ok";
+    router.get("/health", (ctx: Context) => {
+        ctx.body = {
+            time: Date.now().toString(),
+        };
     });
     app.use(router.routes());
     app.use(router.allowedMethods());
+
+    router.get("/", (ctx: Context) => {
+        ctx.body = {
+            time: Date.now().toString(),
+        };
+    });
 };
 
 const loadDomains = async (app: Koa) => {
