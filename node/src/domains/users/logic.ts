@@ -1,21 +1,21 @@
 import type { Context } from "koa";
-import type { TUser } from "./repository";
+import type { TUser } from "@/repos/users";
 
-import { USERS_LOGIN, USERS_LOGOUT } from "./events";
-import { BadRequestError, ServerSideError } from "@/helpers/errors";
-import { emitter } from "@/base/cache";
-import { times } from "@/helpers/units";
+import { BadRequestError, ServerSideError } from "@/helps/errors";
+import { emitter } from "@/base/single";
+import { times } from "@/helps/units";
 
-import jwt from "@/helpers/jwt";
-import user_repository from "./repository";
-import log from "@/helpers/log";
-import cookie from "@/helpers/cookie";
+import jwt from "@/helps/jwt";
+import user_repo from "@/repos/users";
+import log from "@/helps/log";
+import cookie from "@/helps/cookie";
+
+export type TAuthTokenPayload = { username: string };
+
+export const USERS_LOGIN = "login";
+export const USERS_LOGOUT = "logout";
 
 const TOKEN_KEY = "ds_token";
-
-export type TAuthTokenPayload = {
-    username: string;
-};
 
 export const login_user = async (ctx: Context, user: TUser) => {
     try {
@@ -48,5 +48,5 @@ export const verify_auth_token = async (ctx: Context): Promise<TUser> => {
     } catch (e: any) {
         throw new BadRequestError(e?.message || "auth token is invalid");
     }
-    return await user_repository.find({ username: decoded.username });
+    return await user_repo.find({ username: decoded.username });
 };

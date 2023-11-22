@@ -1,8 +1,9 @@
 import * as s from "./schemas";
 import * as h from "./handlers";
 
-import eh from "@/base/eh";
 import { protect, validate } from "@/base/middlewares";
+
+import eh from "@/base/eh";
 
 import Router from "@koa/router";
 import Koa from "koa";

@@ -1,9 +1,10 @@
-import type { TUser } from "@/domains/users/repository";
 import type { Context } from "koa";
+import type { TUser } from "@/repos/users";
 
-import { load_module_dynamically } from "@/helpers/units";
-import { db } from "@/base/cache";
+import { load_module_dynamically } from "@/helps/units";
+import { db } from "@/base/single";
 import { request_id } from "@/base/middlewares";
+import { domains } from "@/conf/mics";
 
 import koaLogger from "koa-logger";
 import koaJson from "koa-json";
@@ -11,7 +12,6 @@ import koaCors from "@koa/cors";
 import koaBodyparser from "@koa/bodyparser";
 import koaStatic from "koa-static";
 import koaMount from "koa-mount";
-import domains from "@/configs/domains";
 import KoaRouter from "@koa/router";
 
 import Koa from "koa";

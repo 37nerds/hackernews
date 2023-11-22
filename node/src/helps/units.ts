@@ -3,12 +3,12 @@ import type { Context } from "koa";
 import type { TStatus } from "@/base/types";
 
 import { MongoClient } from "mongodb";
-import { templates } from "@/base/cache";
+import { templates } from "@/base/single";
 
 import fs from "node:fs";
 import path from "node:path";
 import ejs from "ejs";
-import env from "@/configs/env";
+import env from "@/conf/env";
 
 export const connect_mongodb = async (): Promise<Db> => {
     const client = new MongoClient(env.MONGO_URI);

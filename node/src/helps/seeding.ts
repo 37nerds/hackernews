@@ -1,4 +1,4 @@
-import { db } from "@/base/cache";
+import { db } from "@/base/single";
 
 import log from "./log";
 import repo from "@/base/repo";

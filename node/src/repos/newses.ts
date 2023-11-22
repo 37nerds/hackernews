@@ -1,6 +1,8 @@
 import type { TBaseDoc, TFilter, TSort } from "@/base/repo";
+import type { TFaker } from "@/base/types";
 
 import { to_object_id } from "@/base/repo";
+import { random, x_seed } from "@/helps/seeding";
 
 import repo from "@/base/repo";
 
@@ -30,7 +32,28 @@ export type TNewsUpdate = TNewsElseData;
 
 export const NEWSES = "newses";
 
-const news_repository = {
+export const seeder = async (faker: TFaker, delete_before: boolean = false) => {
+    await x_seed<TNewsInsert, TNews>({
+        collection: NEWSES,
+        fake_doc: async () => ({
+            created_at: faker.date.between({
+                from: new Date("2022-01-01"),
+                to: Date.now(),
+            }),
+            title: faker.lorem.sentence(),
+            points: random.number(0, 100),
+            user: faker.internet.userName(),
+            comments_count: random.number(0, 200),
+            type: random.string(["link"]),
+            url: faker.internet.url(),
+            domain: faker.internet.url(),
+        }),
+        count: 2000,
+        delete_before,
+    });
+};
+
+const news_repo = {
     insert: (doc: TNewsInsert) => repo.insert<TNewsElseData, TNews>(NEWSES, { ...doc, points: 0, comments_count: 0 }),
     finds: (
         filter?: object,
@@ -56,4 +79,4 @@ const news_repository = {
     destroy: (id: string) => repo.destroy(NEWSES, id),
 };
 
-export default news_repository;
+export default news_repo;

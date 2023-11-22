@@ -2,8 +2,8 @@
     <defs>
         <linearGradient id="a" y1="25.19" x2="50.42" y2="25.19" gradientUnits="userSpaceOnUse">
             <stop offset="0" stop-color="#278cff" />
-            <stop offset=".49" stop-color="#4ad8b9" />
-            <stop offset=".99" stop-color="#5ef084" />
+            <stop offset=".49" stop-color="#ff6600" />
+            <stop offset=".99" stop-color="#ff6600" />
         </linearGradient>
     </defs>
     <path

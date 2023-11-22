@@ -1,31 +1,31 @@
 import type { TRegisterOrLoginUserBodySchema, TResetPasswordBodySchema, TUpdateProfileBodySchema } from "./schemas";
 import type { TChangePasswordBodySchema, TForgotPasswordBodySchema, TGetUserQuerySchema } from "./schemas";
 import type { Context } from "koa";
-import type { TUser } from "./repository";
+import type { TUser } from "@/repos/users";
+import type { TToken, TTokenType } from "@/repos/tokens";
 
-import { BadRequestError } from "@/helpers/errors";
+import { BadRequestError } from "@/helps/errors";
 import { login_user, logout_user } from "./logic";
-import { reply } from "@/helpers/units";
+import { reply } from "@/helps/units";
 import { to_string_id } from "@/base/repo";
-import { generate_token } from "../tokens/logic";
 import { return_logged_user, return_user } from "./schemas";
 
+import token_repo from "@/repos/tokens";
 import dayjs from "dayjs";
-import user_repository from "./repository";
-import token_repository from "@/domains/tokens/repository";
-import crypto from "@/helpers/crypto";
+import user_repo from "@/repos/users";
+import crypto from "@/helps/crypto";
 import forgot_password_alert from "@/jobs/forgot_password_alert";
-import jwt from "@/helpers/jwt";
+import jwt from "@/helps/jwt";
 
 export const register = async (ctx: Context) => {
-    const user = await user_repository.insert(ctx.request.body as TRegisterOrLoginUserBodySchema);
+    const user = await user_repo.insert(ctx.request.body as TRegisterOrLoginUserBodySchema);
     await login_user(ctx, user);
     return reply(ctx, 201, return_logged_user(user));
 };
 
 export const login = async (ctx: Context) => {
     const { username, password } = (ctx.request.body as TRegisterOrLoginUserBodySchema) || {};
-    const user = await user_repository.find({ username });
+    const user = await user_repo.find({ username });
     if (!(await crypto.compare(user?.password || "", password))) {
         throw new BadRequestError("invalid credentials", { password: "incorrect credentials" });
     }
@@ -45,7 +45,7 @@ export const profile = async (ctx: Context) => {
 export const update_profile = async (ctx: Context) => {
     const loggedUser = ctx.user;
     const payload = ctx.request.body as TUpdateProfileBodySchema;
-    const updatedProfile = await user_repository.update(to_string_id(loggedUser._id), payload);
+    const updatedProfile = await user_repo.update(to_string_id(loggedUser._id), payload);
     return reply(ctx, 200, return_logged_user(updatedProfile));
 };
 
@@ -57,7 +57,7 @@ export const change_password = async (ctx: Context) => {
         throw new BadRequestError("Invalid password");
     }
 
-    await user_repository.update(to_string_id(loggedUser._id), { password: payload.new_password });
+    await user_repo.update(to_string_id(loggedUser._id), { password: payload.new_password });
     return reply(ctx, 200, {});
 };
 
@@ -65,11 +65,16 @@ type TForgotJWTPayload = {
     email: string;
 };
 
+export const generate_token = async (type: TTokenType, payload: object, expires_in_hours?: number): Promise<TToken> => {
+    const token = await jwt.generate(payload, expires_in_hours);
+    return await token_repo.insert({ type, token });
+};
+
 export const forgot_password = async (ctx: Context) => {
     const payload = ctx.request.body as TForgotPasswordBodySchema;
     let user: TUser;
     try {
-        user = await user_repository.find_by_email(payload.email);
+        user = await user_repo.find_by_email(payload.email);
     } catch (e: any) {
         e.message = "invalid email";
         throw e;
@@ -86,7 +91,7 @@ export const forgot_password = async (ctx: Context) => {
 
 export const reset_password = async (ctx: Context) => {
     const payload = ctx.request.body as TResetPasswordBodySchema;
-    const token = await token_repository.find_by_token(payload.token);
+    const token = await token_repo.find_by_token(payload.token);
     if (token.invalid) throw new BadRequestError("token is invalid!");
     let jwt_payload: TForgotJWTPayload;
     try {
@@ -94,24 +99,24 @@ export const reset_password = async (ctx: Context) => {
     } catch (e: any) {
         throw new BadRequestError("token is invalid!!");
     }
-    const user = await user_repository.find_by_email(jwt_payload.email);
-    await user_repository.update(to_string_id(user._id), { password: payload.password });
-    await token_repository.destroy(to_string_id(token._id));
+    const user = await user_repo.find_by_email(jwt_payload.email);
+    await user_repo.update(to_string_id(user._id), { password: payload.password });
+    await token_repo.destroy(to_string_id(token._id));
     return reply(ctx, 200, { message: "password successfully updated" });
 };
 
 export const index = async (ctx: Context) => {
     const { id, username } = (ctx.request.query as TGetUserQuerySchema) || {};
     if (id) {
-        const user = await user_repository.find_by_id(id as string);
+        const user = await user_repo.find_by_id(id as string);
         return reply(ctx, 200, return_user(user));
     }
     if (username) {
-        const user = await user_repository.find_by_username(username as string);
+        const user = await user_repo.find_by_username(username as string);
         return reply(ctx, 200, return_user(user));
     }
 
-    const users = await user_repository.finds();
+    const users = await user_repo.finds();
     return reply(
         ctx,
         200,

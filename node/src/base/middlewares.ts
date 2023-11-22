@@ -5,7 +5,7 @@ import type { Schema } from "zod";
 import type { TErrorRecord } from "@/base/types";
 
 import { z } from "zod";
-import { UnknownError, ValidationError } from "@/helpers/errors";
+import { UnknownError, ValidationError } from "@/helps/errors";
 import { verify_auth_token } from "@/domains/users/logic";
 
 import eh from "@/base/eh";

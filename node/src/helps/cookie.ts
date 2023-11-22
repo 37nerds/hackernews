@@ -1,6 +1,6 @@
 import type { Context } from "koa";
 
-import env from "@/configs/env";
+import env from "@/conf/env";
 
 const cookie = {
     set: (ctx: Context, key: string, value: string, age_in_milliseconds: number = 0, http_only: boolean = false) => {

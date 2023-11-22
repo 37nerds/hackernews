@@ -1,6 +1,6 @@
 import app from "@/base/app";
-import env from "@/configs/env";
-import log from "@/helpers/log";
+import env from "@/conf/env";
+import log from "@/helps/log";
 
 const main = async () => {
     (await app()).listen(env.PORT, () => {

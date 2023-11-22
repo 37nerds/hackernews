@@ -1,7 +1,7 @@
-import type { TUser } from "./repository";
+import type { TUser } from "@/repos/users";
 
 import { z } from "zod";
-import { id_schema } from "@/helpers/schema";
+import { id_schema } from "@/helps/schema";
 
 const email_schema = z.string().email();
 const password_schema = z.string().min(6);

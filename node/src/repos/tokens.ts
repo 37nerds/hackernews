@@ -11,7 +11,7 @@ export type TToken = TBaseDoc & {
 
 const TOKENS = "tokens";
 
-const token_repository = {
+const token_repo = {
     insert: (doc: { type: TTokenType; token: string }) => {
         return repo.insert<{ type: TTokenType; token: string; invalid: boolean }, TToken>(TOKENS, {
             ...doc,
@@ -19,11 +19,11 @@ const token_repository = {
         });
     },
     find: (filter: TFilter) => repo.find<TToken>(TOKENS, filter),
-    find_by_token: (token: string) => token_repository.find({ token }),
+    find_by_token: (token: string) => token_repo.find({ token }),
     update: (id: string, doc: { invalid: boolean }) => {
         return repo.update<{ invalid: boolean }, TToken>(TOKENS, id, doc);
     },
     destroy: (id: string) => repo.destroy(TOKENS, id),
 };
 
-export default token_repository;
+export default token_repo;

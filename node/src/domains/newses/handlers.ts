@@ -1,18 +1,18 @@
 import type { Context } from "koa";
 import type { TGetNewsesQuerySchema, TPostNewsesBodySchema } from "./schemas";
-import type { TNews } from "./repository";
+import type { TNews } from "@/repos/newses";
 
 import { return_news } from "./schemas";
 import { TSort, to_string_id } from "@/base/repo";
+import { reply } from "@/helps/units";
 
-import news_repository from "./repository";
-import { reply } from "@/helpers/units";
+import news_repo from "@/repos/newses";
 
 export const index = async (ctx: Context) => {
     const queries = (ctx.request.query as TGetNewsesQuerySchema) || {};
 
     if (queries?.id) {
-        const news = await news_repository.find_by_id(queries.id as string);
+        const news = await news_repo.find_by_id(queries.id as string);
         return reply(ctx, 200, return_news(news));
     }
 
@@ -43,7 +43,7 @@ export const index = async (ctx: Context) => {
     }
 
     const newses: TNews[] = (
-        await news_repository.finds(query_filter, {
+        await news_repo.finds(query_filter, {
             per_page,
             page,
             sort_column,
@@ -56,6 +56,6 @@ export const index = async (ctx: Context) => {
 
 export const insert = async (ctx: Context) => {
     const body = ctx.request.body as TPostNewsesBodySchema;
-    const news = await news_repository.insert({ ...body, user: to_string_id(ctx?.user?._id) });
+    const news = await news_repo.insert({ ...body, user: to_string_id(ctx?.user?._id) });
     return reply(ctx, 201, news);
 };

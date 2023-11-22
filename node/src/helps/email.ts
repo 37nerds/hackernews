@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import env from "@/configs/env";
+import env from "@/conf/env";
 
 const default_from_email = "notify@37nerds.com";
 

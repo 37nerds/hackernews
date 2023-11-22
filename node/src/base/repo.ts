@@ -1,9 +1,8 @@
 import type { Filter, Document, WithId, OptionalId } from "mongodb";
 
-import { DatabaseError, NotFoundError, ProcessingError } from "@/helpers/errors";
+import { DatabaseError, NotFoundError, ProcessingError } from "@/helps/errors";
 import { ObjectId } from "mongodb";
-import { db } from "@/base/cache";
-import log from "@/helpers/log";
+import { db } from "@/base/single";
 
 export type TBaseDoc = {
     _id: ObjectId;
