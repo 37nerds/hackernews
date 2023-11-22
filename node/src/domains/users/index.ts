@@ -21,6 +21,10 @@ export default (a: Koa) => {
     r.post("/forgot-password", validate(s.forgot_password_body_schema), eh(h.forgot_password));
     r.patch("/reset-password", validate(s.reset_password_body_schema), eh(h.reset_password));
 
+    r.get("/hidden", protect(), validate(null, s.get_hidden_query_schema), eh(h.get_hidden_newses));
+    r.post("/hidden", protect(), validate(s.add_hide_body_schema), eh(h.add_hide));
+    r.delete("/hidden", protect(), validate(null, s.delete_hide_query_schema), eh(h.remove_hide));
+
     r.get("/", validate(null, s.get_user_query_schema), eh(h.index));
 
     a.use(r.routes());

@@ -1,8 +1,8 @@
-import { get_tmpl, render } from "@/helps/units";
-import { rest_password_page_url } from "@/conf/mics";
+import { get_tmpl, render } from "@/helpers/units";
+import { rest_password_page_url } from "@/config/mics";
 
-import email from "@/helps/email";
-import log from "@/helps/log";
+import email from "@/helpers/email";
+import log from "@/helpers/log";
 
 export default async (p: { token: string; email: string; username: string; expiration_time: string }) => {
     const reset_link = `${rest_password_page_url}?token=${p.token}&username=${p.username}`;

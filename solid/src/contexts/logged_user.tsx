@@ -1,8 +1,12 @@
-import { JSX, Show, Accessor, Setter } from "solid-js";
+import type { TLoggedUser } from "@/queries/users";
+import type { JSX, Accessor, Setter } from "solid-js";
+
+import { Show } from "solid-js";
 import { createContext, useContext, createSignal, createEffect } from "solid-js";
-import { TLoggedUser, createProfileQuery } from "@/queries/users";
+import { createProfileQuery } from "@/queries/users";
 
 import log from "@/helpers/log";
+
 import Loading from "@/components/ui/Loading";
 
 type TLoggedUserContext = {

@@ -1,12 +1,36 @@
 import type { TNews } from "@/queries/newses";
 
-import { For, Show, Suspense } from "solid-js";
+import { For, Show, Suspense, createEffect } from "solid-js";
 import { A } from "@solidjs/router";
 import { display_from_now } from "@/helpers/time";
 import { news_per_page } from "@/config/misc";
+import { createAddHideMutation, createGetPathname } from "@/queries/users";
+import { useLoggedUser } from "@/contexts/logged_user.tsx";
 
 import Triangle from "@/components/icons/Triangle";
 import Loading from "./ui/Loading";
+
+const Hide = (p: { newsId: string }) => {
+    const { loading, mutate } = createAddHideMutation();
+
+    const pathname = createGetPathname();
+
+    createEffect(() => {
+        console.log(pathname());
+    });
+
+    return (
+        <button
+            onClick={() => {
+                mutate()({ news_id: p.newsId, operation: pathname() === "/hidden" ? "remove" : "add" });
+            }}
+            disabled={loading()}
+            class="hover:underline"
+        >
+            {pathname() === "/hidden" ? "un-hide" : "hide"}
+        </button>
+    );
+};
 
 const News = (p: TNews & { no: number }) => {
     return (
@@ -40,9 +64,11 @@ const News = (p: TNews & { no: number }) => {
                     <A title={new Date().toUTCString()} href={`/item?id=${p._id}`} class="hover:underline">
                         {display_from_now(p.created_at)}
                     </A>{" "}
-                    | <button class="hover:underline">hide</button> |{" "}
+                    | <Hide newsId={p._id} /> |{" "}
                     <A href={`/item?id=${p._id}`} class="hover:underline">
-                        {p.comments_count} comments
+                        <Show when={p?.comments_count || 0 > 0} fallback="discuss">
+                            {p.comments_count} comments
+                        </Show>
                     </A>
                 </div>
             </div>

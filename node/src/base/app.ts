@@ -1,10 +1,10 @@
 import type { Context } from "koa";
 import type { TUser } from "@/repos/users";
 
-import { load_module_dynamically } from "@/helps/units";
+import { load_module_dynamically } from "@/helpers/units";
 import { db } from "@/base/single";
 import { request_id } from "@/base/middlewares";
-import { domains } from "@/conf/mics";
+import { domains } from "@/config/mics";
 
 import koaLogger from "koa-logger";
 import koaJson from "koa-json";

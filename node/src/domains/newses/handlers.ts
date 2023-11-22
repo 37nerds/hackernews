@@ -3,8 +3,8 @@ import type { TGetNewsesQuerySchema, TPostNewsesBodySchema } from "./schemas";
 import type { TNews } from "@/repos/newses";
 
 import { return_news } from "./schemas";
-import { TSort, to_string_id } from "@/base/repo";
-import { reply } from "@/helps/units";
+import { TSort, to_string_id, to_object_id } from "@/base/repo";
+import { reply } from "@/helpers/units";
 
 import news_repo from "@/repos/newses";
 
@@ -21,7 +21,7 @@ export const index = async (ctx: Context) => {
     const filter = queries.filter;
     const value = queries.value;
 
-    let query_filter = {};
+    let query_filter: object = {};
     let sort_column: keyof TNews = "created_at";
     let sort_order: TSort = "asc";
 
@@ -40,6 +40,15 @@ export const index = async (ctx: Context) => {
         };
         sort_column = "created_at";
         sort_order = "desc";
+    }
+
+    const hidden_news = ctx.user?.hidden_news;
+
+    if (hidden_news) {
+        query_filter = {
+            ...query_filter,
+            _id: { $nin: hidden_news.map((id) => to_object_id(id)) },
+        };
     }
 
     const newses: TNews[] = (

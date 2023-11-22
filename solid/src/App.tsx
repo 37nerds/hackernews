@@ -6,7 +6,7 @@ import { layout_routes, public_routes } from "@/config/routes";
 import { MetaProvider } from "@solidjs/meta";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { Toaster } from "solid-toast";
-import { LoggedUserProvider } from "./contexts/loggedUser";
+import { LoggedUserProvider } from "./contexts/logged_user.tsx";
 
 import Page404 from "@/components/ui/404";
 import Layout from "@/components/Layout";

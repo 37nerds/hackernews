@@ -1,6 +1,6 @@
 import { For, Show, createEffect } from "solid-js";
 import { hideRightNavLinks, navLinks } from "@/states/layout";
-import { useLoggedUser } from "@/contexts/loggedUser.tsx";
+import { useLoggedUser } from "@/contexts/logged_user.tsx";
 import { A, useLocation } from "@solidjs/router";
 import { createLogoutMutation } from "@/queries/users";
 import { Outlet } from "@solidjs/router";

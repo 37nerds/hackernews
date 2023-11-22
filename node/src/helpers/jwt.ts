@@ -1,6 +1,6 @@
 import type { JwtPayload } from "jsonwebtoken";
 
-import env from "@/conf/env";
+import env from "@/config/env";
 import jsonwebtoken from "jsonwebtoken";
 
 const secret_key = env.JWT_SECRET_KEY;

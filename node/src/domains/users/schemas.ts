@@ -1,7 +1,7 @@
 import type { TUser } from "@/repos/users";
 
 import { z } from "zod";
-import { id_schema } from "@/helps/schema";
+import { id_schema } from "@/helpers/schema";
 
 const email_schema = z.string().email();
 const password_schema = z.string().min(6);
@@ -42,12 +42,28 @@ export const reset_password_body_schema = z.object({
     token: z.string(),
 });
 
+export const add_hide_body_schema = z.object({
+    news_id: id_schema,
+});
+
+export const delete_hide_query_schema = z.object({
+    news_id: id_schema,
+});
+
+export const get_hidden_query_schema = z.object({
+    per_page: z.string().optional(),
+    page: z.string().optional(),
+});
+
 export type TRegisterOrLoginUserBodySchema = z.infer<typeof register_or_login_user_body_schema>;
 export type TGetUserQuerySchema = z.infer<typeof get_user_query_schema>;
 export type TUpdateProfileBodySchema = z.infer<typeof update_profile_body_schema>;
 export type TChangePasswordBodySchema = z.infer<typeof change_password_body_schema>;
 export type TForgotPasswordBodySchema = z.infer<typeof forgot_password_body_schema>;
 export type TResetPasswordBodySchema = z.infer<typeof reset_password_body_schema>;
+export type TAddHideBodySchema = z.infer<typeof add_hide_body_schema>;
+export type TDeleteHideQuerySchema = z.infer<typeof delete_hide_query_schema>;
+export type TGetHiddenQuerySchema = z.infer<typeof get_hidden_query_schema>;
 
 // return users to the client
 export const return_logged_user = (

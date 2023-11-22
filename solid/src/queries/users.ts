@@ -1,10 +1,15 @@
 import type { TError } from "@/types";
+import type { TFilter, TNews } from "@/queries/newses.ts";
 
-import { createSignal } from "solid-js";
-import { createMutation, createQuery } from "@tanstack/solid-query";
-import { createHandleErrorMutation } from "@/helpers/primitives";
+import { createEffect, createSignal } from "solid-js";
+import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
+import { createGetParams, createHandleErrorMutation } from "@/helpers/primitives";
+import { NEWSES_FETCH } from "@/queries/newses.ts";
+import { useLoggedUser } from "@/contexts/logged_user.tsx";
+import { useLocation } from "@solidjs/router";
 
 import http from "@/helpers/http";
+import { news_per_page } from "@/config/misc";
 
 export type TUser = {
     _id: string;
@@ -27,6 +32,7 @@ export type TLoggedUser = {
     noprocrast: boolean;
     showdead: boolean;
     email: string;
+    hidden_news?: string[];
 };
 
 type TRegisterOrLogin = {
@@ -130,4 +136,68 @@ export const createResetPasswordMutation = () => {
     }));
     createHandleErrorMutation(m);
     return m;
+};
+
+const HIDDEN_NEWSES_FETCH = "hidden-newses";
+
+export const createGetHiddenNewsesQuery = () => {
+    const { page } = createGetParams();
+
+    const q = createQuery<TNews[], TError>(() => ({
+        queryFn: () => {
+            const queries: Record<string, string | number> = {
+                per_page: news_per_page,
+                page: page(),
+            };
+            return http.get_wq(`/users/hidden`, queries, 200);
+        },
+        queryKey: [HIDDEN_NEWSES_FETCH, page()],
+        retry: false,
+    }));
+
+    const newses = () => q.data || [];
+    const loading = () => q.isLoading;
+
+    createEffect(() => {
+        console.log(newses());
+    });
+
+    return { newses, loading, page };
+};
+
+export const createAddHideMutation = () => {
+    const loggedUser = useLoggedUser();
+    const qc = useQueryClient();
+
+    const { day, page } = createGetParams();
+
+    const m = createMutation<TLoggedUser, TError, { news_id: string; operation: "remove" | "add" }>(() => ({
+        mutationFn: d =>
+            d.operation === "add"
+                ? http.post("/users/hidden", { news_id: d.news_id }, 200)
+                : http.delete(`/users/hidden/?news_id=${d.news_id}`, 200),
+        mutationKey: ["hidden"],
+        onSuccess: d => {
+            loggedUser?.setData(d);
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "home" as TFilter, page()] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "newest" as TFilter, page()] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "day" as TFilter, page(), day()] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "day" as TFilter, page(), day()] });
+            qc.invalidateQueries({ queryKey: [HIDDEN_NEWSES_FETCH, 1] });
+            qc.invalidateQueries({ queryKey: [HIDDEN_NEWSES_FETCH, page()] });
+        },
+    }));
+
+    createHandleErrorMutation(m);
+
+    const loading = () => m.isPending;
+    const mutate = () => m.mutate;
+
+    return { loading, mutate };
+};
+
+export const createGetPathname = () => {
+    const location = useLocation();
+    const pathname = () => location.pathname;
+    return pathname;
 };

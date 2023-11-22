@@ -1,26 +1,28 @@
-import type { TRegisterOrLoginUserBodySchema, TResetPasswordBodySchema, TUpdateProfileBodySchema } from "./schemas";
+import type { TAddHideBodySchema, TDeleteHideQuerySchema, TGetHiddenQuerySchema } from "./schemas";
+import type { TResetPasswordBodySchema, TUpdateProfileBodySchema, TRegisterOrLoginUserBodySchema } from "./schemas";
 import type { TChangePasswordBodySchema, TForgotPasswordBodySchema, TGetUserQuerySchema } from "./schemas";
 import type { Context } from "koa";
 import type { TUser } from "@/repos/users";
 import type { TToken, TTokenType } from "@/repos/tokens";
 
-import { BadRequestError } from "@/helps/errors";
+import { BadRequestError } from "@/helpers/errors";
 import { login_user, logout_user } from "./logic";
-import { reply } from "@/helps/units";
-import { to_string_id } from "@/base/repo";
+import { reply } from "@/helpers/units";
+import { to_object_id, to_string_id } from "@/base/repo";
 import { return_logged_user, return_user } from "./schemas";
 
 import token_repo from "@/repos/tokens";
 import dayjs from "dayjs";
 import user_repo from "@/repos/users";
-import crypto from "@/helps/crypto";
+import crypto from "@/helpers/crypto";
 import forgot_password_alert from "@/jobs/forgot_password_alert";
-import jwt from "@/helps/jwt";
+import jwt from "@/helpers/jwt";
+import news_repo from "@/repos/newses";
 
 export const register = async (ctx: Context) => {
     const user = await user_repo.insert(ctx.request.body as TRegisterOrLoginUserBodySchema);
     await login_user(ctx, user);
-    return reply(ctx, 201, return_logged_user(user));
+    return reply(ctx, 201, return_user(user));
 };
 
 export const login = async (ctx: Context) => {
@@ -30,7 +32,7 @@ export const login = async (ctx: Context) => {
         throw new BadRequestError("invalid credentials", { password: "incorrect credentials" });
     }
     await login_user(ctx, user);
-    return reply(ctx, 200, return_logged_user(user));
+    return reply(ctx, 200, return_user(user));
 };
 
 export const logout = async (ctx: Context) => {
@@ -39,14 +41,14 @@ export const logout = async (ctx: Context) => {
 };
 
 export const profile = async (ctx: Context) => {
-    return reply(ctx, 200, return_logged_user(ctx.user));
+    return reply(ctx, 200, return_user(ctx.user));
 };
 
 export const update_profile = async (ctx: Context) => {
     const loggedUser = ctx.user;
     const payload = ctx.request.body as TUpdateProfileBodySchema;
     const updatedProfile = await user_repo.update(to_string_id(loggedUser._id), payload);
-    return reply(ctx, 200, return_logged_user(updatedProfile));
+    return reply(ctx, 200, return_user(updatedProfile));
 };
 
 export const change_password = async (ctx: Context) => {
@@ -122,4 +124,48 @@ export const index = async (ctx: Context) => {
         200,
         users.map((user) => return_user(user)),
     );
+};
+
+export const add_hide = async (ctx: Context) => {
+    let user = ctx.user;
+    const payload = ctx.request.body as TAddHideBodySchema;
+
+    if ((user?.hidden_news || []).find((id) => id === payload.news_id)) {
+        return reply(ctx, 400, { message: "invalid hidden news" });
+    }
+
+    user = await user_repo.update(to_string_id(user._id), {
+        hidden_news: [...(user?.hidden_news || []), payload.news_id],
+    });
+
+    return reply(ctx, 200, return_logged_user(user));
+};
+
+export const remove_hide = async (ctx: Context) => {
+    let user = ctx.user;
+    const payload = ctx.request.query as TDeleteHideQuerySchema;
+
+    if (!(user?.hidden_news || []).find((id) => id === payload.news_id)) {
+        return reply(ctx, 400, { message: "invalid hidden news" });
+    }
+
+    user = await user_repo.update(to_string_id(user._id), {
+        hidden_news: user.hidden_news?.filter((news_id) => news_id !== payload.news_id) || [],
+    });
+
+    return reply(ctx, 200, return_logged_user(user));
+};
+
+export const get_hidden_newses = async (ctx: Context) => {
+    const queries = ctx.request.query as TGetHiddenQuerySchema;
+
+    const per_page = Number(queries?.per_page) || 20;
+    const page = Number(queries?.page) || 1;
+
+    const newses = await news_repo.finds(
+        { _id: { $in: ctx.user?.hidden_news?.map((id) => to_object_id(id)) || [] } },
+        { per_page, page },
+    );
+
+    return reply(ctx, 200, newses);
 };

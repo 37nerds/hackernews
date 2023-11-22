@@ -1,6 +1,6 @@
 import type { Filter, Document, WithId, OptionalId } from "mongodb";
 
-import { DatabaseError, NotFoundError, ProcessingError } from "@/helps/errors";
+import { DatabaseError, NotFoundError, ProcessingError } from "@/helpers/errors";
 import { ObjectId } from "mongodb";
 import { db } from "@/base/single";
 
@@ -23,9 +23,9 @@ export const to_object_id = (_id: string): ObjectId => {
     }
 };
 
-export const to_string_id = (id: ObjectId): string => {
+export const to_string_id = (id?: ObjectId): string => {
     try {
-        return id.toString();
+        return id?.toString() || "";
     } catch (e: any) {
         throw new ProcessingError(e.message);
     }

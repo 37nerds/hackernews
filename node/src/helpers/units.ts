@@ -8,7 +8,7 @@ import { templates } from "@/base/single";
 import fs from "node:fs";
 import path from "node:path";
 import ejs from "ejs";
-import env from "@/conf/env";
+import env from "@/config/env";
 
 export const connect_mongodb = async (): Promise<Db> => {
     const client = new MongoClient(env.MONGO_URI);

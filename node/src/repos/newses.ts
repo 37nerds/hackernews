@@ -2,7 +2,7 @@ import type { TBaseDoc, TFilter, TSort } from "@/base/repo";
 import type { TFaker } from "@/base/types";
 
 import { to_object_id } from "@/base/repo";
-import { random, x_seed } from "@/helps/seeding";
+import { random, x_seed } from "@/helpers/seeding";
 
 import repo from "@/base/repo";
 

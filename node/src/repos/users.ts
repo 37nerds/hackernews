@@ -1,12 +1,12 @@
 import type { TBaseDoc, TFilter } from "@/base/repo";
 import type { TFaker } from "@/base/types";
 
-import { x_seed } from "@/helps/seeding";
-import { BadRequestError } from "@/helps/errors";
+import { x_seed } from "@/helpers/seeding";
+import { BadRequestError } from "@/helpers/errors";
 import { to_object_id } from "@/base/repo";
 
 import repo from "@/base/repo";
-import crypto from "@/helps/crypto";
+import crypto from "@/helpers/crypto";
 
 type TUserExtra = {
     email?: string;
@@ -17,6 +17,7 @@ type TUserExtra = {
     minaway?: number;
     delay?: number;
     karma?: number;
+    hidden_news?: string[];
 };
 
 export type TUser = TBaseDoc & TUserInsert & TUserExtra;

@@ -1,6 +1,6 @@
 import type { TNews } from "@/repos/newses";
 
-import { id_schema } from "@/helps/schema";
+import { id_schema } from "@/helpers/schema";
 import { z } from "zod";
 
 export const get_newses_query_schema = z.object({

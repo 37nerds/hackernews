@@ -1,9 +1,9 @@
-import { load_module_dynamically } from "@/helps/units";
+import { load_module_dynamically } from "@/helpers/units";
 import { faker } from "@faker-js/faker";
-import { seeders } from "@/conf/mics";
+import { seeders } from "@/config/mics";
 
 import app from "@/base/app";
-import log from "@/helps/log";
+import log from "@/helpers/log";
 
 const main = async () => {
     await app();

@@ -4,8 +4,10 @@ import { Show, createEffect } from "solid-js";
 import { A } from "@solidjs/router";
 import { createAddNavLink } from "@/helpers/primitives";
 import { createGetNewsesQuery } from "@/queries/newses";
+import { useLoggedUser } from "@/contexts/logged_user";
 import { add_days, add_months, add_years, subtract_days, subtract_months, subtract_years } from "@/helpers/time";
 import { format_to_display_date, format_to_param_date, is_getter_then_now } from "@/helpers/time";
+import { filter_hidden_newses } from "@/helpers/logic";
 
 import Newses from "@/components/Newses";
 
@@ -34,16 +36,23 @@ const DateSelector = (p: { day: () => string }) => (
 );
 
 export default () => {
-    const { newses, loading, page, day } = createGetNewsesQuery("day");
-
     createEffect(() => {
         createAddNavLink(day(), `/front`, true);
     });
 
+    const { newses, loading, page, day } = createGetNewsesQuery("day");
+
+    const logger_user = useLoggedUser();
+
     return (
         <main class="flex flex-col gap-3">
             <DateSelector day={day} />
-            <Newses newses={newses()} page={page()} loading={loading()} more_page_prefix={`/front?day=${day()}&`} />
+            <Newses
+                newses={filter_hidden_newses(newses(), logger_user?.data()?.hidden_news || [])}
+                page={page()}
+                loading={loading()}
+                more_page_prefix={`/front?day=${day()}&`}
+            />
         </main>
     );
 };

@@ -1,10 +1,10 @@
 import type { Context, Next } from "koa";
 import type { TError } from "./types";
 
-import { HttpError, UnknownError } from "@/helps/errors";
-import { is_dev } from "@/helps/units";
+import { HttpError, UnknownError } from "@/helpers/errors";
+import { is_dev } from "@/helpers/units";
 
-import log from "@/helps/log";
+import log from "@/helpers/log";
 
 const eh = <T>(func: (ctx: Context, next: Next) => Promise<T>) => {
     return async (ctx: Context, next: Next) => {

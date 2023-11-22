@@ -5,14 +5,26 @@ import type { Schema } from "zod";
 import type { TErrorRecord } from "@/base/types";
 
 import { z } from "zod";
-import { UnknownError, ValidationError } from "@/helps/errors";
+import { UnknownError, ValidationError } from "@/helpers/errors";
 import { verify_auth_token } from "@/domains/users/logic";
 
 import eh from "@/base/eh";
+import log from "@/helpers/log";
 
 export const protect = () => {
     return eh(async (ctx: Context, next: Next) => {
         ctx.user = await verify_auth_token(ctx);
+        return await next();
+    });
+};
+
+export const load_user = () => {
+    return eh(async (ctx: Context, next: Next) => {
+        try {
+            ctx.user = await verify_auth_token(ctx);
+        } catch (e: any) {
+            log.debug("unauthenticated user")
+        }
         return await next();
     });
 };

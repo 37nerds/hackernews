@@ -1,14 +1,14 @@
 import type { Context } from "koa";
 import type { TUser } from "@/repos/users";
 
-import { BadRequestError, ServerSideError } from "@/helps/errors";
+import { BadRequestError, ServerSideError } from "@/helpers/errors";
 import { emitter } from "@/base/single";
-import { times } from "@/helps/units";
+import { times } from "@/helpers/units";
 
-import jwt from "@/helps/jwt";
+import jwt from "@/helpers/jwt";
 import user_repo from "@/repos/users";
-import log from "@/helps/log";
-import cookie from "@/helps/cookie";
+import log from "@/helpers/log";
+import cookie from "@/helpers/cookie";
 
 export type TAuthTokenPayload = { username: string };
 

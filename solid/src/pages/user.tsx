@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "@solidjs/router";
 import { createUpdateProfileMutation, createUserByUsernameQuery } from "@/queries/users";
 import { display_from_now } from "@/helpers/time";
 import { convert_boolean_to_yes_no, convert_yes_no_to_boolean } from "@/helpers/utils";
-import { useLoggedUser } from "@/contexts/loggedUser";
+import { useLoggedUser } from "@/contexts/logged_user.tsx";
 import { createHideFooter } from "@/helpers/primitives";
 
 import log from "@/helpers/log";

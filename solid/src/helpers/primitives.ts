@@ -2,14 +2,15 @@ import type { TError } from "@/types";
 import type { CreateMutationResult } from "@tanstack/solid-query";
 
 import { createEffect, onCleanup, onMount } from "solid-js";
-import { useNavigate } from "@solidjs/router";
-import { useLoggedUser } from "@/contexts/loggedUser";
+import { useNavigate, useSearchParams } from "@solidjs/router";
+import { useLoggedUser } from "@/contexts/logged_user.tsx";
 import { setHideFooter } from "@/states/layout";
 import { setHideRightNavLinks } from "@/states/layout";
 import { nav_links } from "@/config/links";
 import { setNavLinks } from "@/states/layout";
 
 import log from "@/helpers/log";
+import { format_to_param_date, subtract_days } from "./time";
 
 export const createGuestRoute = () => {
     const loggedUser = useLoggedUser();
@@ -65,4 +66,13 @@ export const createAddNavLink = (title: string, href: string, not_href?: boolean
     onCleanup(() => {
         setNavLinks([...nav_links]);
     });
+};
+
+export const createGetParams = () => {
+    const [searchParams] = useSearchParams();
+
+    const page = () => Number(searchParams.page) || 1;
+    const day = () => searchParams.day || format_to_param_date(subtract_days(Date.now()));
+
+    return { page, day };
 };

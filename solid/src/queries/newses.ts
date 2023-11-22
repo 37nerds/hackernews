@@ -1,11 +1,9 @@
 import type { TError } from "@/types";
 
-import { useSearchParams } from "@solidjs/router";
-import { format_to_param_date, subtract_days } from "@/helpers/time";
 import { extract_domain_from_url } from "@/helpers/utils";
 import { news_per_page } from "@/config/misc";
 import { createMutation, createQuery } from "@tanstack/solid-query";
-import { createHandleErrorMutation } from "@/helpers/primitives";
+import { createGetParams, createHandleErrorMutation } from "@/helpers/primitives";
 
 import http from "@/helpers/http";
 
@@ -27,11 +25,10 @@ export type TNews = {
 
 export type TFilter = "day" | "newest" | "home";
 
-export const createGetNewsesQuery = (filter: TFilter = "home") => {
-    const [searchParams] = useSearchParams();
+export const NEWSES_FETCH = "newses-fetch";
 
-    const page = () => Number(searchParams.page) || 1;
-    const day = () => searchParams.day || format_to_param_date(subtract_days(Date.now()));
+export const createGetNewsesQuery = (filter: TFilter = "home") => {
+    const { day, page } = createGetParams();
 
     const q = createQuery<TNews[], TError>(() => ({
         queryFn: () => {
@@ -45,7 +42,7 @@ export const createGetNewsesQuery = (filter: TFilter = "home") => {
             }
             return http.get_wq(`/newses`, queries, 200);
         },
-        queryKey: ["fetch-newses", filter, page(), day()],
+        queryKey: filter === "day" ? [NEWSES_FETCH, filter, page(), day()] : [NEWSES_FETCH, filter, page()],
         retry: false,
     }));
 
