@@ -5,7 +5,6 @@ import { A } from "@solidjs/router";
 import { display_from_now } from "@/helpers/time";
 import { news_per_page } from "@/config/misc";
 import { createAddHideMutation, createGetPathname } from "@/queries/users";
-import { useLoggedUser } from "@/contexts/logged_user.tsx";
 
 import Triangle from "@/components/icons/Triangle";
 import Loading from "./ui/Loading";
