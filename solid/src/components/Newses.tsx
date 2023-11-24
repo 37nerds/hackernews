@@ -1,13 +1,59 @@
-import type { TNews } from "@/queries/newses";
+import { createVoteMutation, type TNews } from "@/queries/newses";
 
 import { For, Show, Suspense, createEffect } from "solid-js";
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { display_from_now } from "@/helpers/time";
 import { news_per_page } from "@/config/misc";
 import { createAddHideMutation, createGetPathname } from "@/queries/users";
+import { useIsUserLoggedIn, useLoggedUser } from "@/contexts/logged_user";
 
 import Triangle from "@/components/icons/Triangle";
 import Loading from "./ui/Loading";
+
+const Unvote = (p: { newsId: string }) => {
+    const vote_mutation = createVoteMutation();
+    const logged_user = useLoggedUser();
+
+    return (
+        <Show when={logged_user?.data()?.voted_news?.find(news_id => p.newsId === news_id)}>
+            |{" "}
+            <button
+                onClick={() => {
+                    vote_mutation.mutate({ news_id: p.newsId, operation: "remove" });
+                }}
+                disabled={vote_mutation.isPending}
+                class="hover:underline"
+            >
+                unvote
+            </button>
+        </Show>
+    );
+};
+
+const Vote = (p: { newsId: string }) => {
+    const navigate = useNavigate();
+    const isUserLoggedIn = useIsUserLoggedIn();
+    const voteMutation = createVoteMutation();
+    const loggedUser = useLoggedUser();
+
+    const handleClick = () => {
+        if (!isUserLoggedIn) {
+            navigate("/login");
+            return;
+        }
+        voteMutation.mutate({ news_id: p.newsId, operation: "add" });
+    };
+
+    return (
+        <div class="h-3 w-3">
+            <Show when={!loggedUser?.data()?.voted_news?.find(news_id => news_id === p.newsId)}>
+                <button class="items-top flex h-3 w-3" onClick={handleClick}>
+                    <Triangle />
+                </button>
+            </Show>
+        </div>
+    );
+};
 
 const Hide = (p: { newsId: string }) => {
     const { loading, mutate } = createAddHideMutation();
@@ -18,14 +64,19 @@ const Hide = (p: { newsId: string }) => {
         console.log(pathname());
     });
 
+    const isLoggedUser = useIsUserLoggedIn();
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        if (!isLoggedUser) {
+            navigate("/login");
+            return;
+        }
+        mutate()({ news_id: p.newsId, operation: pathname() === "/hidden" ? "remove" : "add" });
+    };
+
     return (
-        <button
-            onClick={() => {
-                mutate()({ news_id: p.newsId, operation: pathname() === "/hidden" ? "remove" : "add" });
-            }}
-            disabled={loading()}
-            class="hover:underline"
-        >
+        <button onClick={handleClick} disabled={loading()} class="hover:underline">
             {pathname() === "/hidden" ? "un-hide" : "hide"}
         </button>
     );
@@ -36,14 +87,7 @@ const News = (p: TNews & { no: number }) => {
         <div class="flex gap-1 rounded bg-primary-bg px-1 py-0.5">
             <div class="items-top flex gap-1">
                 <div class="min-w-5 text-end text-secondary">{p.no}.</div>
-                <button
-                    class="items-top flex h-3 w-3"
-                    onClick={() => {
-                        console.log(`voted on ${p._id}`);
-                    }}
-                >
-                    <Triangle />
-                </button>
+                <Vote newsId={p._id} />
             </div>
             <div class="flex flex-col">
                 <div class="flex items-center gap-1">
@@ -63,7 +107,7 @@ const News = (p: TNews & { no: number }) => {
                     <A title={new Date().toUTCString()} href={`/item?id=${p._id}`} class="hover:underline">
                         {display_from_now(p.created_at)}
                     </A>{" "}
-                    | <Hide newsId={p._id} /> |{" "}
+                    <Unvote newsId={p._id} /> | <Hide newsId={p._id} /> |{" "}
                     <A href={`/item?id=${p._id}`} class="hover:underline">
                         <Show when={p?.comments_count || 0 > 0} fallback="discuss">
                             {p.comments_count} comments

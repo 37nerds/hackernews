@@ -1,14 +1,19 @@
 import type { TBaseDoc, TFilter } from "@/base/repo";
 import type { TFaker } from "@/base/types";
 
+import { to_object_id } from "@/base/repo";
 import { x_seed } from "@/helpers/seeding";
 import { BadRequestError } from "@/helpers/errors";
-import { to_object_id } from "@/base/repo";
 
 import repo from "@/base/repo";
 import crypto from "@/helpers/crypto";
 
-type TUserExtra = {
+type TInsert = {
+    username: string;
+    password: string;
+};
+
+type TExtra = {
     email?: string;
     about?: string;
     showdead?: boolean;
@@ -18,17 +23,17 @@ type TUserExtra = {
     delay?: number;
     karma?: number;
     hidden_news?: string[];
+    voted_news?: string[];
 };
 
-export type TUser = TBaseDoc & TUserInsert & TUserExtra;
-
-export type TUserInsert = {
-    username: string;
-    password: string;
-    karma: number;
+type TUpdate = {
+    username?: string;
+    password?: string;
 };
 
-export type TUserUpdate = { username?: string; password?: string } & TUserExtra;
+export type TUser = TBaseDoc & TInsert & TExtra;
+export type TUserInsert = TInsert;
+export type TUserUpdate = TUpdate & TExtra;
 
 export const USERS = "users";
 
@@ -65,7 +70,7 @@ const user_repo = {
             throw new BadRequestError("user already exits", { username: "username already exits" });
         }
         doc.password = await crypto.hash(doc.password);
-        return await repo.insert<TUserInsert, TUser>(USERS, { ...doc, karma: 1 });
+        return await repo.insert<TInsert & TExtra, TUser>(USERS, { ...doc, karma: 1 });
     },
     finds: async (): Promise<TUser[]> => {
         return await repo.finds<TUser>(USERS);

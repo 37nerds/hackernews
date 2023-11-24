@@ -1,12 +1,14 @@
 import type { Context } from "koa";
-import type { TGetNewsesQuerySchema, TPostNewsesBodySchema } from "./schemas";
 import type { TNews } from "@/repos/newses";
+import type { TSort } from "@/base/repo";
+import type { TGetNewsesQuerySchema, TPostNewsesBodySchema, TVoteBodySchema } from "./schemas";
 
-import { return_news } from "./schemas";
-import { TSort, to_string_id, to_object_id } from "@/base/repo";
+import { to_string_id, to_object_id } from "@/base/repo";
 import { reply } from "@/helpers/units";
+import { return_news } from "./schemas";
 
 import news_repo from "@/repos/newses";
+import user_repo from "@/repos/users";
 
 export const index = async (ctx: Context) => {
     const queries = (ctx.request.query as TGetNewsesQuerySchema) || {};
@@ -67,4 +69,34 @@ export const insert = async (ctx: Context) => {
     const body = ctx.request.body as TPostNewsesBodySchema;
     const news = await news_repo.insert({ ...body, user: to_string_id(ctx?.user?._id) });
     return reply(ctx, 201, news);
+};
+
+export const upvote = async (ctx: Context) => {
+    const logged_user = ctx.user;
+    const body: TVoteBodySchema = ctx.request.body;
+
+    let news = await news_repo.find_by_id(body.news_id);
+
+    const points = news.points + 1;
+    const voted_news = [...(logged_user.voted_news || []), body.news_id];
+
+    news = await news_repo.update(body.news_id, { points });
+    await user_repo.update(to_string_id(logged_user._id), { voted_news });
+
+    return reply(ctx, 200, news);
+};
+
+export const downvote = async (ctx: Context) => {
+    const logged_user = ctx.user;
+    const body: TVoteBodySchema = ctx.request.body;
+
+    let news = await news_repo.find_by_id(body.news_id);
+
+    const points = news.points - 1;
+    const voted_news = (logged_user.voted_news || []).filter((id) => id !== body.news_id);
+
+    news = await news_repo.update(body.news_id, { points });
+    await user_repo.update(to_string_id(logged_user._id), { voted_news });
+
+    return reply(ctx, 200, news);
 };

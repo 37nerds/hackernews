@@ -33,6 +33,7 @@ export type TLoggedUser = {
     showdead: boolean;
     email: string;
     hidden_news?: string[];
+    voted_news?: string[];
 };
 
 type TRegisterOrLogin = {
@@ -56,16 +57,12 @@ export const createLoginMutation = () => {
     }));
 };
 
+export const PROFILE_FETCH = "profile";
+
 export const createProfileQuery = () => {
     return createQuery<TLoggedUser, TError>(() => ({
-        queryFn: () => {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(http.get("/users/profile", 200));
-                }, 10);
-            });
-        },
-        queryKey: ["profile"],
+        queryFn: () => http.get("/users/profile", 200),
+        queryKey: [PROFILE_FETCH],
         retry: false,
     }));
 };

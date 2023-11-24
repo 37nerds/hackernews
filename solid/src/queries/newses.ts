@@ -2,10 +2,11 @@ import type { TError } from "@/types";
 
 import { extract_domain_from_url } from "@/helpers/utils";
 import { news_per_page } from "@/config/misc";
-import { createMutation, createQuery } from "@tanstack/solid-query";
+import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
 import { createGetParams, createHandleErrorMutation } from "@/helpers/primitives";
 
 import http from "@/helpers/http";
+import { PROFILE_FETCH } from "./users";
 
 type TNewsType = "link";
 
@@ -59,4 +60,27 @@ export const createSaveNewsMutation = () => {
             mutationKey: ["save-news"],
         })),
     );
+};
+
+export const createVoteMutation = () => {
+    const qc = useQueryClient();
+
+    const { day, page } = createGetParams();
+
+    const m = createMutation<TNews, TError, { news_id: string; operation: "add" | "remove" }>(() => ({
+        mutationFn: d =>
+            d.operation === "add"
+                ? http.patch("/newses/upvote", { news_id: d.news_id }, 200)
+                : http.patch("/newses/downvote", { news_id: d.news_id }, 200),
+        mutationKey: ["news-vote"],
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: [PROFILE_FETCH] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "home" as TFilter, page()] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "newest" as TFilter, page()] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "day" as TFilter, page(), day()] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "day" as TFilter, page(), day()] });
+        },
+    }));
+    createHandleErrorMutation(m);
+    return m;
 };

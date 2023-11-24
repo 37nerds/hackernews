@@ -8,19 +8,7 @@ import repo from "@/base/repo";
 
 type TNewsType = "link";
 
-type TNewsElseData = {
-    title: string;
-    points: number | null;
-    user: string | null;
-    comments_count: number;
-    type: TNewsType;
-    url: string;
-    domain?: string;
-};
-
-export type TNews = TBaseDoc & TNewsElseData;
-
-export type TNewsInsert = {
+type TInsert = {
     title: string;
     user: string;
     type: TNewsType;
@@ -28,7 +16,24 @@ export type TNewsInsert = {
     domain?: string;
 };
 
-export type TNewsUpdate = TNewsElseData;
+type TExtra = {
+    points: number;
+    comments_count: number;
+};
+
+type TUpdate = {
+    title?: string;
+    user?: string;
+    type?: TNewsType;
+    url?: string;
+    domain?: string;
+    points?: number;
+    comments_count?: number;
+};
+
+export type TNews = TBaseDoc & TInsert & TExtra;
+export type TNewsInsert = TInsert;
+export type TNewsUpdate = TUpdate;
 
 export const NEWSES = "newses";
 
@@ -54,7 +59,13 @@ export const seeder = async (faker: TFaker, delete_before: boolean = false) => {
 };
 
 const news_repo = {
-    insert: (doc: TNewsInsert) => repo.insert<TNewsElseData, TNews>(NEWSES, { ...doc, points: 0, comments_count: 0 }),
+    insert: (doc: TNewsInsert) => {
+        return repo.insert<TInsert & TExtra, TNews>(NEWSES, {
+            ...doc,
+            points: 0,
+            comments_count: 0,
+        });
+    },
     finds: (
         filter?: object,
         options?: {
@@ -73,10 +84,18 @@ const news_repo = {
             options?.sort_order,
         );
     },
-    find: (filter: TFilter) => repo.find<TNews>(NEWSES, filter),
-    find_by_id: (id: string) => repo.find<TNews>(NEWSES, { _id: to_object_id(id) }),
-    update: (id: string, doc: TNewsUpdate) => repo.update<TNewsUpdate, TNews>(NEWSES, id, doc),
-    destroy: (id: string) => repo.destroy(NEWSES, id),
+    find: (filter: TFilter) => {
+        return repo.find<TNews>(NEWSES, filter);
+    },
+    find_by_id: (id: string) => {
+        return repo.find<TNews>(NEWSES, { _id: to_object_id(id) });
+    },
+    update: (id: string, doc: TNewsUpdate) => {
+        return repo.update<TNewsUpdate, TNews>(NEWSES, id, doc);
+    },
+    destroy: (id: string) => {
+        return repo.destroy(NEWSES, id);
+    },
 };
 
 export default news_repo;

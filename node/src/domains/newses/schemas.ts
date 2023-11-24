@@ -19,8 +19,13 @@ export const post_newses_body_schema = z.object({
     domain: z.string(),
 });
 
+export const vote_body_schema = z.object({
+    news_id: z.string(),
+});
+
 export type TGetNewsesQuerySchema = z.infer<typeof get_newses_query_schema>;
 export type TPostNewsesBodySchema = z.infer<typeof post_newses_body_schema>;
+export type TVoteBodySchema = z.infer<typeof vote_body_schema>;
 
 export const return_news = (doc: TNews) => {
     return doc;

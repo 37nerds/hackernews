@@ -54,3 +54,8 @@ export const LoggedUserProvider = (p: { children: JSX.Element }) => {
 export const useLoggedUser = () => {
     return useContext(LoggedUserContext);
 };
+
+export const useIsUserLoggedIn = () => {
+    const loggedUser = useLoggedUser();
+    return !!loggedUser?.data();
+};
