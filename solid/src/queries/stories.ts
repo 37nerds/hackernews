@@ -9,6 +9,7 @@ import { PROFILE_FETCH } from "./users";
 import http from "@/helpers/http";
 import { useLoggedUser } from "@/contexts/logged_user";
 import { filter_hidden_stories } from "@/helpers/logic";
+import { createEffect, createSignal } from "solid-js";
 
 export type TStoryType = "link" | "ask" | "show" | "job";
 
@@ -82,7 +83,9 @@ export const createVoteMutation = () => {
             qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "home" as TFilter, page()] });
             qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "newest" as TFilter, page()] });
             qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "day" as TFilter, page(), day()] });
-            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "day" as TFilter, page(), day()] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "ask" as TFilter, page()] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "show" as TFilter, page()] });
+            qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "jobs" as TFilter, page()] });
         },
     }));
     createHandleErrorMutation(m);

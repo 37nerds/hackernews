@@ -66,10 +66,6 @@ const Hide = (p: { id: string }) => {
 
     const pathname = createGetPathname();
 
-    createEffect(() => {
-        console.log(pathname());
-    });
-
     const isLoggedUser = useIsUserLoggedIn();
     const navigate = useNavigate();
 
