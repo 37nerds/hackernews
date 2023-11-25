@@ -1,23 +1,13 @@
 import { createGetNewsesQuery } from "@/queries/stories";
-import { useLoggedUser } from "@/contexts/logged_user";
 
-import { filter_hidden_stories } from "@/helpers/logic";
-
-import Newses from "@/components/Newses";
+import Stories from "@/components/Stories";
 
 export default () => {
     const { stories, loading, page } = createGetNewsesQuery("newest");
 
-    const logger_user = useLoggedUser();
-
     return (
         <main>
-            <Newses
-                stories={filter_hidden_stories(stories(), logger_user?.data()?.hidden_story || [])}
-                page={page()}
-                loading={loading()}
-                more_page_prefix="/newest?"
-            />
+            <Stories stories={stories()} page={page()} loading={loading()} more_page_prefix="/newest?" />
         </main>
     );
 };

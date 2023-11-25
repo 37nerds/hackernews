@@ -1,5 +1,5 @@
 import type { TError } from "@/types";
-import type { TFilter, TNews } from "@/queries/stories.ts";
+import type { TFilter, TStory } from "@/queries/stories.ts";
 
 import { createEffect, createSignal } from "solid-js";
 import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
@@ -140,7 +140,7 @@ const HIDDEN_NEWSES_FETCH = "hidden-stories";
 export const createGetHiddenNewsesQuery = () => {
     const { page } = createGetParams();
 
-    const q = createQuery<TNews[], TError>(() => ({
+    const q = createQuery<TStory[], TError>(() => ({
         queryFn: () => {
             const queries: Record<string, string | number> = {
                 per_page: story_per_page,

@@ -9,5 +9,7 @@ Hacker News clone with different technologies
 
 ## Notes
 
--   Stories
-    -   Stories has 3 types: `link`, `ask`, `show` and `jobs`
+There is mainly three resources on this hackernews site: `users` , `stories` and `comments`,
+Logged in user can create stories and comments.
+New user can sign up.
+Stories has 4 types: `link`, `ask`, `show` and `jobs`.

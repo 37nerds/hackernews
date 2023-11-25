@@ -9,6 +9,7 @@ import { return_stories } from "./schemas";
 
 import story_repo from "@/repos/stories";
 import user_repo from "@/repos/users";
+import log from "@/helpers/log";
 
 export const index = async (ctx: Context) => {
     const queries = (ctx.request.query as TFetchStoriesQuerySchema) || {};
@@ -25,26 +26,31 @@ export const index = async (ctx: Context) => {
 
     let query_filter: object = {};
     let sort_column: keyof TStory = "created_at";
-    let sort_order: TSort = "asc";
+    let sort_order: TSort = "desc";
 
     if (filter === "home") {
+        query_filter = { ...query_filter, type: { $eq: "link" } };
         sort_column = "created_at";
         sort_order = "asc";
     } else if (filter === "newest") {
-        sort_column = "created_at";
-        sort_order = "desc";
+        log.debug("fetching newest stories");
     } else if (filter === "day") {
-        const selected_date = new Date(value || "");
-        const day_start = new Date(selected_date.setHours(0, 0, 0, 0));
-        const day_end = new Date(selected_date.setHours(23, 59, 59, 999));
         query_filter = {
-            created_at: { $gt: day_start, $lt: day_end },
+            ...query_filter,
+            created_at: {
+                $gt: new Date(new Date(value || "").setHours(0, 0, 0, 0)),
+                $lt: new Date(new Date(value || "").setHours(23, 59, 59, 999)),
+            },
         };
-        sort_column = "created_at";
-        sort_order = "desc";
+    } else if (filter === "ask") {
+        query_filter = { ...query_filter, type: { $eq: "ask" } };
+    } else if (filter === "show") {
+        query_filter = { ...query_filter, type: { $eq: "show" } };
+    } else if (filter === "jobs") {
+        query_filter = { ...query_filter, type: { $eq: "job" } };
     }
 
-    const hidden_story = ctx.user?.hidden_story;
+    const hidden_story = ctx.user?.hidden_story || [];
 
     if (hidden_story) {
         query_filter = {

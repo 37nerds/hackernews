@@ -1,7 +1,7 @@
 import { createAddNavLink } from "@/helpers/primitives";
 import { createGetHiddenNewsesQuery } from "@/queries/users";
 
-import Newses from "@/components/Newses";
+import Stories from "@/components/Stories.tsx";
 
 export default () => {
     createAddNavLink("hidden", "/hidden");
@@ -10,7 +10,7 @@ export default () => {
 
     return (
         <main>
-            <Newses stories={stories()} page={page()} loading={loading()} more_page_prefix="/hidden?" />
+            <Stories stories={stories()} page={page()} loading={loading()} more_page_prefix="/hidden?" />
         </main>
     );
 };

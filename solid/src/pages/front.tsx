@@ -4,12 +4,10 @@ import { Show, createEffect } from "solid-js";
 import { A } from "@solidjs/router";
 import { createAddNavLink } from "@/helpers/primitives";
 import { createGetNewsesQuery } from "@/queries/stories";
-import { useLoggedUser } from "@/contexts/logged_user";
 import { add_days, add_months, add_years, subtract_days, subtract_months, subtract_years } from "@/helpers/time";
 import { format_to_display_date, format_to_param_date, is_getter_then_now } from "@/helpers/time";
-import { filter_hidden_stories } from "@/helpers/logic";
 
-import Newses from "@/components/Newses";
+import Stories from "@/components/Stories.tsx";
 
 const Lk = (p: { day: TTime; label: string; prefix?: string; suffix?: string }) => (
     <Show when={!is_getter_then_now(p.day)}>
@@ -42,17 +40,10 @@ export default () => {
 
     const { stories, loading, page, day } = createGetNewsesQuery("day");
 
-    const logger_user = useLoggedUser();
-
     return (
         <main class="flex flex-col gap-3">
             <DateSelector day={day} />
-            <Newses
-                stories={filter_hidden_stories(stories(), logger_user?.data()?.hidden_story || [])}
-                page={page()}
-                loading={loading()}
-                more_page_prefix={`/front?day=${day()}&`}
-            />
+            <Stories stories={stories()} page={page()} loading={loading()} more_page_prefix={`/front?day=${day()}&`} />
         </main>
     );
 };

@@ -1,25 +1,31 @@
-import { createVoteMutation, type TNews } from "@/queries/stories";
+import type { TStory, TStoryType } from "@/queries/stories";
 
+import { createVoteMutation } from "@/queries/stories";
 import { For, Show, Suspense, createEffect } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
-import { display_from_now } from "@/helpers/time";
-import { story_per_page } from "@/config/misc";
 import { createAddHideMutation, createGetPathname } from "@/queries/users";
 import { useIsUserLoggedIn, useLoggedUser } from "@/contexts/logged_user";
 
-import Triangle from "@/components/icons/Triangle";
-import Loading from "./ui/Loading";
+import { display_from_now } from "@/helpers/time";
+import { story_per_page } from "@/config/misc";
 
-const Unvote = (p: { storyId: string }) => {
+import Triangle from "@/components/icons/Triangle";
+import Loading from "@/components/ui/Loading";
+
+const is_link = (type: TStoryType) => type === "link";
+const is_show = (type: TStoryType) => type === "show";
+const is_job = (type: TStoryType) => type === "job";
+
+const Unvote = (p: { id: string }) => {
     const vote_mutation = createVoteMutation();
     const logged_user = useLoggedUser();
 
     return (
-        <Show when={logged_user?.data()?.voted_story?.find(story_id => p.storyId === story_id)}>
+        <Show when={logged_user?.data()?.voted_story?.find(story_id => p.id === story_id)}>
             |{" "}
             <button
                 onClick={() => {
-                    vote_mutation.mutate({ story_id: p.storyId, operation: "remove" });
+                    vote_mutation.mutate({ story_id: p.id, operation: "remove" });
                 }}
                 disabled={vote_mutation.isPending}
                 class="hover:underline"
@@ -30,7 +36,7 @@ const Unvote = (p: { storyId: string }) => {
     );
 };
 
-const Vote = (p: { storyId: string }) => {
+const Vote = (p: { id: string }) => {
     const navigate = useNavigate();
     const isUserLoggedIn = useIsUserLoggedIn();
     const voteMutation = createVoteMutation();
@@ -41,12 +47,12 @@ const Vote = (p: { storyId: string }) => {
             navigate("/login");
             return;
         }
-        voteMutation.mutate({ story_id: p.storyId, operation: "add" });
+        voteMutation.mutate({ story_id: p.id, operation: "add" });
     };
 
     return (
         <div class="h-3 w-3">
-            <Show when={!loggedUser?.data()?.voted_story?.find(story_id => story_id === p.storyId)}>
+            <Show when={!loggedUser?.data()?.voted_story?.find(story_id => story_id === p.id)}>
                 <button class="items-top flex h-3 w-3" onClick={handleClick}>
                     <Triangle />
                 </button>
@@ -55,7 +61,7 @@ const Vote = (p: { storyId: string }) => {
     );
 };
 
-const Hide = (p: { storyId: string }) => {
+const Hide = (p: { id: string }) => {
     const { loading, mutate } = createAddHideMutation();
 
     const pathname = createGetPathname();
@@ -72,59 +78,98 @@ const Hide = (p: { storyId: string }) => {
             navigate("/login");
             return;
         }
-        mutate()({ story_id: p.storyId, operation: pathname() === "/hidden" ? "remove" : "add" });
+        mutate()({ story_id: p.id, operation: pathname() === "/hidden" ? "remove" : "add" });
     };
 
     return (
-        <button onClick={handleClick} disabled={loading()} class="hover:underline">
-            {pathname() === "/hidden" ? "un-hide" : "hide"}
-        </button>
+        <>
+            <span> | </span>
+            <button onClick={handleClick} disabled={loading()} class="hover:underline">
+                {pathname() === "/hidden" ? "un-hide" : "hide"}
+            </button>
+        </>
     );
 };
 
-const News = (p: TNews & { no: number }) => {
+const Comments = (p: { id: string; count: number }) => {
+    return (
+        <>
+            <span> | </span>
+            <A href={`/item?id=${p.id}`} class="hover:underline">
+                <Show when={p?.count || 0 > 0} fallback="discuss">
+                    {p.count} comments
+                </Show>
+            </A>
+        </>
+    );
+};
+
+const Time = (p: { id: string; created_at: string }) => {
+    return (
+        <>
+            <span> | </span>
+            <A title={new Date(p.created_at).toUTCString()} href={`/item?id=${p.id}`} class="hover:underline">
+                {display_from_now(p.created_at)}
+            </A>
+        </>
+    );
+};
+
+const PointsUser = (p: { user: string | null; points: number }) => {
+    return (
+        <>
+            <span> {p.points} points by </span>
+            <A href={`/user/${p.user}`} class="hover:underline">
+                {p.user}
+            </A>
+        </>
+    );
+};
+
+const Story = (p: TStory & { no: number }) => {
     return (
         <div class="flex gap-1 rounded bg-primary-bg px-1 py-0.5">
             <div class="items-top flex gap-1">
                 <div class="min-w-5 text-end text-secondary">{p.no}.</div>
-                <Vote storyId={p._id} />
+                <Vote id={p._id} />
             </div>
             <div class="flex flex-col">
                 <div class="flex items-center gap-1">
-                    <A href={p.url} target="_blank" class="text-primay text-sm">
+                    <A
+                        href={is_link(p.type) || is_show(p.type) ? p.url : `/item?id=${p._id}`}
+                        target="_blank"
+                        class="text-primay text-sm"
+                    >
                         {p.title}
                     </A>
-                    <A href={`/from?site=${p.domain}`} class="text-[11px] text-secondary hover:underline">
-                        ({p.domain})
-                    </A>
+                    <Show when={is_link(p.type) || is_show(p.type)}>
+                        <A href={`/from?site=${p.domain}`} class="text-[11px] text-secondary hover:underline">
+                            ({p.domain})
+                        </A>
+                    </Show>
                 </div>
                 <div class="text-[11px] text-secondary">
-                    {p.points} points by{" "}
-                    <A href={`/user/${p.user}`} class="hover:underline">
-                        {p.user}
-                    </A>{" "}
-                    |{" "}
-                    <A title={new Date().toUTCString()} href={`/item?id=${p._id}`} class="hover:underline">
-                        {display_from_now(p.created_at)}
-                    </A>{" "}
-                    <Unvote storyId={p._id} /> | <Hide storyId={p._id} /> |{" "}
-                    <A href={`/item?id=${p._id}`} class="hover:underline">
-                        <Show when={p?.comments_count || 0 > 0} fallback="discuss">
-                            {p.comments_count} comments
-                        </Show>
-                    </A>
+                    <Show when={!is_job(p.type)}>
+                        <PointsUser user={p.user} points={p.points || 0} />
+                    </Show>
+                    <Time id={p._id} created_at={p.created_at} />
+                    <Show when={!is_job(p.type)}>
+                        <Unvote id={p._id} />
+                        <Hide id={p._id} />
+                        <Comments id={p._id} count={p.comments_count} />
+                    </Show>
                 </div>
             </div>
         </div>
     );
 };
 
-const NewsesList = (p: { stories: TNews[]; page?: number; total?: number }) => {
+const List = (p: { stories: TStory[]; page?: number; total?: number }) => {
     return (
         <div class="flex flex-col gap-1">
             <For each={p.stories}>
-                {(story: TNews, i) => (
-                    <News
+                {(story: TStory, i) => (
+                    <Story
                         no={(p.total || 30) * ((p.page || 1) - 1) + i() + 1}
                         _id={story._id}
                         title={story.title}
@@ -158,13 +203,13 @@ const NoStories = () => {
     return <div class="py-5 text-center text-lg text-red-500">There is no stories</div>;
 };
 
-const Newses = (p: { loading: boolean; stories: TNews[]; page: number; more_page_prefix?: string }) => {
+const Stories = (p: { loading: boolean; stories: TStory[]; page: number; more_page_prefix?: string }) => {
     return (
         <div class="flex flex-col gap-3">
             <Suspense fallback={<Loading message="Suspense loading in Newses ..." />}>
                 <Show when={!p.loading} fallback={<Loading message="Show loading in Newses ..." />}>
                     <Show when={p.stories.length !== 0} fallback={<NoStories />}>
-                        <NewsesList stories={p.stories} page={p.page || 1} total={story_per_page} />
+                        <List stories={p.stories} page={p.page || 1} total={story_per_page} />
                         <div class="flex justify-end">
                             <Show when={p.page - 1}>
                                 <More label="Less" href={`${p.more_page_prefix || "/?"}page=${p.page - 1}`} />
@@ -180,4 +225,4 @@ const Newses = (p: { loading: boolean; stories: TNews[]; page: number; more_page
     );
 };
 
-export default Newses;
+export default Stories;

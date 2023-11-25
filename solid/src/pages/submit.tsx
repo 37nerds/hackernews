@@ -1,15 +1,17 @@
 import type { TSetValue, TType } from "@/types";
+import type { JSX } from "solid-js";
+import type { TStoryType } from "@/queries/stories";
 
-import { JSX, createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { createSaveNewsMutation } from "@/queries/stories";
 import { createHideFooter, createOnlyOneNavLink } from "@/helpers/primitives";
+import { useNavigate } from "@solidjs/router";
 
 import Input from "@/components/ui/Input";
 import Container2 from "@/components/ui/Container2";
 import Submit from "@/components/ui/Submit";
 import PWrapper from "@/components/ui/PWrapper";
 import Textarea from "@/components/ui/Textarea";
-import { useNavigate } from "@solidjs/router";
 
 const Wrapper = (p: { children: JSX.Element; itemsPosition?: string }) => {
     return <div class={`flex gap-2 ${p.itemsPosition || "items-center"}`}>{p.children}</div>;
@@ -52,9 +54,8 @@ export default () => {
     const saveNewsMutation = createSaveNewsMutation();
 
     const handlerSubmit = () => {
-        if (url() !== "") {
-            saveNewsMutation.mutate({ title: title(), url: url(), text: text() });
-        }
+        let type: TStoryType = url() === "" ? "ask" : "link";
+        saveNewsMutation.mutate({ type, title: title(), url: url(), text: text() });
     };
 
     const navigate = useNavigate();

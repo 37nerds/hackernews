@@ -6,7 +6,7 @@ import { random, x_seed } from "@/helpers/seeding";
 
 import repo from "@/base/repo";
 
-type TStoryType = "link" | "ask" | "show" | "jobs";
+type TStoryType = "link" | "ask" | "show" | "job";
 
 type TInsert = {
     title: string;

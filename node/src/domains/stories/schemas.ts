@@ -7,7 +7,7 @@ export const fetch_stories_query_schema = z.object({
     id: id_schema.optional(),
     per_page: z.string().optional(),
     page: z.string().optional(),
-    filter: z.enum(["home", "newest", "day"]).optional(),
+    filter: z.enum(["home", "newest", "day", "ask", "show", "jobs"]).optional(),
     value: z.string().optional(),
 });
 
@@ -15,7 +15,7 @@ export const save_story_body_schema = z.object({
     title: z.string(),
     url: z.string(),
     text: z.string(),
-    type: z.enum(["link", "ask", "show", "jobs"]),
+    type: z.enum(["link", "ask", "show", "job"]),
     domain: z.string(),
 });
 

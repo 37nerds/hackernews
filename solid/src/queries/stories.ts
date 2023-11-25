@@ -4,13 +4,15 @@ import { extract_domain_from_url } from "@/helpers/utils";
 import { story_per_page } from "@/config/misc";
 import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
 import { createGetParams, createHandleErrorMutation } from "@/helpers/primitives";
-
-import http from "@/helpers/http";
 import { PROFILE_FETCH } from "./users";
 
-type TNewsType = "link";
+import http from "@/helpers/http";
+import { useLoggedUser } from "@/contexts/logged_user";
+import { filter_hidden_stories } from "@/helpers/logic";
 
-export type TNews = {
+export type TStoryType = "link" | "ask" | "show" | "job";
+
+export type TStory = {
     _id: string;
     created_at: string;
     updated_at: string;
@@ -19,19 +21,19 @@ export type TNews = {
     points: number | null;
     user: string | null;
     comments_count: number;
-    type: TNewsType;
+    type: TStoryType;
     url: string;
     domain?: string;
 };
 
-export type TFilter = "day" | "newest" | "home";
+export type TFilter = "home" | "newest" | "day" | "ask" | "show" | "jobs";
 
 export const NEWSES_FETCH = "stories-fetch";
 
 export const createGetNewsesQuery = (filter: TFilter = "home") => {
     const { day, page } = createGetParams();
 
-    const q = createQuery<TNews[], TError>(() => ({
+    const q = createQuery<TStory[], TError>(() => ({
         queryFn: () => {
             const queries: Record<string, string | number> = {
                 per_page: story_per_page,
@@ -47,7 +49,9 @@ export const createGetNewsesQuery = (filter: TFilter = "home") => {
         retry: false,
     }));
 
-    const stories = () => q.data || [];
+    const logger_user = useLoggedUser();
+
+    const stories = () => filter_hidden_stories(q.data || [], logger_user?.data()?.hidden_story || []);
     const loading = () => q.isLoading;
 
     return { stories, loading, page, day };
@@ -55,8 +59,8 @@ export const createGetNewsesQuery = (filter: TFilter = "home") => {
 
 export const createSaveNewsMutation = () => {
     return createHandleErrorMutation(
-        createMutation<TNews, TError, { title: string; url: string; text: string }>(() => ({
-            mutationFn: d => http.post("/stories", { ...d, type: "link", domain: extract_domain_from_url(d.url) }, 201),
+        createMutation<TStory, TError, { type: TStoryType; title: string; url: string; text: string }>(() => ({
+            mutationFn: d => http.post("/stories", { ...d, domain: extract_domain_from_url(d.url) }, 201),
             mutationKey: ["save-story"],
         })),
     );
@@ -67,7 +71,7 @@ export const createVoteMutation = () => {
 
     const { day, page } = createGetParams();
 
-    const m = createMutation<TNews, TError, { story_id: string; operation: "add" | "remove" }>(() => ({
+    const m = createMutation<TStory, TError, { story_id: string; operation: "add" | "remove" }>(() => ({
         mutationFn: d =>
             d.operation === "add"
                 ? http.patch("/stories/upvote", { story_id: d.story_id }, 200)
