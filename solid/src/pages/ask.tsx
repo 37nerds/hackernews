@@ -7,7 +7,7 @@ export default () => {
 
     return (
         <main>
-            <Stories stories={stories()} page={page()} loading={loading()} />
+            <Stories stories={stories()} page={page()} loading={loading()} more_page_prefix="/ask?" />
         </main>
     );
 };

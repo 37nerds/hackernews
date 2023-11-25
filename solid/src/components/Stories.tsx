@@ -107,7 +107,6 @@ const Comments = (p: { id: string; count: number }) => {
 const Time = (p: { id: string; created_at: string }) => {
     return (
         <>
-            <span> | </span>
             <A title={new Date(p.created_at).toUTCString()} href={`/item?id=${p.id}`} class="hover:underline">
                 {display_from_now(p.created_at)}
             </A>
@@ -122,17 +121,22 @@ const PointsUser = (p: { user: string | null; points: number }) => {
             <A href={`/user/${p.user}`} class="hover:underline">
                 {p.user}
             </A>
+            <span> | </span>
         </>
     );
 };
 
 const Story = (p: TStory & { no: number }) => {
+    const m: Record<string, string> = { ask: "ASK: ", job: "JOB: ", show: "SHOW: " };
+    const title_prefix = () => m[p.type] || "";
     return (
         <div class="flex gap-1 rounded bg-primary-bg px-1 py-0.5">
-            <div class="items-top flex gap-1">
-                <div class="min-w-5 text-end text-secondary">{p.no}.</div>
-                <Vote id={p._id} />
-            </div>
+            <Show when={!is_job(p.type)}>
+                <div class="items-top flex gap-1">
+                    <div class="min-w-5 text-end text-secondary">{p.no}.</div>
+                    <Vote id={p._id} />
+                </div>
+            </Show>
             <div class="flex flex-col">
                 <div class="flex items-center gap-1">
                     <A
@@ -140,6 +144,7 @@ const Story = (p: TStory & { no: number }) => {
                         target="_blank"
                         class="text-primay text-sm"
                     >
+                        {title_prefix()}
                         {p.title}
                     </A>
                     <Show when={is_link(p.type) || is_show(p.type)}>

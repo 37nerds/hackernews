@@ -49,7 +49,7 @@ export const seeder = async (faker: TFaker, delete_before: boolean = false) => {
             points: random.number(0, 100),
             user: faker.internet.userName(),
             comments_count: random.number(0, 200),
-            type: random.string(["link"]),
+            type: random.string(["link", "ask", "show", "job"]),
             url: faker.internet.url(),
             domain: faker.internet.url(),
         }),
