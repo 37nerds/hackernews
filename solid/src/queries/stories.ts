@@ -1,7 +1,7 @@
 import type { TError } from "@/types";
 
 import { extract_domain_from_url } from "@/helpers/utils";
-import { news_per_page } from "@/config/misc";
+import { story_per_page } from "@/config/misc";
 import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
 import { createGetParams, createHandleErrorMutation } from "@/helpers/primitives";
 
@@ -26,7 +26,7 @@ export type TNews = {
 
 export type TFilter = "day" | "newest" | "home";
 
-export const NEWSES_FETCH = "newses-fetch";
+export const NEWSES_FETCH = "stories-fetch";
 
 export const createGetNewsesQuery = (filter: TFilter = "home") => {
     const { day, page } = createGetParams();
@@ -34,30 +34,30 @@ export const createGetNewsesQuery = (filter: TFilter = "home") => {
     const q = createQuery<TNews[], TError>(() => ({
         queryFn: () => {
             const queries: Record<string, string | number> = {
-                per_page: news_per_page,
+                per_page: story_per_page,
                 page: page(),
                 filter,
             };
             if (filter === "day") {
                 queries["value"] = day();
             }
-            return http.get_wq(`/newses`, queries, 200);
+            return http.get_wq(`/stories`, queries, 200);
         },
         queryKey: filter === "day" ? [NEWSES_FETCH, filter, page(), day()] : [NEWSES_FETCH, filter, page()],
         retry: false,
     }));
 
-    const newses = () => q.data || [];
+    const stories = () => q.data || [];
     const loading = () => q.isLoading;
 
-    return { newses, loading, page, day };
+    return { stories, loading, page, day };
 };
 
 export const createSaveNewsMutation = () => {
     return createHandleErrorMutation(
         createMutation<TNews, TError, { title: string; url: string; text: string }>(() => ({
-            mutationFn: d => http.post("/newses", { ...d, type: "link", domain: extract_domain_from_url(d.url) }, 201),
-            mutationKey: ["save-news"],
+            mutationFn: d => http.post("/stories", { ...d, type: "link", domain: extract_domain_from_url(d.url) }, 201),
+            mutationKey: ["save-story"],
         })),
     );
 };
@@ -67,12 +67,12 @@ export const createVoteMutation = () => {
 
     const { day, page } = createGetParams();
 
-    const m = createMutation<TNews, TError, { news_id: string; operation: "add" | "remove" }>(() => ({
+    const m = createMutation<TNews, TError, { story_id: string; operation: "add" | "remove" }>(() => ({
         mutationFn: d =>
             d.operation === "add"
-                ? http.patch("/newses/upvote", { news_id: d.news_id }, 200)
-                : http.patch("/newses/downvote", { news_id: d.news_id }, 200),
-        mutationKey: ["news-vote"],
+                ? http.patch("/stories/upvote", { story_id: d.story_id }, 200)
+                : http.patch("/stories/downvote", { story_id: d.story_id }, 200),
+        mutationKey: ["story-vote"],
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: [PROFILE_FETCH] });
             qc.invalidateQueries({ queryKey: [NEWSES_FETCH, "home" as TFilter, page()] });

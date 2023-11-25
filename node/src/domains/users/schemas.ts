@@ -43,11 +43,11 @@ export const reset_password_body_schema = z.object({
 });
 
 export const add_hide_body_schema = z.object({
-    news_id: id_schema,
+    story_id: id_schema,
 });
 
 export const delete_hide_query_schema = z.object({
-    news_id: id_schema,
+    story_id: id_schema,
 });
 
 export const get_hidden_query_schema = z.object({

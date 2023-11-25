@@ -17,7 +17,7 @@ import user_repo from "@/repos/users";
 import crypto from "@/helpers/crypto";
 import forgot_password_alert from "@/jobs/forgot_password_alert";
 import jwt from "@/helpers/jwt";
-import news_repo from "@/repos/newses";
+import story_repo from "@/repos/stories";
 
 export const register = async (ctx: Context) => {
     const user = await user_repo.insert(ctx.request.body as TRegisterOrLoginUserBodySchema);
@@ -130,12 +130,12 @@ export const add_hide = async (ctx: Context) => {
     let user = ctx.user;
     const payload = ctx.request.body as TAddHideBodySchema;
 
-    if ((user?.hidden_news || []).find((id) => id === payload.news_id)) {
-        return reply(ctx, 400, { message: "invalid hidden news" });
+    if ((user?.hidden_story || []).find((id) => id === payload.story_id)) {
+        return reply(ctx, 400, { message: "invalid hidden story" });
     }
 
     user = await user_repo.update(to_string_id(user._id), {
-        hidden_news: [...(user?.hidden_news || []), payload.news_id],
+        hidden_story: [...(user?.hidden_story || []), payload.story_id],
     });
 
     return reply(ctx, 200, return_logged_user(user));
@@ -145,27 +145,27 @@ export const remove_hide = async (ctx: Context) => {
     let user = ctx.user;
     const payload = ctx.request.query as TDeleteHideQuerySchema;
 
-    if (!(user?.hidden_news || []).find((id) => id === payload.news_id)) {
-        return reply(ctx, 400, { message: "invalid hidden news" });
+    if (!(user?.hidden_story || []).find((id) => id === payload.story_id)) {
+        return reply(ctx, 400, { message: "invalid hidden story" });
     }
 
     user = await user_repo.update(to_string_id(user._id), {
-        hidden_news: user.hidden_news?.filter((news_id) => news_id !== payload.news_id) || [],
+        hidden_story: user.hidden_story?.filter((story_id) => story_id !== payload.story_id) || [],
     });
 
     return reply(ctx, 200, return_logged_user(user));
 };
 
-export const get_hidden_newses = async (ctx: Context) => {
+export const get_hidden_stories = async (ctx: Context) => {
     const queries = ctx.request.query as TGetHiddenQuerySchema;
 
     const per_page = Number(queries?.per_page) || 20;
     const page = Number(queries?.page) || 1;
 
-    const newses = await news_repo.finds(
-        { _id: { $in: ctx.user?.hidden_news?.map((id) => to_object_id(id)) || [] } },
+    const stories = await story_repo.finds(
+        { _id: { $in: ctx.user?.hidden_story?.map((id) => to_object_id(id)) || [] } },
         { per_page, page },
     );
 
-    return reply(ctx, 200, newses);
+    return reply(ctx, 200, stories);
 };

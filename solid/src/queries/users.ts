@@ -1,15 +1,15 @@
 import type { TError } from "@/types";
-import type { TFilter, TNews } from "@/queries/newses.ts";
+import type { TFilter, TNews } from "@/queries/stories.ts";
 
 import { createEffect, createSignal } from "solid-js";
 import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
 import { createGetParams, createHandleErrorMutation } from "@/helpers/primitives";
-import { NEWSES_FETCH } from "@/queries/newses.ts";
+import { NEWSES_FETCH } from "@/queries/stories.ts";
 import { useLoggedUser } from "@/contexts/logged_user.tsx";
 import { useLocation } from "@solidjs/router";
 
 import http from "@/helpers/http";
-import { news_per_page } from "@/config/misc";
+import { story_per_page } from "@/config/misc";
 
 export type TUser = {
     _id: string;
@@ -32,8 +32,8 @@ export type TLoggedUser = {
     noprocrast: boolean;
     showdead: boolean;
     email: string;
-    hidden_news?: string[];
-    voted_news?: string[];
+    hidden_story?: string[];
+    voted_story?: string[];
 };
 
 type TRegisterOrLogin = {
@@ -135,7 +135,7 @@ export const createResetPasswordMutation = () => {
     return m;
 };
 
-const HIDDEN_NEWSES_FETCH = "hidden-newses";
+const HIDDEN_NEWSES_FETCH = "hidden-stories";
 
 export const createGetHiddenNewsesQuery = () => {
     const { page } = createGetParams();
@@ -143,7 +143,7 @@ export const createGetHiddenNewsesQuery = () => {
     const q = createQuery<TNews[], TError>(() => ({
         queryFn: () => {
             const queries: Record<string, string | number> = {
-                per_page: news_per_page,
+                per_page: story_per_page,
                 page: page(),
             };
             return http.get_wq(`/users/hidden`, queries, 200);
@@ -152,14 +152,14 @@ export const createGetHiddenNewsesQuery = () => {
         retry: false,
     }));
 
-    const newses = () => q.data || [];
+    const stories = () => q.data || [];
     const loading = () => q.isLoading;
 
     createEffect(() => {
-        console.log(newses());
+        console.log(stories());
     });
 
-    return { newses, loading, page };
+    return { stories, loading, page };
 };
 
 export const createAddHideMutation = () => {
@@ -168,11 +168,11 @@ export const createAddHideMutation = () => {
 
     const { day, page } = createGetParams();
 
-    const m = createMutation<TLoggedUser, TError, { news_id: string; operation: "remove" | "add" }>(() => ({
+    const m = createMutation<TLoggedUser, TError, { story_id: string; operation: "remove" | "add" }>(() => ({
         mutationFn: d =>
             d.operation === "add"
-                ? http.post("/users/hidden", { news_id: d.news_id }, 200)
-                : http.delete(`/users/hidden/?news_id=${d.news_id}`, 200),
+                ? http.post("/users/hidden", { story_id: d.story_id }, 200)
+                : http.delete(`/users/hidden/?story_id=${d.story_id}`, 200),
         mutationKey: ["hidden"],
         onSuccess: d => {
             loggedUser?.setData(d);

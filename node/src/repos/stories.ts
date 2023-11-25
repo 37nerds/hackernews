@@ -6,12 +6,12 @@ import { random, x_seed } from "@/helpers/seeding";
 
 import repo from "@/base/repo";
 
-type TNewsType = "link";
+type TStoryType = "link" | "ask" | "show" | "jobs";
 
 type TInsert = {
     title: string;
     user: string;
-    type: TNewsType;
+    type: TStoryType;
     url: string;
     domain?: string;
 };
@@ -24,22 +24,22 @@ type TExtra = {
 type TUpdate = {
     title?: string;
     user?: string;
-    type?: TNewsType;
+    type?: TStoryType;
     url?: string;
     domain?: string;
     points?: number;
     comments_count?: number;
 };
 
-export type TNews = TBaseDoc & TInsert & TExtra;
-export type TNewsInsert = TInsert;
-export type TNewsUpdate = TUpdate;
+export type TStory = TBaseDoc & TInsert & TExtra;
+export type TStoryInsert = TInsert;
+export type TStoryUpdate = TUpdate;
 
-export const NEWSES = "newses";
+export const STORIES = "stories";
 
 export const seeder = async (faker: TFaker, delete_before: boolean = false) => {
-    await x_seed<TNewsInsert, TNews>({
-        collection: NEWSES,
+    await x_seed<TStoryInsert, TStory>({
+        collection: STORIES,
         fake_doc: async () => ({
             created_at: faker.date.between({
                 from: new Date("2022-01-01"),
@@ -53,14 +53,14 @@ export const seeder = async (faker: TFaker, delete_before: boolean = false) => {
             url: faker.internet.url(),
             domain: faker.internet.url(),
         }),
-        count: 2000,
+        count: 100000,
         delete_before,
     });
 };
 
-const news_repo = {
-    insert: (doc: TNewsInsert) => {
-        return repo.insert<TInsert & TExtra, TNews>(NEWSES, {
+const stories = {
+    insert: (doc: TStoryInsert) => {
+        return repo.insert<TInsert & TExtra, TStory>(STORIES, {
             ...doc,
             points: 0,
             comments_count: 0,
@@ -71,12 +71,12 @@ const news_repo = {
         options?: {
             per_page?: number;
             page?: number;
-            sort_column?: keyof TNews;
+            sort_column?: keyof TStory;
             sort_order?: TSort;
         },
     ) => {
-        return repo.finds<TNews>(
-            NEWSES,
+        return repo.finds<TStory>(
+            STORIES,
             filter,
             options?.per_page,
             options?.page,
@@ -85,17 +85,17 @@ const news_repo = {
         );
     },
     find: (filter: TFilter) => {
-        return repo.find<TNews>(NEWSES, filter);
+        return repo.find<TStory>(STORIES, filter);
     },
     find_by_id: (id: string) => {
-        return repo.find<TNews>(NEWSES, { _id: to_object_id(id) });
+        return repo.find<TStory>(STORIES, { _id: to_object_id(id) });
     },
-    update: (id: string, doc: TNewsUpdate) => {
-        return repo.update<TNewsUpdate, TNews>(NEWSES, id, doc);
+    update: (id: string, doc: TStoryUpdate) => {
+        return repo.update<TStoryUpdate, TStory>(STORIES, id, doc);
     },
     destroy: (id: string) => {
-        return repo.destroy(NEWSES, id);
+        return repo.destroy(STORIES, id);
     },
 };
 
-export default news_repo;
+export default stories;

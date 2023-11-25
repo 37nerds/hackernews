@@ -1,7 +1,7 @@
 import type { TSetValue, TType } from "@/types";
 
 import { JSX, createEffect, createSignal } from "solid-js";
-import { createSaveNewsMutation } from "@/queries/newses";
+import { createSaveNewsMutation } from "@/queries/stories";
 import { createHideFooter, createOnlyOneNavLink } from "@/helpers/primitives";
 
 import Input from "@/components/ui/Input";

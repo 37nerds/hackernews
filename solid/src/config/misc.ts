@@ -1,1 +1,1 @@
-export const news_per_page = 20;
+export const story_per_page = 30;

@@ -55,7 +55,7 @@ export const footer_links = [
     },
     {
         title: "API",
-        href: "https://github.com/p-nerd/hackernews",
+        href: "https://github.com/p-nerd/hackerstory",
     },
     {
         title: "Security",

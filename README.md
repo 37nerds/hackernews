@@ -10,4 +10,4 @@ Hacker News clone with different technologies
 ## Notes
 
 -   Stories
-    -   Stories has 3 types: `news`, `ask`, `show` and `jobs`
+    -   Stories has 3 types: `link`, `ask`, `show` and `jobs`

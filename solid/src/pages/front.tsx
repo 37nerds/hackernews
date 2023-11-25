@@ -3,11 +3,11 @@ import type { TTime } from "@/helpers/time";
 import { Show, createEffect } from "solid-js";
 import { A } from "@solidjs/router";
 import { createAddNavLink } from "@/helpers/primitives";
-import { createGetNewsesQuery } from "@/queries/newses";
+import { createGetNewsesQuery } from "@/queries/stories";
 import { useLoggedUser } from "@/contexts/logged_user";
 import { add_days, add_months, add_years, subtract_days, subtract_months, subtract_years } from "@/helpers/time";
 import { format_to_display_date, format_to_param_date, is_getter_then_now } from "@/helpers/time";
-import { filter_hidden_newses } from "@/helpers/logic";
+import { filter_hidden_stories } from "@/helpers/logic";
 
 import Newses from "@/components/Newses";
 
@@ -40,7 +40,7 @@ export default () => {
         createAddNavLink(day(), `/front`, true);
     });
 
-    const { newses, loading, page, day } = createGetNewsesQuery("day");
+    const { stories, loading, page, day } = createGetNewsesQuery("day");
 
     const logger_user = useLoggedUser();
 
@@ -48,7 +48,7 @@ export default () => {
         <main class="flex flex-col gap-3">
             <DateSelector day={day} />
             <Newses
-                newses={filter_hidden_newses(newses(), logger_user?.data()?.hidden_news || [])}
+                stories={filter_hidden_stories(stories(), logger_user?.data()?.hidden_story || [])}
                 page={page()}
                 loading={loading()}
                 more_page_prefix={`/front?day=${day()}&`}

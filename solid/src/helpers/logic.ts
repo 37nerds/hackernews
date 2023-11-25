@@ -1,5 +1,5 @@
-import { TNews } from "@/queries/newses";
+import { TNews } from "@/queries/stories";
 
-export const filter_hidden_newses = (newses: TNews[], hidden_news: string[]) => {
-    return newses.filter(news => !hidden_news.find(id => news._id === id));
+export const filter_hidden_stories = (stories: TNews[], hidden_story: string[]) => {
+    return stories.filter(story => !hidden_story.find(id => story._id === id));
 };

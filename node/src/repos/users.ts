@@ -22,8 +22,8 @@ type TExtra = {
     minaway?: number;
     delay?: number;
     karma?: number;
-    hidden_news?: string[];
-    voted_news?: string[];
+    hidden_story?: string[];
+    voted_story?: string[];
 };
 
 type TUpdate = {
