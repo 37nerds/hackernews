@@ -1,7 +1,7 @@
 import type { TStory, TStoryType } from "@/queries/stories";
 
 import { createVoteMutation } from "@/queries/stories";
-import { For, Show, Suspense, createEffect } from "solid-js";
+import { For, Show, Suspense } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
 import { createAddHideMutation, createGetPathname } from "@/queries/users";
 import { useIsUserLoggedIn, useLoggedUser } from "@/contexts/logged_user";

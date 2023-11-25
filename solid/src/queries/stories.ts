@@ -9,7 +9,6 @@ import { PROFILE_FETCH } from "./users";
 import http from "@/helpers/http";
 import { useLoggedUser } from "@/contexts/logged_user";
 import { filter_hidden_stories } from "@/helpers/logic";
-import { createEffect, createSignal } from "solid-js";
 
 export type TStoryType = "link" | "ask" | "show" | "job";
 
