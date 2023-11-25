@@ -3,13 +3,12 @@ import type { TStory } from "@/repos/stories";
 import type { TSort } from "@/base/repo";
 import type { TFetchStoriesQuerySchema, TSaveStoryBodySchema, TUpdateVoteBodySchema } from "./schemas";
 
-import { to_string_id, to_object_id } from "@/base/repo";
+import { to_string_id, to_object_id, comparison } from "@/base/repo";
 import { reply } from "@/helpers/units";
 import { return_stories } from "./schemas";
 
 import story_repo from "@/repos/stories";
 import user_repo from "@/repos/users";
-import log from "@/helpers/log";
 
 export const index = async (ctx: Context) => {
     const queries = (ctx.request.query as TFetchStoriesQuerySchema) || {};
@@ -29,25 +28,26 @@ export const index = async (ctx: Context) => {
     let sort_order: TSort = "desc";
 
     if (filter === "home") {
-        query_filter = { ...query_filter, type: { $eq: "link" } };
+        query_filter = { ...query_filter, type: { [comparison.not_equal]: "job" } };
         sort_column = "created_at";
         sort_order = "asc";
     } else if (filter === "newest") {
-        log.debug("fetching newest stories");
+        query_filter = { ...query_filter, type: { [comparison.not_equal]: "job" } };
     } else if (filter === "day") {
         query_filter = {
             ...query_filter,
+            type: { [comparison.not_equal]: "job" },
             created_at: {
-                $gt: new Date(new Date(value || "").setHours(0, 0, 0, 0)),
-                $lt: new Date(new Date(value || "").setHours(23, 59, 59, 999)),
+                [comparison.greater]: new Date(new Date(value || "").setHours(0, 0, 0, 0)),
+                [comparison.less]: new Date(new Date(value || "").setHours(23, 59, 59, 999)),
             },
         };
     } else if (filter === "ask") {
-        query_filter = { ...query_filter, type: { $eq: "ask" } };
+        query_filter = { ...query_filter, type: { [comparison.equal]: "ask" } };
     } else if (filter === "show") {
-        query_filter = { ...query_filter, type: { $eq: "show" } };
+        query_filter = { ...query_filter, type: { [comparison.equal]: "show" } };
     } else if (filter === "jobs") {
-        query_filter = { ...query_filter, type: { $eq: "job" } };
+        query_filter = { ...query_filter, type: { [comparison.equal]: "job" } };
     }
 
     const hidden_story = ctx.user?.hidden_story || [];

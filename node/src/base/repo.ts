@@ -132,3 +132,14 @@ const repo = {
 };
 
 export default repo;
+
+export const comparison = {
+    equal: "$eq",
+    not_equal: "$ne",
+    greater: "$gt",
+    greater_or_equal: "$gte",
+    less: "$lt",
+    less_or_equal: "$lte",
+    in_array: "$in",
+    not_in_array: "$nin",
+};
