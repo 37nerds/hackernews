@@ -53,7 +53,7 @@ export const seeder = async (faker: TFaker, delete_before: boolean = false) => {
             url: faker.internet.url(),
             domain: faker.internet.url(),
         }),
-        count: 100000,
+        count: 9000,
         delete_before,
     });
 };

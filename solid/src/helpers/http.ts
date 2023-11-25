@@ -1,10 +1,10 @@
-import { backend_api_base_url } from "@/config/env";
+import { API_BASE_URL } from "@/config/env";
 
 type TMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
 const http = {
     json: async (endpoint: string, method: TMethod, body: object | null, happy: number) => {
-        const response = await fetch(backend_api_base_url + endpoint, {
+        const response = await fetch(API_BASE_URL + endpoint, {
             method,
             body: body ? JSON.stringify(body) : null,
             headers: { "Content-type": "application/json" },

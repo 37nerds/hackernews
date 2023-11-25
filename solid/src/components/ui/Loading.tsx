@@ -1,3 +1,6 @@
+import { is_dev } from "@/helpers/utils";
+import { Show } from "solid-js";
+
 const Loading = (p: { message?: string }) => (
     <div class="bg-base-100 flex h-full w-full items-center justify-center">
         <div class="flex flex-col gap-5 py-10">
@@ -17,7 +20,9 @@ const Loading = (p: { message?: string }) => (
                     fill="currentFill"
                 />
             </svg>
-            <div class="text-center text-slate-900">{p.message || "Loading..."}</div>
+            <Show when={is_dev()}>
+                <div class="text-center text-slate-900">{p.message || "Loading..."}</div>
+            </Show>
         </div>
     </div>
 );

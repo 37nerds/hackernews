@@ -1,3 +1,5 @@
+import { NODE_ENV } from "@/config/env";
+
 export const convert_boolean_to_yes_no = (value: boolean): "yes" | "no" => {
     return value ? "yes" : "no";
 };
@@ -19,3 +21,6 @@ export const timeout = <T>(fn: Function, time: number = 1000): Promise<T> => {
         }, time);
     });
 };
+
+export const is_dev = () => NODE_ENV === "dev";
+export const is_prod = () => NODE_ENV === "prod";
